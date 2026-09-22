@@ -1,0 +1,2458 @@
+/* ==========================================================================
+   FELIX AUTOMOTIVE BATTERIES — ANTIGRAVITY MOTION DESIGN SYSTEM
+   Brand Palette: Felix Green (#00A82D / #00B83F), Dark Green (#087A2A),
+   Black (#111111), Pure White (#FFFFFF), Technical Light Gray (#F5F7F6)
+   Typography: Space Grotesk (Headings) + Inter (Body) + JetBrains Mono (Tech)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Felix Brand Color Tokens */
+  --felix-green: #00A82D;
+  --felix-green-glow: #00B83F;
+  --felix-green-light: #22C55E;
+  --felix-green-dark: #087A2A;
+  --felix-green-deep: #054C1A;
+  --felix-green-subtle: rgba(0, 168, 45, 0.08);
+  --felix-green-glow-shadow: 0 0 35px rgba(0, 184, 63, 0.3);
+
+  /* Neutrals & Surfaces */
+  --bg-main: #FFFFFF;
+  --bg-surface: #F5F7F6;
+  --bg-surface-2: #EAEFED;
+  --bg-dark: #111111;
+  --bg-dark-surface: #171818;
+  --bg-dark-card: #1D1E1F;
+  --bg-dark-elevated: #242627;
+
+  /* Typography Colors */
+  --text-primary: #111111;
+  --text-secondary: #4B5563;
+  --text-tertiary: #6B7280;
+  --text-muted: #9CA3AF;
+  --text-light: #FFFFFF;
+  --text-light-dim: rgba(255, 255, 255, 0.7);
+  --text-light-muted: rgba(255, 255, 255, 0.45);
+
+  /* Accents */
+  --accent-blue: #0284C7;
+  --accent-amber: #F59E0B;
+  --accent-red: #EF4444;
+
+  /* Borders & Dividers */
+  --border-light: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.14);
+  --border-dark: rgba(255, 255, 255, 0.1);
+  --border-green: rgba(0, 168, 45, 0.25);
+  --border-green-glow: rgba(0, 184, 63, 0.6);
+
+  /* Typography Stack */
+  --font-display: 'Space Grotesk', 'Plus Jakarta Sans', -apple-system, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Elevation Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.09);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.05);
+  --shadow-card-hover: 0 20px 48px rgba(0, 0, 0, 0.12);
+  --shadow-green: 0 8px 28px rgba(0, 168, 45, 0.28);
+  --shadow-green-strong: 0 14px 44px rgba(0, 184, 63, 0.35);
+
+  /* Border Radii */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-2xl: 36px;
+  --radius-full: 9999px;
+
+  /* Transitions & Easing */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --trans-fast: 0.2s var(--ease-out-expo);
+  --trans-normal: 0.35s var(--ease-out-expo);
+  --trans-smooth: 0.5s var(--ease-out-expo);
+}
+
+/* ==========================================================================
+   Base & Reset
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Reading Progress Bar */
+#scrollProgressBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--felix-green), var(--felix-green-glow), #4ADE80);
+  z-index: 10000;
+  box-shadow: 0 0 10px rgba(0, 184, 63, 0.8);
+  transition: width 0.05s linear;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.container-wide {
+  width: 100%;
+  max-width: 1540px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Section Spacing */
+.section-py {
+  padding: 110px 0;
+  position: relative;
+}
+
+.section-py-lg {
+  padding: 140px 0;
+  position: relative;
+}
+
+/* Typography Hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  background: var(--felix-green-subtle);
+  border: 1px solid var(--border-green);
+  color: var(--felix-green-dark);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 18px;
+}
+
+.section-badge.dark-badge {
+  background: rgba(0, 168, 45, 0.15);
+  border-color: rgba(0, 184, 63, 0.4);
+  color: #4ADE80;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 60px;
+}
+
+.section-title {
+  font-size: clamp(2.2rem, 3.8vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+  margin-bottom: 16px;
+}
+
+.section-title span.glow-text {
+  color: var(--felix-green);
+  background: linear-gradient(135deg, var(--felix-green), var(--felix-green-glow));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+/* ==========================================================================
+   Custom Magnetic Desktop Cursor
+   ========================================================================== */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--felix-green-glow);
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s, background-color 0.2s, opacity 0.2s;
+  mix-blend-mode: difference;
+}
+
+.custom-cursor-follower {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 184, 63, 0.6);
+  pointer-events: none;
+  z-index: 99998;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s var(--ease-out-expo), height 0.3s var(--ease-out-expo), border-color 0.2s, background-color 0.2s, transform 0.1s linear;
+}
+
+.custom-cursor-follower.cursor-hover {
+  width: 64px;
+  height: 64px;
+  background-color: rgba(0, 168, 45, 0.12);
+  border-color: var(--felix-green-glow);
+}
+
+.custom-cursor-follower.cursor-view::after {
+  content: 'VIEW';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.08em;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .custom-cursor, .custom-cursor-follower {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   Buttons & Links
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 28px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.92rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all var(--trans-normal);
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary {
+  background: var(--felix-green);
+  color: #FFFFFF;
+  border-color: var(--felix-green);
+  box-shadow: 0 4px 18px rgba(0, 168, 45, 0.32);
+}
+
+.btn-primary:hover {
+  background: var(--felix-green-glow);
+  border-color: var(--felix-green-glow);
+  box-shadow: 0 8px 28px rgba(0, 184, 63, 0.45);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: #FFFFFF;
+  color: var(--text-primary);
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+  border-color: var(--felix-green);
+  color: var(--felix-green-dark);
+  background: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-dark {
+  background: var(--bg-dark);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn-dark:hover {
+  background: #000000;
+  border-color: var(--felix-green-glow);
+  box-shadow: 0 6px 24px rgba(0, 168, 45, 0.25);
+  transform: translateY(-2px);
+}
+
+.btn-ghost-green {
+  background: transparent;
+  color: var(--felix-green);
+  border-color: var(--border-green);
+}
+
+.btn-ghost-green:hover {
+  background: var(--felix-green-subtle);
+  border-color: var(--felix-green);
+  transform: translateY(-2px);
+}
+
+.btn-sm {
+  padding: 9px 18px;
+  font-size: 0.82rem;
+}
+
+.btn-lg {
+  padding: 16px 36px;
+  font-size: 1.02rem;
+}
+
+/* ==========================================================================
+   Top Information Ticker
+   ========================================================================== */
+.top-ticker {
+  background: var(--bg-dark);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.75rem;
+  padding: 8px 0;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--font-body);
+}
+
+.ticker-track {
+  display: flex;
+  gap: 48px;
+  white-space: nowrap;
+  animation: tickerSlide 38s linear infinite;
+}
+
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ticker-item i {
+  color: var(--felix-green-glow);
+}
+
+.ticker-separator {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes tickerSlide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ==========================================================================
+   Sticky Navigation Bar
+   ========================================================================== */
+.navbar-main {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: all var(--trans-normal);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.navbar-main.scrolled {
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid rgba(0, 168, 45, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 76px;
+}
+
+.brand-logo-wrap {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  position: relative;
+}
+
+.brand-logo-img {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+  transition: transform var(--trans-normal);
+}
+
+.brand-logo-wrap:hover .brand-logo-img {
+  transform: scale(1.03);
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+}
+
+.nav-link {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--trans-fast);
+  position: relative;
+  padding: 6px 0;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--felix-green);
+  transition: width 0.3s var(--ease-out-expo);
+  border-radius: 999px;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--felix-green-dark);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-toggle-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 6px;
+}
+
+/* ==========================================================================
+   1. HERO SECTION — CINEMATIC ANTIGRAVITY EXPERIENCE
+   ========================================================================== */
+.hero-cinematic {
+  position: relative;
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: radial-gradient(circle at 75% 45%, rgba(0, 168, 45, 0.08) 0%, transparent 60%),
+              linear-gradient(180deg, #FFFFFF 0%, var(--bg-surface) 100%);
+  padding: 80px 0 100px;
+}
+
+/* Interactive Canvas for Energy Particles */
+#heroEnergyCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1.05fr;
+  gap: 40px;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+}
+
+.hero-eyebrow-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-green);
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--felix-green-dark);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 14px rgba(0, 168, 45, 0.12);
+  margin-bottom: 24px;
+}
+
+.pulse-dot-green {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--felix-green-glow);
+  box-shadow: 0 0 0 0 rgba(0, 184, 63, 0.7);
+  animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(0, 184, 63, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(0, 184, 63, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 184, 63, 0); }
+}
+
+.hero-headline {
+  font-size: clamp(2.8rem, 5.2vw, 4.6rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  margin-bottom: 22px;
+  text-transform: uppercase;
+}
+
+.hero-headline .green-gradient {
+  background: linear-gradient(135deg, var(--felix-green) 0%, #10B981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subheadline {
+  font-size: 1.18rem;
+  color: var(--text-secondary);
+  line-height: 1.68;
+  max-width: 560px;
+  margin-bottom: 36px;
+  font-weight: 400;
+}
+
+.hero-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+
+.hero-metrics-strip {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-light);
+}
+
+.hero-metric-num {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.hero-metric-num span {
+  color: var(--felix-green);
+  font-size: 1.2rem;
+}
+
+.hero-metric-desc {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+/* Antigravity Stage — Protagonist Battery Suspension */
+.hero-antigravity-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 520px;
+  perspective: 1200px;
+}
+
+.battery-aura-glow {
+  position: absolute;
+  width: 440px;
+  height: 440px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 184, 63, 0.22) 0%, rgba(0, 168, 45, 0.05) 50%, transparent 70%);
+  filter: blur(40px);
+  z-index: 1;
+  animation: auraFloat 8s ease-in-out infinite alternate;
+}
+
+@keyframes auraFloat {
+  0% { transform: scale(0.9) translate(-10px, -10px); }
+  100% { transform: scale(1.15) translate(10px, 10px); }
+}
+
+.battery-protagonist-wrapper {
+  position: relative;
+  z-index: 2;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.battery-protagonist-img {
+  max-width: 100%;
+  width: 480px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 30px 45px rgba(0, 0, 0, 0.22)) drop-shadow(0 10px 15px rgba(0, 168, 45, 0.2));
+  transform-origin: center center;
+  transition: transform 0.2s linear;
+}
+
+/* Detached Floating Technical Labels (Antigravity Parallax) */
+.hero-floating-tag {
+  position: absolute;
+  z-index: 4;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--border-green);
+  border-radius: var(--radius-full);
+  padding: 8px 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08), 0 0 16px rgba(0, 184, 63, 0.15);
+  font-family: var(--font-display);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.04em;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  will-change: transform;
+}
+
+.hero-floating-tag i {
+  color: var(--felix-green);
+  font-size: 0.85rem;
+}
+
+.tag-top-left {
+  top: 12%;
+  left: -4%;
+}
+
+.tag-top-right {
+  top: 18%;
+  right: -6%;
+}
+
+.tag-bottom-left {
+  bottom: 16%;
+  left: 2%;
+}
+
+.tag-bottom-right {
+  bottom: 8%;
+  right: -2%;
+}
+
+/* ==========================================================================
+   2. "CLEAN ENERGY. SMARTER STORAGE." SECTION
+   ========================================================================== */
+.clean-energy-section {
+  background: var(--bg-dark);
+  color: #FFFFFF;
+  position: relative;
+  overflow: hidden;
+}
+
+.clean-energy-section .section-title {
+  color: #FFFFFF;
+}
+
+.clean-energy-section .section-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.energy-ecosystem-visual {
+  position: relative;
+  margin-top: 60px;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  min-height: 580px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.energy-bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.38;
+  filter: saturate(1.2) contrast(1.1);
+  transform: scale(1.05);
+  transition: transform 1.2s var(--ease-out-expo);
+}
+
+.energy-ecosystem-visual:hover .energy-bg-image {
+  transform: scale(1.1);
+}
+
+/* Glowing Connecting Energy Vector SVG */
+.energy-vector-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.energy-line-path {
+  fill: none;
+  stroke: var(--felix-green-glow);
+  stroke-width: 2.5;
+  stroke-dasharray: 8 12;
+  animation: energyFlow 2.5s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(0, 184, 63, 0.9));
+}
+
+@keyframes energyFlow {
+  0% { stroke-dashoffset: 40; }
+  100% { stroke-dashoffset: 0; }
+}
+
+/* Central Solar Battery Node */
+.central-battery-node {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+}
+
+.central-node-img {
+  width: 320px;
+  height: auto;
+  filter: drop-shadow(0 0 35px rgba(0, 184, 63, 0.45));
+}
+
+.central-node-badge {
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid var(--felix-green-glow);
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-top: 14px;
+}
+
+/* Floating Telemetry Panels */
+.telemetry-card {
+  position: absolute;
+  z-index: 4;
+  background: rgba(23, 24, 24, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-lg);
+  padding: 22px 26px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 20px rgba(0, 168, 45, 0.2);
+  min-width: 220px;
+  transition: all var(--trans-smooth);
+}
+
+.telemetry-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--felix-green-glow);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 184, 63, 0.35);
+}
+
+.telemetry-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.telemetry-title {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-light-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.telemetry-val {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+.telemetry-val span {
+  font-size: 1.2rem;
+  color: var(--felix-green-glow);
+}
+
+.telemetry-sub {
+  font-size: 0.76rem;
+  color: var(--text-light-muted);
+  margin-top: 6px;
+}
+
+.telemetry-pos-1 {
+  top: 16%;
+  left: 6%;
+}
+
+.telemetry-pos-2 {
+  bottom: 18%;
+  left: 8%;
+}
+
+.telemetry-pos-3 {
+  top: 22%;
+  right: 6%;
+}
+
+/* ==========================================================================
+   3. HORIZONTAL BATTERY PRODUCT SHOWCASE — "ENGINEERED FOR EVERY JOURNEY"
+   ========================================================================== */
+.product-showcase-section {
+  background: var(--bg-surface);
+  position: relative;
+  overflow: hidden;
+}
+
+.product-horizontal-wrap {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 0 40px;
+}
+
+.product-horizontal-track {
+  display: flex;
+  gap: 28px;
+  width: max-content;
+  padding: 0 24px;
+}
+
+.showcase-product-card {
+  width: 360px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-2xl);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  transition: all var(--trans-smooth);
+  flex-shrink: 0;
+}
+
+.showcase-product-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--border-green);
+  box-shadow: var(--shadow-card-hover), 0 0 30px rgba(0, 168, 45, 0.12);
+}
+
+.showcase-series-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--felix-green-dark);
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.showcase-model-title {
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+
+.showcase-suitable {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.showcase-img-stage {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.showcase-product-img {
+  max-height: 190px;
+  max-width: 100%;
+  object-fit: contain;
+  transition: transform var(--trans-smooth);
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.14));
+}
+
+.showcase-product-card:hover .showcase-product-img {
+  transform: translateY(-10px) scale(1.05);
+}
+
+.showcase-specs-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 22px;
+}
+
+.spec-item-label {
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.spec-item-value {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* ==========================================================================
+   4. "A BATTERY FOR EVERY DRIVE" — DARK IMMERSIVE AUTOMOTIVE SECTION
+   ========================================================================== */
+.automotive-drive-section {
+  background: var(--bg-dark);
+  color: #FFFFFF;
+  position: relative;
+  overflow: hidden;
+}
+
+.automotive-drive-section .section-title {
+  color: #FFFFFF;
+}
+
+.automotive-drive-section .section-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.drive-category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.drive-card {
+  position: relative;
+  background: var(--bg-dark-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  height: 380px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  cursor: pointer;
+  transition: all var(--trans-smooth);
+}
+
+.drive-card-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.42;
+  filter: grayscale(30%) contrast(1.1);
+  transition: all 0.8s var(--ease-out-expo);
+  z-index: 1;
+}
+
+.drive-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(17, 17, 17, 0.1) 0%, rgba(17, 17, 17, 0.92) 80%);
+  z-index: 2;
+  transition: background 0.4s ease;
+}
+
+.drive-card-content {
+  position: relative;
+  z-index: 3;
+  transform: translateY(28px);
+  transition: transform var(--trans-smooth);
+}
+
+.drive-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--felix-green-glow);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.drive-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 8px;
+}
+
+.drive-desc {
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.55;
+  opacity: 0;
+  transition: opacity var(--trans-smooth);
+}
+
+.drive-specs-reveal {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  opacity: 0;
+  transition: opacity var(--trans-smooth);
+}
+
+.drive-stat {
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.drive-stat strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: #FFFFFF;
+}
+
+.drive-card:hover {
+  border-color: var(--felix-green-glow);
+  box-shadow: 0 0 35px rgba(0, 184, 63, 0.35);
+  transform: translateY(-6px);
+}
+
+.drive-card:hover .drive-card-bg {
+  transform: scale(1.12);
+  opacity: 0.55;
+  filter: grayscale(0%) contrast(1.15);
+}
+
+.drive-card:hover .drive-card-content {
+  transform: translateY(0);
+}
+
+.drive-card:hover .drive-desc,
+.drive-card:hover .drive-specs-reveal {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   5. PRODUCT DETAIL EXPERIENCE — 3D PROTAGONIST CALLOUTS
+   ========================================================================== */
+.product-detail-experience {
+  background: var(--bg-main);
+  position: relative;
+  overflow: hidden;
+}
+
+.detail-experience-stage {
+  position: relative;
+  min-height: 640px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.detail-central-battery {
+  position: relative;
+  z-index: 3;
+  width: 440px;
+  filter: drop-shadow(0 25px 40px rgba(0, 0, 0, 0.18)) drop-shadow(0 0 30px rgba(0, 168, 45, 0.15));
+  transition: transform 0.2s linear;
+}
+
+.detail-connector-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.floating-callout-card {
+  position: absolute;
+  z-index: 4;
+  background: #FFFFFF;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 0 14px rgba(0, 168, 45, 0.12);
+  max-width: 250px;
+  transition: all var(--trans-smooth);
+}
+
+.floating-callout-card:hover {
+  transform: translateY(-4px) scale(1.03);
+  border-color: var(--felix-green);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12), 0 0 24px rgba(0, 184, 63, 0.25);
+}
+
+.callout-icon-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.callout-icon-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--felix-green-subtle);
+  color: var(--felix-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.callout-title {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.callout-desc {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.callout-pos-1 { top: 8%; left: 8%; }
+.callout-pos-2 { top: 44%; left: 4%; }
+.callout-pos-3 { bottom: 10%; left: 10%; }
+.callout-pos-4 { top: 8%; right: 8%; }
+.callout-pos-5 { top: 44%; right: 4%; }
+.callout-pos-6 { bottom: 10%; right: 10%; }
+
+/* ==========================================================================
+   6. "ENGINEERED WITH PRECISION" — EXPLODED BATTERY CUTAWAY
+   ========================================================================== */
+.tech-exploded-section {
+  background: var(--bg-dark);
+  color: #FFFFFF;
+  position: relative;
+}
+
+.tech-exploded-section .section-title {
+  color: #FFFFFF;
+}
+
+.tech-exploded-section .section-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.exploded-cutaway-stage {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  margin-top: 60px;
+}
+
+.cutaway-visual-wrap {
+  position: relative;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-2xl);
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.cutaway-svg-img {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  filter: drop-shadow(0 15px 30px rgba(0, 184, 63, 0.25));
+}
+
+.exploded-layers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.exploded-layer-card {
+  background: var(--bg-dark-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: all var(--trans-smooth);
+}
+
+.exploded-layer-card:hover {
+  background: var(--bg-dark-elevated);
+  border-color: var(--felix-green-glow);
+  transform: translateX(8px);
+  box-shadow: 0 8px 24px rgba(0, 168, 45, 0.18);
+}
+
+.layer-index {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--felix-green-glow);
+  background: rgba(0, 168, 45, 0.15);
+  padding: 4px 8px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.layer-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+}
+
+.layer-text {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   7. PERFORMANCE STATISTICS (Full-Width Green Band)
+   ========================================================================== */
+.performance-stats-section {
+  background: linear-gradient(135deg, #054C1A 0%, var(--bg-dark) 100%);
+  color: #FFFFFF;
+  border-top: 1px solid rgba(0, 184, 63, 0.3);
+  border-bottom: 1px solid rgba(0, 184, 63, 0.3);
+  position: relative;
+}
+
+.stats-grid-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  text-align: center;
+}
+
+.stat-metric-box {
+  padding: 24px;
+}
+
+.stat-number-giant {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 4.2vw, 4.4rem);
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1;
+  margin-bottom: 8px;
+  letter-spacing: -0.04em;
+}
+
+.stat-number-giant span {
+  color: var(--felix-green-glow);
+}
+
+.stat-title-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+}
+
+.stat-desc-sub {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ==========================================================================
+   8. APPLICATIONS GRID
+   ========================================================================== */
+.applications-section {
+  background: var(--bg-surface);
+}
+
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.app-card {
+  position: relative;
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  height: 320px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  transition: all var(--trans-smooth);
+}
+
+.app-card-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.55;
+  transition: all 0.8s var(--ease-out-expo);
+  z-index: 1;
+}
+
+.app-card-grad {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.85) 85%);
+  z-index: 2;
+}
+
+.app-card-info {
+  position: relative;
+  z-index: 3;
+}
+
+.app-card-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 6px;
+}
+
+.app-card-desc {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.app-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--felix-green);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.app-card:hover .app-card-img {
+  transform: scale(1.1);
+  opacity: 0.7;
+}
+
+/* ==========================================================================
+   9. WHY FELIX — 6 CORE BENEFITS
+   ========================================================================== */
+.why-felix-section {
+  background: var(--bg-main);
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.benefit-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 36px 30px;
+  transition: all var(--trans-smooth);
+  position: relative;
+}
+
+.benefit-card:hover {
+  background: #FFFFFF;
+  border-color: var(--felix-green);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-card-hover), 0 0 25px rgba(0, 168, 45, 0.1);
+}
+
+.benefit-icon-box {
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-md);
+  background: #FFFFFF;
+  border: 1px solid var(--border-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--felix-green);
+  margin-bottom: 22px;
+  box-shadow: 0 4px 14px rgba(0, 168, 45, 0.15);
+  transition: all var(--trans-normal);
+}
+
+.benefit-card:hover .benefit-icon-box {
+  background: var(--felix-green);
+  color: #FFFFFF;
+  transform: scale(1.08);
+}
+
+.benefit-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.benefit-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   10. MANUFACTURING & QUALITY TIMELINE
+   ========================================================================== */
+.manufacturing-timeline-section {
+  background: var(--bg-dark);
+  color: #FFFFFF;
+  position: relative;
+}
+
+.manufacturing-timeline-section .section-title {
+  color: #FFFFFF;
+}
+
+.manufacturing-timeline-section .section-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.timeline-horizontal-track {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+  margin-top: 50px;
+  position: relative;
+}
+
+.timeline-step-card {
+  background: var(--bg-dark-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  transition: all var(--trans-smooth);
+  position: relative;
+}
+
+.timeline-step-card:hover {
+  background: var(--bg-dark-elevated);
+  border-color: var(--felix-green-glow);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 168, 45, 0.2);
+}
+
+.timeline-step-num {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--felix-green-glow);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.timeline-step-title {
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 8px;
+}
+
+.timeline-step-desc {
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   11. DEALER & DISTRIBUTOR CTA — "POWER YOUR BUSINESS WITH FELIX"
+   ========================================================================== */
+.dealer-cta-section {
+  background: var(--bg-main);
+}
+
+.dealer-cta-box {
+  background: linear-gradient(135deg, #054C1A 0%, #00A82D 50%, #00B83F 100%);
+  border-radius: var(--radius-2xl);
+  padding: 64px 60px;
+  color: #FFFFFF;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 48px;
+  align-items: center;
+  box-shadow: 0 24px 60px rgba(0, 168, 45, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.dealer-cta-headline {
+  font-size: clamp(2.2rem, 3.4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: #FFFFFF;
+  margin-bottom: 16px;
+}
+
+.dealer-cta-sub {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.dealer-cta-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.dealer-cta-img {
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.35));
+}
+
+/* ==========================================================================
+   12. CONTACT & INQUIRY FORM — "LET'S POWER THE FUTURE."
+   ========================================================================== */
+.contact-section {
+  background: var(--bg-surface);
+}
+
+.contact-grid-wrap {
+  display: grid;
+  grid-template-columns: 1.1fr 1.3fr;
+  gap: 60px;
+}
+
+.contact-info-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.contact-channels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 36px;
+}
+
+.contact-channel-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.channel-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--felix-green-subtle);
+  color: var(--felix-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.channel-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.channel-val {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.contact-form-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-2xl);
+  padding: 44px;
+  box-shadow: var(--shadow-card);
+}
+
+.form-group-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 13px 18px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-medium);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  background: #FFFFFF;
+  transition: border-color var(--trans-fast), box-shadow var(--trans-fast);
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--felix-green);
+  box-shadow: 0 0 0 4px rgba(0, 168, 45, 0.12);
+}
+
+/* ==========================================================================
+   13. CUSTOMER TESTIMONIALS & GOOGLE REVIEWS HUB
+   ========================================================================== */
+.testimonials-section {
+  background: var(--bg-main);
+  position: relative;
+}
+
+.reviews-aggregate-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-2xl);
+  padding: 36px 40px;
+  margin-bottom: 36px;
+  display: grid;
+  grid-template-columns: 240px 1fr auto;
+  gap: 36px;
+  align-items: center;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.reviews-score-col {
+  text-align: center;
+  border-right: 1px solid var(--border-medium);
+  padding-right: 28px;
+}
+
+.reviews-score-big {
+  font-family: var(--font-display);
+  font-size: 3.8rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.reviews-score-big span {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+.reviews-aggregate-stars {
+  color: var(--accent-amber);
+  font-size: 1.15rem;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.reviews-count-label {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.reviews-bars-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+}
+
+.reviews-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.reviews-bar-row .bar-star-label {
+  width: 48px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.reviews-bar-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.reviews-bar-fill {
+  height: 100%;
+  background: var(--accent-amber);
+  border-radius: 999px;
+  transition: width 1s var(--ease-out-expo);
+}
+
+.reviews-bar-row .bar-pct {
+  width: 40px;
+  text-align: right;
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.reviews-sources-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 220px;
+}
+
+.reviews-source-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FFFFFF;
+  border: 1px solid var(--border-medium);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all var(--trans-smooth);
+}
+
+.reviews-source-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-color: var(--felix-green);
+}
+
+.reviews-source-item .source-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reviews-source-item.google i { color: #4285F4; font-size: 1rem; }
+.reviews-source-item.indiamart i { color: #00A699; font-size: 1rem; }
+.reviews-source-item.justdial i { color: #FF6600; font-size: 1rem; }
+
+.source-rating-badge {
+  background: rgba(245, 158, 11, 0.12);
+  color: #D97706;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.reviews-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.reviews-filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rev-filter-pill {
+  border: 1px solid var(--border-medium);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--trans-smooth);
+  user-select: none;
+}
+
+.rev-filter-pill:hover {
+  background: #FFFFFF;
+  color: var(--text-primary);
+  border-color: var(--felix-green);
+}
+
+.rev-filter-pill.active {
+  background: var(--felix-green);
+  color: #FFFFFF;
+  border-color: var(--felix-green);
+  box-shadow: 0 4px 14px rgba(0, 168, 45, 0.25);
+}
+
+.testimonials-track {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.testimonial-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all var(--trans-smooth);
+  box-shadow: var(--shadow-card);
+}
+
+.testimonial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--border-green);
+}
+
+.testimonial-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.testimonial-platform-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.testimonial-platform-tag.google { background: rgba(66, 133, 244, 0.1); color: #1a73e8; }
+.testimonial-platform-tag.indiamart { background: rgba(0, 166, 153, 0.1); color: #00877c; }
+.testimonial-platform-tag.justdial { background: rgba(255, 102, 0, 0.1); color: #e65100; }
+
+.testimonial-date {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.testimonial-stars {
+  color: var(--accent-amber);
+  font-size: 0.88rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.testimonial-product-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  width: fit-content;
+}
+
+.testimonial-product-pill i {
+  color: var(--felix-green);
+  font-size: 0.75rem;
+}
+
+.testimonial-text {
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  line-height: 1.65;
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.testimonial-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.testimonial-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: rgba(0, 168, 45, 0.09);
+  color: var(--felix-green-dark);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.testimonial-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E2E8F0, #CBD5E1);
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.testimonial-avatar.avatar-blue { background: linear-gradient(135deg, #DBEAFE, #BFDBFE); color: #1E40AF; }
+.testimonial-avatar.avatar-emerald { background: linear-gradient(135deg, #D1FAE5, #A7F3D0); color: #065F46; }
+.testimonial-avatar.avatar-amber { background: linear-gradient(135deg, #FEF3C7, #FDE68A); color: #92400E; }
+.testimonial-avatar.avatar-purple { background: linear-gradient(135deg, #EDE9FE, #DDD6FE); color: #5B21B6; }
+
+.testimonial-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.testimonial-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.verified-icon {
+  color: var(--felix-green);
+  font-size: 0.8rem;
+}
+
+.testimonial-city {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+}
+
+/* ==========================================================================
+   14. INTERACTIVE BATTERY FINDER & LOAD CALCULATOR TOOLS
+   ========================================================================== */
+.tools-section {
+  background: var(--bg-surface);
+}
+
+.finder-widget-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-2xl);
+  padding: 44px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 48px;
+}
+
+.finder-steps-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.finder-results-box {
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  border: 1px solid var(--border-green);
+}
+
+/* Inverter Load Calculator */
+.calc-container-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 36px;
+}
+
+.calc-appliance-board {
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-2xl);
+  padding: 36px;
+  box-shadow: var(--shadow-card);
+}
+
+.calc-summary-panel {
+  background: var(--bg-dark);
+  color: #FFFFFF;
+  border-radius: var(--radius-2xl);
+  padding: 36px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.calc-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.metric-box {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.metric-label {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+/* ==========================================================================
+   15. DARK TECHNICAL FOOTER
+   ========================================================================== */
+.footer-dark {
+  background: var(--bg-dark);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 80px 0 36px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-top-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1.3fr;
+  gap: 48px;
+  margin-bottom: 60px;
+}
+
+.footer-brand-logo {
+  height: 46px;
+  margin-bottom: 20px;
+}
+
+.footer-brand-desc {
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.65;
+  max-width: 360px;
+  margin-bottom: 24px;
+}
+
+.footer-social-row {
+  display: flex;
+  gap: 12px;
+}
+
+.footer-social-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all var(--trans-fast);
+}
+
+.footer-social-btn:hover {
+  background: var(--felix-green);
+  border-color: var(--felix-green);
+  transform: translateY(-2px);
+}
+
+.footer-heading {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 20px;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  font-size: 0.86rem;
+  transition: color var(--trans-fast);
+}
+
+.footer-links a:hover {
+  color: var(--felix-green-glow);
+}
+
+.footer-bottom-bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.5);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-credit-line a {
+  color: var(--felix-green-glow);
+  font-weight: 700;
+  text-decoration: none;
+  transition: all var(--trans-fast);
+}
+
+.footer-credit-line a:hover {
+  text-decoration: underline;
+  color: #4ADE80;
+}
+
+/* ==========================================================================
+   Modals & Popups
+   ========================================================================== */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  padding: 20px;
+}
+
+.modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-box {
+  background: #FFFFFF;
+  border-radius: var(--radius-2xl);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  transform: scale(0.92);
+  transition: transform 0.3s var(--ease-out-expo);
+  padding: 36px;
+  position: relative;
+}
+
+.modal-backdrop.open .modal-box {
+  transform: scale(1);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.modal-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  padding: 4px;
+}
+
+/* Toast */
+.toast-msg {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: var(--bg-dark);
+  color: #FFFFFF;
+  padding: 16px 24px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-green);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 30000;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s var(--ease-out-expo);
+  pointer-events: none;
+}
+
+.toast-msg.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Back To Top Button */
+.back-to-top-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-green);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  z-index: 900;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: all var(--trans-normal);
+}
+
+.back-to-top-btn.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.back-to-top-btn:hover {
+  background: var(--felix-green);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 168, 45, 0.4);
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+@media (max-width: 1200px) {
+  .hero-grid { grid-template-columns: 1fr; text-align: center; }
+  .hero-subheadline { margin: 0 auto 36px; }
+  .hero-cta-row { justify-content: center; }
+  .hero-metrics-strip { justify-content: center; }
+  .tag-top-left { left: 4%; }
+  .tag-top-right { right: 4%; }
+  .tag-bottom-left { left: 8%; }
+  .tag-bottom-right { right: 8%; }
+  .timeline-horizontal-track { grid-template-columns: repeat(3, 1fr); }
+  .stats-grid-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 992px) {
+  .drive-category-grid { grid-template-columns: repeat(2, 1fr); }
+  .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+  .apps-grid { grid-template-columns: repeat(2, 1fr); }
+  .exploded-cutaway-stage { grid-template-columns: 1fr; }
+  .dealer-cta-box { grid-template-columns: 1fr; text-align: center; padding: 44px 32px; }
+  .dealer-cta-actions { justify-content: center; }
+  .dealer-cta-img { margin: 0 auto; }
+  .contact-grid-wrap { grid-template-columns: 1fr; }
+  .footer-top-grid { grid-template-columns: 1fr 1fr; }
+  .calc-container-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .nav-menu { display: none; }
+  .mobile-toggle-btn { display: block; }
+  .hero-floating-tag { display: none; }
+  .telemetry-card { position: static; margin: 12px auto; }
+  .energy-ecosystem-visual { flex-direction: column; padding: 40px 20px; }
+  .drive-category-grid { grid-template-columns: 1fr; }
+  .benefits-grid { grid-template-columns: 1fr; }
+  .apps-grid { grid-template-columns: 1fr; }
+  .timeline-horizontal-track { grid-template-columns: 1fr; }
+  .stats-grid-row { grid-template-columns: 1fr; }
+  .footer-top-grid { grid-template-columns: 1fr; }
+  .form-group-row { grid-template-columns: 1fr; }
+  .detail-experience-stage { flex-direction: column; min-height: auto; }
+  .floating-callout-card { position: static; margin: 12px auto; max-width: 100%; }
+  .reviews-aggregate-box { grid-template-columns: 1fr; text-align: center; }
+  .reviews-score-col { border-right: none; border-bottom: 1px solid var(--border-medium); padding: 0 0 20px; }
+  .testimonials-track { grid-template-columns: 1fr; }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
