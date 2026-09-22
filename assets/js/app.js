@@ -1194,7 +1194,7 @@ window.openSpecsModal = function(modelId) {
     </div>
 
     <div class="specs-actions-bar">
-      <a href="https://wa.me/919922272688?text=Hello%20Felix%20Batteries%2C%20I%20am%20interested%20in%20${encodeURIComponent(item.model)}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="display:inline-flex;align-items:center;gap:8px">
+      <a href="https://wa.me/917775072950?text=Hello%20Felix%20Batteries%2C%20I%20am%20interested%20in%20${encodeURIComponent(item.model)}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="display:inline-flex;align-items:center;gap:8px">
         <i class="fa-brands fa-whatsapp" style="color:#25D366;font-size:1.1rem"></i> Order via WhatsApp
       </a>
       <button class="btn btn-primary" onclick="openQuoteModal('${item.model.replace(/'/g, "\\'")}')">
