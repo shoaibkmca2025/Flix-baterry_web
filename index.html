@@ -179,7 +179,9 @@
         <div class="hero-antigravity-stage" id="heroAntigravityStage">
           <div class="battery-aura-glow"></div>
           <div class="battery-protagonist-wrapper" id="heroBatteryWrapper">
-            <img src="assets/images/products/battery-fx700-automotive.png" alt="Felix FX-700 Automotive Battery Protagonist" class="battery-protagonist-img" id="heroBatteryImg">
+            <div class="battery-protagonist-tilt" id="heroBatteryTilt">
+              <img src="assets/images/products/battery-fx700-automotive.png" alt="Felix FX-700 Automotive Battery Protagonist" class="battery-protagonist-img" id="heroBatteryImg">
+            </div>
           </div>
 
           <!-- Detached Floating Technical Labels (Parallax Drift) -->
@@ -281,11 +283,11 @@
     </div>
 
     <!-- Horizontally Scrolling Product Showcase -->
-    <div class="product-horizontal-wrap">
-      <div class="product-horizontal-track">
+    <div class="product-horizontal-wrap" id="showcaseHorizontalWrap">
+      <div class="product-horizontal-track" id="showcaseHorizontalTrack">
 
         <!-- Card 1: FX 800 -->
-        <div class="showcase-product-card">
+        <div class="showcase-product-card" data-model="fx800">
           <div>
             <div class="showcase-series-badge">AUTOMOTIVE HEAVY DUTY</div>
             <h3 class="showcase-model-title">FELIX FX 800</h3>
@@ -300,13 +302,13 @@
               <div><div class="spec-item-label">Technology</div><div class="spec-item-value">Silver Calcium</div></div>
             </div>
           </div>
-          <button class="btn btn-primary" onclick="openQuoteModal('Felix FX 800 (80Ah)')">
+          <button class="btn btn-primary" onclick="openSpecsModal('fx800')">
             <i class="fa-solid fa-circle-info"></i> VIEW DETAILS
           </button>
         </div>
 
         <!-- Card 2: FX 700 -->
-        <div class="showcase-product-card">
+        <div class="showcase-product-card" data-model="fx700">
           <div>
             <div class="showcase-series-badge">PASSENGER CAR & SUV</div>
             <h3 class="showcase-model-title">FELIX FX 700</h3>
@@ -321,13 +323,13 @@
               <div><div class="spec-item-label">Technology</div><div class="spec-item-value">Calcium-Calcium</div></div>
             </div>
           </div>
-          <button class="btn btn-primary" onclick="openQuoteModal('Felix FX 700 (65Ah)')">
+          <button class="btn btn-primary" onclick="openSpecsModal('fx700')">
             <i class="fa-solid fa-circle-info"></i> VIEW DETAILS
           </button>
         </div>
 
         <!-- Card 3: FX 600 -->
-        <div class="showcase-product-card">
+        <div class="showcase-product-card" data-model="fx600">
           <div>
             <div class="showcase-series-badge">PASSENGER VEHICLES</div>
             <h3 class="showcase-model-title">FELIX FX 600</h3>
@@ -342,13 +344,13 @@
               <div><div class="spec-item-label">Technology</div><div class="spec-item-value">Low-Resist PE</div></div>
             </div>
           </div>
-          <button class="btn btn-primary" onclick="openQuoteModal('Felix FX 600 (55Ah)')">
+          <button class="btn btn-primary" onclick="openSpecsModal('fx600')">
             <i class="fa-solid fa-circle-info"></i> VIEW DETAILS
           </button>
         </div>
 
         <!-- Card 4: FX 500 -->
-        <div class="showcase-product-card">
+        <div class="showcase-product-card" data-model="fx500">
           <div>
             <div class="showcase-series-badge">CITY COMPACT CARS</div>
             <h3 class="showcase-model-title">FELIX FX 500</h3>
@@ -363,13 +365,13 @@
               <div><div class="spec-item-label">Technology</div><div class="spec-item-value">Magic Eye Level</div></div>
             </div>
           </div>
-          <button class="btn btn-primary" onclick="openQuoteModal('Felix FX 500 (45Ah)')">
+          <button class="btn btn-primary" onclick="openSpecsModal('fx500')">
             <i class="fa-solid fa-circle-info"></i> VIEW DETAILS
           </button>
         </div>
 
         <!-- Card 5: IT-1800 Tall Tubular -->
-        <div class="showcase-product-card">
+        <div class="showcase-product-card" data-model="it1800">
           <div>
             <div class="showcase-series-badge">HOME & OFFICE INVERTER</div>
             <h3 class="showcase-model-title">FELIX IT-1800</h3>
@@ -384,13 +386,13 @@
               <div><div class="spec-item-label">Plates</div><div class="spec-item-value">Tall Tubular Gauntlet</div></div>
             </div>
           </div>
-          <button class="btn btn-primary" onclick="openQuoteModal('Felix IT-1800 Tall Tubular (180Ah)')">
+          <button class="btn btn-primary" onclick="openSpecsModal('it1800')">
             <i class="fa-solid fa-circle-info"></i> VIEW DETAILS
           </button>
         </div>
 
         <!-- Card 6: Solar 220Ah Deep Cycle -->
-        <div class="showcase-product-card">
+        <div class="showcase-product-card" data-model="solar220">
           <div>
             <div class="showcase-series-badge">SOLAR RENEWABLE STORAGE</div>
             <h3 class="showcase-model-title">FELIX SOLAR 220</h3>
@@ -405,11 +407,27 @@
               <div><div class="spec-item-label">Spine Alloy</div><div class="spec-item-value">Low-Antimony Se</div></div>
             </div>
           </div>
-          <button class="btn btn-primary" onclick="openQuoteModal('Felix Solar 220 (220Ah Deep Cycle)')">
+          <button class="btn btn-primary" onclick="openSpecsModal('solar220')">
             <i class="fa-solid fa-circle-info"></i> VIEW DETAILS
           </button>
         </div>
 
+      </div>
+    </div>
+
+    <!-- Showcase Bottom Controls -->
+    <div class="showcase-bottom-controls container">
+      <div class="showcase-progress-wrap">
+        <div class="showcase-progress-bar" id="showcaseProgressBar"></div>
+      </div>
+      <div class="showcase-nav-btns">
+        <button type="button" class="showcase-arrow-btn" id="showcasePrevBtn" aria-label="Previous Product">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <span class="showcase-counter" id="showcaseCounter">1 / 6</span>
+        <button type="button" class="showcase-arrow-btn" id="showcaseNextBtn" aria-label="Next Product">
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
       </div>
     </div>
   </section>
@@ -1445,12 +1463,29 @@
     </div>
   </div>
 
+  <!-- Technical Specifications Modal -->
+  <div class="modal-backdrop" id="specsModal">
+    <div class="modal-box modal-box-wide">
+      <div class="modal-header">
+        <div>
+          <span class="specs-modal-tag" id="specsModalTag">FLAGSHIP AUTOMOTIVE</span>
+          <h3 class="modal-title" id="specsModalTitle">Felix Battery Specifications</h3>
+        </div>
+        <button class="modal-close-btn" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="specs-modal-body" id="specsModalBody">
+        <!-- Dynamically populated from battery-data.js -->
+      </div>
+    </div>
+  </div>
+
   <!-- Floating Back to Top Button -->
   <button class="back-to-top-btn" id="backToTopBtn" aria-label="Scroll to top">
     <i class="fa-solid fa-chevron-up"></i>
   </button>
 
-  <!-- External Libraries: GSAP 3 & ScrollTrigger -->
+  <!-- External Libraries: Lenis Smooth Scroll, GSAP 3 & ScrollTrigger -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 

@@ -1,15 +1,22 @@
 // ==========================================================================
-// FELIX AUTOMOTIVE BATTERIES — ANTIGRAVITY MOTION CONTROLLER
-// GSAP 3 & ScrollTrigger Parallax, Energy Canvas, Custom Cursor,
-// Battery Finder, Inverter Load Calculator, Reviews Filter
+// FELIX AUTOMOTIVE BATTERIES — HIGH PERFORMANCE MOTION & APP CONTROLLER
+// Powered by Lenis Smooth Momentum Scrolling, GSAP 3 & ScrollTrigger
 // ==========================================================================
 
+let lenis = null;
+
 document.addEventListener('DOMContentLoaded', () => {
+  initLenis();
   initCustomCursor();
   initHeroEnergyCanvas();
-  initAntigravityMotion();
+  initHeroAntigravityMotion();
+  initEnergySectionMotion();
+  initShowcaseScroll();
+  initAutomotiveSectionMotion();
   initProductDetailConnectors();
+  initExplodedCutawayMotion();
   initPerformanceCounters();
+  initApplicationsAndManufacturingMotion();
   initReviewsFilter();
   initBatteryFinder();
   initLoadCalculator();
@@ -21,7 +28,56 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================================================
-// 1. Custom Magnetic Desktop Cursor
+// 1. Lenis Smooth Momentum Scrolling
+// ==========================================================================
+function initLenis() {
+  if (typeof Lenis === 'undefined') return;
+
+  lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    orientation: 'vertical',
+    gestureOrientation: 'vertical',
+    smoothWheel: true,
+    wheelMultiplier: 0.9,
+    touchMultiplier: 1.8,
+  });
+
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+    gsap.ticker.lagSmoothing(0);
+  } else {
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+  }
+
+  // Smooth anchor links with Lenis
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const targetId = this.getAttribute('href');
+      if (targetId && targetId !== '#') {
+        const targetEl = document.querySelector(targetId);
+        if (targetEl) {
+          e.preventDefault();
+          if (lenis) {
+            lenis.scrollTo(targetEl, { offset: -60, duration: 1.4 });
+          } else {
+            targetEl.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      }
+    });
+  });
+}
+
+// ==========================================================================
+// 2. Custom Magnetic Desktop Cursor
 // ==========================================================================
 function initCustomCursor() {
   const cursor = document.getElementById('customCursor');
@@ -47,17 +103,16 @@ function initCustomCursor() {
     cursor.style.top = `${mouseY}px`;
   });
 
-  // Smooth lerp follower
   function renderFollower() {
-    followerX += (mouseX - followerX) * 0.15;
-    followerY += (mouseY - followerY) * 0.15;
+    followerX += (mouseX - followerX) * 0.16;
+    followerY += (mouseY - followerY) * 0.16;
     follower.style.left = `${followerX}px`;
     follower.style.top = `${followerY}px`;
     requestAnimationFrame(renderFollower);
   }
   requestAnimationFrame(renderFollower);
 
-  // Hover states on clickable elements
+  // Hover states on interactive elements
   const hoverTargets = document.querySelectorAll('a, button, .drive-card, .showcase-product-card, .app-card, .benefit-card, .timeline-step-card, .telemetry-card');
   hoverTargets.forEach(el => {
     el.addEventListener('mouseenter', () => {
@@ -74,7 +129,7 @@ function initCustomCursor() {
 }
 
 // ==========================================================================
-// 2. Hero Interactive Energy Canvas (Particles & Field Lines)
+// 3. Hero Energy Canvas (Particles & Dynamic Field Lines)
 // ==========================================================================
 function initHeroEnergyCanvas() {
   const canvas = document.getElementById('heroEnergyCanvas');
@@ -90,8 +145,7 @@ function initHeroEnergyCanvas() {
     height = canvas.height = canvas.parentElement.offsetHeight;
   });
 
-  // Generate energy particles
-  const particleCount = Math.min(Math.floor(width / 32), 45);
+  const particleCount = Math.min(Math.floor(width / 30), 45);
   const particles = [];
   for (let i = 0; i < particleCount; i++) {
     particles.push({
@@ -107,7 +161,6 @@ function initHeroEnergyCanvas() {
   function draw() {
     ctx.clearRect(0, 0, width, height);
 
-    // Draw connection lines between close particles
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
         const dx = particles[i].x - particles[j].x;
@@ -126,7 +179,6 @@ function initHeroEnergyCanvas() {
       }
     }
 
-    // Draw particle nodes
     particles.forEach(p => {
       p.x += p.vx;
       p.y += p.vy;
@@ -151,86 +203,421 @@ function initHeroEnergyCanvas() {
 }
 
 // ==========================================================================
-// 3. Antigravity Scroll Motion (GSAP & ScrollTrigger)
+// 4. Hero Antigravity Motion (GSAP & ScrollTrigger)
 // ==========================================================================
-function initAntigravityMotion() {
+function initHeroAntigravityMotion() {
   const heroStage = document.getElementById('heroAntigravityStage');
   const heroBattery = document.getElementById('heroBatteryWrapper');
+  const tiltEl = document.getElementById('heroBatteryTilt');
   const floatingTags = document.querySelectorAll('.hero-floating-tag');
 
-  // If GSAP & ScrollTrigger loaded, use hardware-accelerated timelines
-  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  gsap.registerPlugin(ScrollTrigger);
 
-    // Hero Battery 3D Upward Levitation & Subtle Rotation
-    if (heroBattery) {
-      gsap.to(heroBattery, {
-        scrollTrigger: {
-          trigger: '#hero',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1.2
-        },
-        y: -90,
-        rotationZ: 6,
-        rotationY: -10,
-        scale: 1.06,
-        ease: 'power1.out'
-      });
-    }
+  // Hero Battery 3D Upward Levitation & Dynamic Parallax Scrub
+  if (heroBattery) {
+    gsap.to(heroBattery, {
+      scrollTrigger: {
+        trigger: '#hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1.2
+      },
+      y: -110,
+      rotationZ: 5,
+      rotationY: -8,
+      scale: 1.05,
+      ease: 'power1.out'
+    });
+  }
 
-    // Independent multi-speed parallax on floating technical labels
-    floatingTags.forEach(tag => {
-      const speed = parseFloat(tag.dataset.speed) || 0.4;
-      gsap.to(tag, {
-        scrollTrigger: {
-          trigger: '#hero',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1.4
-        },
-        y: -140 * speed,
-        x: (Math.random() - 0.5) * 40 * speed,
-        opacity: 0.2,
-        ease: 'power1.out'
-      });
+  // 3D Perspective Tilt on Mousemove (Using GSAP quickTo - Zero Conflict with Scroll)
+  if (heroStage && tiltEl) {
+    const xTo = gsap.quickTo(tiltEl, 'rotationY', { duration: 0.5, ease: 'power2.out' });
+    const yTo = gsap.quickTo(tiltEl, 'rotationX', { duration: 0.5, ease: 'power2.out' });
+
+    heroStage.addEventListener('mousemove', (e) => {
+      const rect = heroStage.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      xTo(x * 22);
+      yTo(-y * 22);
     });
 
-    // Clean Energy Telemetry Cards Parallax
-    gsap.utils.toArray('.telemetry-card').forEach((card, idx) => {
-      gsap.from(card, {
+    heroStage.addEventListener('mouseleave', () => {
+      xTo(0);
+      yTo(0);
+    });
+  }
+
+  // Independent multi-speed parallax on floating technical labels
+  floatingTags.forEach((tag, idx) => {
+    const speed = parseFloat(tag.dataset.speed) || 0.4;
+    gsap.to(tag, {
+      scrollTrigger: {
+        trigger: '#hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1.4
+      },
+      y: -150 * speed,
+      opacity: 0.25,
+      ease: 'power1.out'
+    });
+
+    // Gentle idle floating oscillation
+    gsap.to(tag, {
+      y: '+=7',
+      duration: 2.2 + idx * 0.4,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    });
+  });
+
+  // Hero Content Entrance Animation
+  const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  heroTl
+    .from('.hero-eyebrow-pill', { y: 24, opacity: 0, duration: 0.6, delay: 0.1 })
+    .from('.hero-headline', { y: 35, opacity: 0, duration: 0.8 }, '-=0.4')
+    .from('.hero-subheadline', { y: 24, opacity: 0, duration: 0.7 }, '-=0.5')
+    .from('.hero-cta-row', { y: 20, opacity: 0, duration: 0.6 }, '-=0.4')
+    .from('.hero-metrics-strip > div', { y: 20, opacity: 0, stagger: 0.1, duration: 0.5 }, '-=0.3')
+    .from(heroBattery, { scale: 0.9, opacity: 0, duration: 1, ease: 'power2.out' }, '-=0.8');
+}
+
+// ==========================================================================
+// 5. Energy Section Motion (Vector Energy Flow & Telemetry Cards)
+// ==========================================================================
+function initEnergySectionMotion() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+  // Animated SVG Energy Stream Paths
+  const paths = document.querySelectorAll('.energy-line-path');
+  paths.forEach((path) => {
+    try {
+      const length = path.getTotalLength ? path.getTotalLength() : 380;
+      gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
+      gsap.to(path, {
         scrollTrigger: {
           trigger: '#energy',
-          start: 'top 75%',
-          toggleActions: 'play none none reverse'
+          start: 'top 70%',
+          end: 'top 20%',
+          scrub: 1
         },
-        y: 40 + idx * 20,
-        opacity: 0,
-        duration: 0.8,
-        delay: idx * 0.15,
+        strokeDashoffset: 0,
         ease: 'power2.out'
       });
-    });
+    } catch (e) {
+      // Fallback if SVG length calculation is unsupported
+    }
+  });
 
-    // Automotive Drive Cards Reveal
-    gsap.utils.toArray('.drive-card').forEach((card, idx) => {
-      gsap.from(card, {
+  // Telemetry Cards Parallax Entrance
+  gsap.utils.toArray('.telemetry-card').forEach((card, idx) => {
+    gsap.from(card, {
+      scrollTrigger: {
+        trigger: '#energy',
+        start: 'top 75%',
+        toggleActions: 'play none none reverse'
+      },
+      y: 45 + idx * 25,
+      opacity: 0,
+      scale: 0.94,
+      duration: 0.8,
+      delay: idx * 0.15,
+      ease: 'back.out(1.4)'
+    });
+  });
+
+  // Central Battery Node Floating Pulse
+  const centralNode = document.querySelector('.central-battery-node');
+  if (centralNode) {
+    gsap.to(centralNode, {
+      scrollTrigger: {
+        trigger: '#energy',
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1.5
+      },
+      y: -25,
+      scale: 1.04,
+      ease: 'power1.out'
+    });
+  }
+}
+
+// ==========================================================================
+// 6. Product Showcase Horizontal Scroll Experience
+// ==========================================================================
+function initShowcaseScroll() {
+  const wrap = document.getElementById('showcaseHorizontalWrap');
+  const track = document.getElementById('showcaseHorizontalTrack');
+  const progressBar = document.getElementById('showcaseProgressBar');
+  const counterEl = document.getElementById('showcaseCounter');
+  const prevBtn = document.getElementById('showcasePrevBtn');
+  const nextBtn = document.getElementById('showcaseNextBtn');
+  const cards = document.querySelectorAll('.showcase-product-card');
+  if (!wrap || !track || !cards.length) return;
+
+  let showcaseTween = null;
+
+  function setupDesktopPin() {
+    if (window.innerWidth > 992 && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      const getScrollAmount = () => -(track.scrollWidth - window.innerWidth + 80);
+
+      showcaseTween = gsap.to(track, {
+        x: getScrollAmount,
+        ease: 'none',
         scrollTrigger: {
-          trigger: '#automotive',
-          start: 'top 80%',
-          toggleActions: 'play none none reverse'
-        },
-        y: 35,
-        opacity: 0,
-        duration: 0.6,
-        delay: idx * 0.08,
-        ease: 'power2.out'
+          trigger: '#showcase',
+          start: 'top 60px',
+          end: () => `+=${Math.max(track.scrollWidth - window.innerWidth + 400, 600)}`,
+          pin: true,
+          scrub: 1.1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            if (progressBar) {
+              const pct = 16.66 + self.progress * (100 - 16.66);
+              progressBar.style.width = `${pct}%`;
+            }
+            if (counterEl) {
+              const cardIdx = Math.min(Math.floor(self.progress * cards.length) + 1, cards.length);
+              counterEl.textContent = `${cardIdx} / ${cards.length}`;
+            }
+          }
+        }
       });
+    } else {
+      // Mobile & Tablet: Native horizontal touch scrolling
+      wrap.addEventListener('scroll', () => {
+        const scrollLeft = wrap.scrollLeft;
+        const maxScroll = wrap.scrollWidth - wrap.clientWidth;
+        if (maxScroll > 0 && progressBar) {
+          const pct = (scrollLeft / maxScroll) * 100;
+          progressBar.style.width = `${Math.max(pct, 16.66)}%`;
+        }
+        if (counterEl && maxScroll > 0) {
+          const cardWidth = 360 + 28;
+          const cardIdx = Math.min(Math.floor(scrollLeft / cardWidth) + 1, cards.length);
+          counterEl.textContent = `${cardIdx} / ${cards.length}`;
+        }
+      });
+    }
+  }
+
+  setupDesktopPin();
+
+  window.addEventListener('resize', () => {
+    if (showcaseTween && showcaseTween.scrollTrigger) {
+      showcaseTween.scrollTrigger.kill();
+      showcaseTween.kill();
+      gsap.set(track, { clearProps: 'all' });
+      setupDesktopPin();
+    }
+  });
+
+  // Prev / Next button navigation
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      if (showcaseTween && showcaseTween.scrollTrigger) {
+        const st = showcaseTween.scrollTrigger;
+        const curProgress = st.progress;
+        const step = 1 / (cards.length - 1);
+        const newProgress = Math.max(0, curProgress - step);
+        const targetScroll = st.start + newProgress * (st.end - st.start);
+        if (lenis) lenis.scrollTo(targetScroll, { duration: 0.8 });
+        else window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+      } else {
+        wrap.scrollBy({ left: -380, behavior: 'smooth' });
+      }
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      if (showcaseTween && showcaseTween.scrollTrigger) {
+        const st = showcaseTween.scrollTrigger;
+        const curProgress = st.progress;
+        const step = 1 / (cards.length - 1);
+        const newProgress = Math.min(1, curProgress + step);
+        const targetScroll = st.start + newProgress * (st.end - st.start);
+        if (lenis) lenis.scrollTo(targetScroll, { duration: 0.8 });
+        else window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+      } else {
+        wrap.scrollBy({ left: 380, behavior: 'smooth' });
+      }
+    });
+  }
+
+  // Floating hover physics for battery cards
+  cards.forEach(card => {
+    const img = card.querySelector('.showcase-product-img');
+    if (!img) return;
+
+    card.addEventListener('mouseenter', () => {
+      if (typeof gsap !== 'undefined') {
+        gsap.to(img, { y: -12, scale: 1.05, duration: 0.4, ease: 'power2.out' });
+      }
+    });
+    card.addEventListener('mouseleave', () => {
+      if (typeof gsap !== 'undefined') {
+        gsap.to(img, { y: 0, scale: 1, duration: 0.5, ease: 'power2.out' });
+      }
+    });
+  });
+}
+
+// ==========================================================================
+// 7. Automotive Drive Categories Motion
+// ==========================================================================
+function initAutomotiveSectionMotion() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+  gsap.utils.toArray('.drive-card').forEach((card, idx) => {
+    gsap.from(card, {
+      scrollTrigger: {
+        trigger: '#automotive',
+        start: 'top 78%',
+        toggleActions: 'play none none reverse'
+      },
+      y: 40,
+      opacity: 0,
+      duration: 0.65,
+      delay: idx * 0.08,
+      ease: 'power2.out'
+    });
+  });
+}
+
+// ==========================================================================
+// 8. Product Detail Experience — Animated Connectors & 3D Protagonist
+// ==========================================================================
+function initProductDetailConnectors() {
+  const stage = document.getElementById('detailExperienceStage');
+  const canvas = document.getElementById('detailConnectorCanvas');
+  const centralImg = document.getElementById('detailCentralBattery');
+  const callouts = document.querySelectorAll('.floating-callout-card');
+  if (!stage || !canvas || !centralImg || !callouts.length) return;
+
+  const ctx = canvas.getContext('2d');
+  let animationFrameId = null;
+  let pulseProgress = 0;
+
+  function resizeCanvas() {
+    if (window.innerWidth <= 768) {
+      canvas.style.display = 'none';
+      return;
+    }
+    canvas.style.display = 'block';
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = stage.offsetWidth * dpr;
+    canvas.height = stage.offsetHeight * dpr;
+    canvas.style.width = `${stage.offsetWidth}px`;
+    canvas.style.height = `${stage.offsetHeight}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  function draw() {
+    if (window.innerWidth <= 768) {
+      animationFrameId = requestAnimationFrame(draw);
+      return;
+    }
+
+    ctx.clearRect(0, 0, stage.offsetWidth, stage.offsetHeight);
+    const stageRect = stage.getBoundingClientRect();
+    const batteryRect = centralImg.getBoundingClientRect();
+
+    const batteryCenter = {
+      x: batteryRect.left - stageRect.left + batteryRect.width / 2,
+      y: batteryRect.top - stageRect.top + batteryRect.height / 2
+    };
+
+    pulseProgress = (pulseProgress + 0.012) % 1;
+
+    callouts.forEach(callout => {
+      const cRect = callout.getBoundingClientRect();
+      const isLeft = cRect.left < batteryRect.left;
+      const calloutAnchor = {
+        x: cRect.left - stageRect.left + (isLeft ? cRect.width : 0),
+        y: cRect.top - stageRect.top + cRect.height / 2
+      };
+
+      // Draw subtle bezier connecting curve
+      ctx.beginPath();
+      ctx.moveTo(calloutAnchor.x, calloutAnchor.y);
+      const cpX = (calloutAnchor.x + batteryCenter.x) / 2;
+      ctx.bezierCurveTo(cpX, calloutAnchor.y, cpX, batteryCenter.y, batteryCenter.x, batteryCenter.y);
+      ctx.strokeStyle = 'rgba(0, 168, 45, 0.3)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Glowing anchor node at callout card
+      ctx.beginPath();
+      ctx.arc(calloutAnchor.x, calloutAnchor.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#00B83F';
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = '#00B83F';
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Animated energy packet traveling along curve
+      const t = (pulseProgress + 0.3) % 1;
+      const invT = 1 - t;
+      const px = invT * invT * invT * calloutAnchor.x +
+                 3 * invT * invT * t * cpX +
+                 3 * invT * t * t * cpX +
+                 t * t * t * batteryCenter.x;
+      const py = invT * invT * invT * calloutAnchor.y +
+                 3 * invT * invT * t * calloutAnchor.y +
+                 3 * invT * t * t * batteryCenter.y +
+                 t * t * t * batteryCenter.y;
+
+      ctx.beginPath();
+      ctx.arc(px, py, 3, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = '#00B83F';
+      ctx.fill();
+      ctx.shadowBlur = 0;
     });
 
-    // Exploded Cutaway Layers Separation
-    gsap.utils.toArray('.exploded-layer-card').forEach((layer, idx) => {
-      gsap.from(layer, {
+    animationFrameId = requestAnimationFrame(draw);
+  }
+
+  draw();
+
+  // Subtle Protagonist Battery 3D Rotation on Scroll
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.to(centralImg, {
+      scrollTrigger: {
+        trigger: stage,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1.2
+      },
+      rotationY: 15,
+      scale: 1.03,
+      ease: 'none'
+    });
+  }
+}
+
+// ==========================================================================
+// 9. Exploded Battery Technology Cutaway Motion
+// ==========================================================================
+function initExplodedCutawayMotion() {
+  const cutawayImg = document.getElementById('cutawaySvgImg');
+  const layerCards = document.querySelectorAll('.exploded-layer-card');
+  if (!cutawayImg || !layerCards.length) return;
+
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    // Staggered reveal for layer cards
+    gsap.utils.toArray(layerCards).forEach((card, idx) => {
+      gsap.from(card, {
         scrollTrigger: {
           trigger: '#technology',
           start: 'top 75%',
@@ -244,144 +631,121 @@ function initAntigravityMotion() {
       });
     });
 
-  } else {
-    // Fallback lightweight scroll listener
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      if (heroBattery && scrollY < 800) {
-        heroBattery.style.transform = `translateY(${-scrollY * 0.18}px) rotate(${scrollY * 0.015}deg)`;
-      }
-      floatingTags.forEach(tag => {
-        const speed = parseFloat(tag.dataset.speed) || 0.4;
-        if (scrollY < 800) {
-          tag.style.transform = `translateY(${-scrollY * 0.28 * speed}px)`;
-        }
+    // Active layer highlight on scroll
+    layerCards.forEach((card, idx) => {
+      ScrollTrigger.create({
+        trigger: card,
+        start: 'top 65%',
+        end: 'bottom 40%',
+        onEnter: () => activateLayer(idx),
+        onEnterBack: () => activateLayer(idx),
+        onLeave: () => card.classList.remove('active-layer'),
+        onLeaveBack: () => card.classList.remove('active-layer')
       });
     });
-  }
 
-  // 3D Tilt On Mousemove for Hero Battery
-  if (heroStage && heroBattery) {
-    heroStage.addEventListener('mousemove', (e) => {
-      const rect = heroStage.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      const rotY = (x / rect.width) * 14;
-      const rotX = -(y / rect.height) * 14;
-      heroBattery.style.transform = `perspective(1000px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) scale(1.02)`;
-    });
-
-    heroStage.addEventListener('mouseleave', () => {
-      heroBattery.style.transform = '';
-    });
-  }
-}
-
-// ==========================================================================
-// 4. Product Detail Experience — Animated SVG/Canvas Connectors
-// ==========================================================================
-function initProductDetailConnectors() {
-  const stage = document.getElementById('detailExperienceStage');
-  const canvas = document.getElementById('detailConnectorCanvas');
-  const centralImg = document.getElementById('detailCentralBattery');
-  const callouts = document.querySelectorAll('.floating-callout-card');
-  if (!stage || !canvas || !centralImg || !callouts.length) return;
-
-  const ctx = canvas.getContext('2d');
-  function resizeCanvas() {
-    canvas.width = stage.offsetWidth;
-    canvas.height = stage.offsetHeight;
-    drawConnectors();
-  }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-
-  function drawConnectors() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const stageRect = stage.getBoundingClientRect();
-    const batteryRect = centralImg.getBoundingClientRect();
-
-    const batteryCenter = {
-      x: batteryRect.left - stageRect.left + batteryRect.width / 2,
-      y: batteryRect.top - stageRect.top + batteryRect.height / 2
-    };
-
-    callouts.forEach(callout => {
-      const cRect = callout.getBoundingClientRect();
-      const calloutAnchor = {
-        x: cRect.left - stageRect.left + (cRect.left < batteryRect.left ? cRect.width : 0),
-        y: cRect.top - stageRect.top + cRect.height / 2
-      };
-
-      // Draw subtle bezier connector
-      ctx.beginPath();
-      ctx.moveTo(calloutAnchor.x, calloutAnchor.y);
-      const cpX = (calloutAnchor.x + batteryCenter.x) / 2;
-      ctx.bezierCurveTo(cpX, calloutAnchor.y, cpX, batteryCenter.y, batteryCenter.x, batteryCenter.y);
-      ctx.strokeStyle = 'rgba(0, 168, 45, 0.35)';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      // Anchor node
-      ctx.beginPath();
-      ctx.arc(calloutAnchor.x, calloutAnchor.y, 3.5, 0, Math.PI * 2);
-      ctx.fillStyle = '#00B83F';
-      ctx.fill();
-    });
-  }
-
-  // Draw once after layout settle
-  setTimeout(drawConnectors, 400);
-
-  // Subtle rotation on scroll
-  window.addEventListener('scroll', () => {
-    const rect = stage.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
-      const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
-      const rot = (progress - 0.5) * 12;
-      centralImg.style.transform = `perspective(1000px) rotateY(${rot.toFixed(2)}deg)`;
+    function activateLayer(idx) {
+      layerCards.forEach((c, i) => {
+        if (i === idx) c.classList.add('active-layer');
+        else c.classList.remove('active-layer');
+      });
+      if (cutawayImg) {
+        cutawayImg.style.transform = `scale(${1 + idx * 0.012}) translateY(${-idx * 2}px)`;
+      }
     }
-  });
+  }
 }
 
 // ==========================================================================
-// 5. Performance Statistics Animated Numbers
+// 10. Performance Statistics Animated Numbers
 // ==========================================================================
 function initPerformanceCounters() {
   const section = document.getElementById('statistics');
   if (!section) return;
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const counters = entry.target.querySelectorAll('.counter');
-        counters.forEach(counter => {
-          const target = parseInt(counter.dataset.target);
-          const duration = 2000;
-          const start = performance.now();
+  const counters = section.querySelectorAll('.counter');
+  if (!counters.length) return;
 
-          function update(now) {
-            const progress = Math.min((now - start) / duration, 1);
-            const easeOut = 1 - Math.pow(1 - progress, 3);
-            counter.textContent = Math.round(easeOut * target);
-            if (progress < 1) {
-              requestAnimationFrame(update);
-            } else {
-              counter.textContent = target;
-            }
-          }
-          requestAnimationFrame(update);
-        });
-        observer.unobserve(entry.target);
-      }
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    counters.forEach(counter => {
+      const target = parseInt(counter.dataset.target, 10);
+      const obj = { val: 0 };
+      gsap.to(obj, {
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        },
+        val: target,
+        duration: 2.2,
+        ease: 'power2.out',
+        onUpdate: () => {
+          counter.textContent = Math.round(obj.val);
+        }
+      });
     });
-  }, { threshold: 0.3 });
+  } else {
+    // Fallback IntersectionObserver
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          counters.forEach(counter => {
+            const target = parseInt(counter.dataset.target, 10);
+            const duration = 2000;
+            const start = performance.now();
 
-  observer.observe(section);
+            function update(now) {
+              const progress = Math.min((now - start) / duration, 1);
+              const easeOut = 1 - Math.pow(1 - progress, 3);
+              counter.textContent = Math.round(easeOut * target);
+              if (progress < 1) requestAnimationFrame(update);
+              else counter.textContent = target;
+            }
+            requestAnimationFrame(update);
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    observer.observe(section);
+  }
 }
 
 // ==========================================================================
-// 6. Verified Customer Reviews Filter
+// 11. Applications & Manufacturing Scroll Stagger
+// ==========================================================================
+function initApplicationsAndManufacturingMotion() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger !== 'undefined') return;
+
+  gsap.from('.app-card', {
+    scrollTrigger: {
+      trigger: '#applications',
+      start: 'top 75%',
+      toggleActions: 'play none none reverse'
+    },
+    y: 35,
+    opacity: 0,
+    stagger: 0.1,
+    duration: 0.65,
+    ease: 'power2.out'
+  });
+
+  gsap.from('.timeline-step-card', {
+    scrollTrigger: {
+      trigger: '#manufacturing',
+      start: 'top 75%',
+      toggleActions: 'play none none reverse'
+    },
+    y: 30,
+    opacity: 0,
+    stagger: 0.1,
+    duration: 0.6,
+    ease: 'power2.out'
+  });
+}
+
+// ==========================================================================
+// 12. Verified Customer Reviews Filter
 // ==========================================================================
 function initReviewsFilter() {
   const filterBtns = document.querySelectorAll('.rev-filter-pill');
@@ -425,7 +789,7 @@ function initReviewsFilter() {
 }
 
 // ==========================================================================
-// 7. Automotive Battery Finder
+// 13. Automotive Battery Finder
 // ==========================================================================
 function initBatteryFinder() {
   const typeSelect = document.getElementById('finderVehicleType');
@@ -513,22 +877,22 @@ function initBatteryFinder() {
 
     if (cat === 'Car') {
       resModel.textContent = 'Felix FX 700 (65Ah)';
-      resSpecs.textContent = '12V 65Ah &bull; 610 CCA &bull; 48 Months Warranty &bull; Magic Eye Indicator';
+      resSpecs.textContent = '12V 65Ah • 610 CCA • 48 Months Warranty • Magic Eye Indicator';
       resImg.src = 'assets/images/products/battery-fx700-automotive.png';
-      resCta.onclick = () => openQuoteModal(`Felix FX 700 for ${model}`);
+      resCta.onclick = () => openSpecsModal('fx700');
     } else if (cat === 'Tractor') {
       resModel.textContent = 'Felix FX 1000 Tractor (90Ah)';
-      resSpecs.textContent = '12V 90Ah &bull; 850 CCA &bull; 36 Months Warranty &bull; Vibration-Proof Cast';
+      resSpecs.textContent = '12V 90Ah • 850 CCA • 36 Months Warranty • Vibration-Proof Cast';
       resImg.src = 'assets/images/products/battery-fx1000-tractor.png';
       resCta.onclick = () => openQuoteModal(`Felix FX 1000 Tractor for ${model}`);
     } else if (cat === 'Truck') {
       resModel.textContent = 'Felix FX 1500 Heavy Commercial (150Ah)';
-      resSpecs.textContent = '12V 150Ah &bull; 1,050 CCA &bull; Class V3 Anti-Vibration Casing';
+      resSpecs.textContent = '12V 150Ah • 1,050 CCA • Class V3 Anti-Vibration Casing';
       resImg.src = 'assets/images/products/battery-fx1000-tractor.png';
       resCta.onclick = () => openQuoteModal(`Felix FX 1500 Commercial for ${model}`);
     } else {
       resModel.textContent = 'Felix FX 5LB Motorcycle (5Ah)';
-      resSpecs.textContent = '12V 5Ah &bull; Sealed Spill-Proof VRLA &bull; 24 Months Warranty';
+      resSpecs.textContent = '12V 5Ah • Sealed Spill-Proof VRLA • 24 Months Warranty';
       resImg.src = 'assets/images/products/battery-ns40-small.png';
       resCta.onclick = () => openQuoteModal(`Felix Motorcycle Battery for ${model}`);
     }
@@ -536,7 +900,7 @@ function initBatteryFinder() {
 }
 
 // ==========================================================================
-// 8. Inverter Load Sizing Calculator
+// 14. Inverter Load Sizing Calculator
 // ==========================================================================
 function initLoadCalculator() {
   const container = document.getElementById('calcAppliancesList');
@@ -626,13 +990,13 @@ function initLoadCalculator() {
 
     if (ahRequired <= 120) {
       recNameEl.textContent = 'Felix IT-1200 Tall Tubular (120Ah)';
-      recDescEl.textContent = '12V 120Ah C20 Tubular Battery &bull; 48 Months Warranty';
+      recDescEl.textContent = '12V 120Ah C20 Tubular Battery • 48 Months Warranty';
     } else if (ahRequired <= 160) {
       recNameEl.textContent = 'Felix IT-1500 Tall Tubular (150Ah)';
-      recDescEl.textContent = '12V 150Ah C20 Tubular Battery &bull; 60 Months Warranty';
+      recDescEl.textContent = '12V 150Ah C20 Tubular Battery • 60 Months Warranty';
     } else if (ahRequired <= 200) {
       recNameEl.textContent = 'Felix IT-1800 Tall Tubular (180Ah)';
-      recDescEl.textContent = '12V 180Ah C20 Heavy Duty Tubular &bull; 60 Months Warranty';
+      recDescEl.textContent = '12V 180Ah C20 Heavy Duty Tubular • 60 Months Warranty';
     } else {
       recNameEl.textContent = 'Felix IT-2500 Tall Tubular (240Ah / Dual Array)';
       recDescEl.textContent = '12V 240Ah High-Capacity Storage for Extended Outages';
@@ -643,7 +1007,7 @@ function initLoadCalculator() {
 }
 
 // ==========================================================================
-// 9. Modals & Quote Popups
+// 15. Modals & Technical Specifications Viewer
 // ==========================================================================
 function initModals() {
   document.querySelectorAll('.modal-close-btn, .modal-backdrop').forEach(el => {
@@ -674,8 +1038,176 @@ window.openQuoteModal = function(modelName) {
   if (modal) modal.classList.add('open');
 };
 
+window.openSpecsModal = function(modelId) {
+  const modal = document.getElementById('specsModal');
+  const title = document.getElementById('specsModalTitle');
+  const tag = document.getElementById('specsModalTag');
+  const body = document.getElementById('specsModalBody');
+  if (!modal || !body) return;
+
+  // Search in FELIX_PRODUCTS from battery-data.js
+  let product = null;
+  if (typeof FELIX_PRODUCTS !== 'undefined' && Array.isArray(FELIX_PRODUCTS)) {
+    product = FELIX_PRODUCTS.find(p => p.id === modelId || p.id.startsWith(modelId) || p.model.toLowerCase().includes(modelId.toLowerCase()));
+  }
+
+  // Pre-configured fallbacks for showcase models
+  const FALLBACK_SPECS = {
+    fx800: {
+      model: 'Felix FX 800 (80Ah)',
+      series: 'Heavy Duty Automotive',
+      category: 'Automotive & Commercial',
+      volt: 12,
+      ah20: 80,
+      cca: 720,
+      warranty: '48 Months (24+24)',
+      dimensions: '305 x 173 x 225 mm',
+      layout: 'Left Polarity (Layout 0)',
+      terminal: 'Standard Automotive Post',
+      image: 'assets/images/products/battery-fx700-automotive.png',
+      suitableFor: 'Toyota Fortuner, Mahindra Scorpio-N, Tata Safari, Heavy Diesel 4x4',
+      features: ['Silver-Calcium Alloy Spines', 'High Density Active Material', 'Magic Eye Optical Hydrometer']
+    },
+    fx700: {
+      model: 'Felix FX 700 (65Ah)',
+      series: 'Passenger Car & SUV',
+      category: 'Automotive',
+      volt: 12,
+      ah20: 65,
+      cca: 610,
+      warranty: '48 Months (24+24)',
+      dimensions: '260 x 173 x 225 mm',
+      layout: 'Right Polarity (Layout 1)',
+      terminal: 'Standard Automotive Post',
+      image: 'assets/images/products/battery-fx700-automotive.png',
+      suitableFor: 'Hyundai Creta, Kia Seltos, Honda City, VW Virtus, Sedans & Crossovers',
+      features: ['Calcium-Calcium Grids', 'Low Water Loss PE Envelope', 'Flame Arrestor Lid']
+    },
+    fx600: {
+      model: 'Felix FX 600 (55Ah)',
+      series: 'Passenger Vehicles',
+      category: 'Automotive',
+      volt: 12,
+      ah20: 55,
+      cca: 520,
+      warranty: '36 Months (24+12)',
+      dimensions: '242 x 175 x 190 mm',
+      layout: 'Left / Right Available',
+      terminal: 'Standard Post',
+      image: 'assets/images/products/battery-fx400-compact.png',
+      suitableFor: 'Maruti Brezza, Hyundai i20, Tata Nexon, Compact Hatchbacks',
+      features: ['High Vibration Endurance', 'Instant Sub-Zero Ignition', 'Factory Charged']
+    },
+    fx500: {
+      model: 'Felix FX 500 (45Ah)',
+      series: 'City Compact Cars',
+      category: 'Automotive',
+      volt: 12,
+      ah20: 45,
+      cca: 410,
+      warranty: '36 Months (24+12)',
+      dimensions: '238 x 129 x 227 mm',
+      layout: 'Left / Right Available',
+      terminal: 'Type B Post',
+      image: 'assets/images/products/battery-fx400-compact.png',
+      suitableFor: 'Maruti Swift, WagonR, Alto K10, Hyundai Grand i10, City Taxis',
+      features: ['Compact High-Output Form Factor', 'Magic Eye Level Indicator', 'Spill-Proof Polypropylene Case']
+    },
+    it1800: {
+      model: 'Felix IT-1800 Tall Tubular (180Ah)',
+      series: 'Home & Office Inverter',
+      category: 'Inverter Tubular',
+      volt: 12,
+      ah20: 180,
+      cca: 950,
+      warranty: '60 Months (36+24)',
+      dimensions: '505 x 190 x 410 mm',
+      layout: 'Top Terminal with Ceramic Indicators',
+      terminal: 'Solid Brass Stud',
+      image: 'assets/images/products/battery-tubular-inverter.png',
+      suitableFor: 'High-Load Inverters, Diagnostic Clinics, Continuous Commercial Backup',
+      features: ['High-Pressure Die-Cast Spine (HADI)', 'Micro-Porous Ceramic Vent Plugs', '5,000+ Deep Cycles']
+    },
+    solar220: {
+      model: 'Felix Solar 220 Deep Cycle (220Ah)',
+      series: 'Solar Renewable Storage',
+      category: 'Solar Photovoltaic',
+      volt: 12,
+      ah20: 220,
+      cca: 1100,
+      warranty: '60 Months Full Warranty',
+      dimensions: '505 x 190 x 410 mm',
+      layout: 'Dual Terminal Marine/Post',
+      terminal: 'Heavy Duty Stud',
+      image: 'assets/images/products/battery-tubular-tall-handle.png',
+      suitableFor: 'Off-Grid Solar Rooftops, Farm Water Pumps, Telecom Tower UPS Arrays',
+      features: ['C10 Rating for Solar Applications', 'Extremely Low Self-Discharge (<2%/mo)', 'Overcharge & Deep Discharge Tolerant']
+    }
+  };
+
+  const item = product || FALLBACK_SPECS[modelId] || FALLBACK_SPECS.fx700;
+
+  if (tag) tag.textContent = `${item.series.toUpperCase()} • 12V ${item.ah20 || item.ah5 || 65}Ah`;
+  if (title) title.textContent = item.model;
+
+  body.innerHTML = `
+    <div class="specs-modal-grid">
+      <div class="specs-modal-img-wrap">
+        <img src="${item.image}" alt="${item.model}" class="specs-modal-img">
+        <div class="specs-modal-img-caption"><i class="fa-solid fa-shield-halved" style="color:var(--felix-green);margin-right:4px"></i> ${item.warranty}</div>
+      </div>
+      <div>
+        <div class="specs-table-wrap">
+          <div class="specs-table-row">
+            <span class="specs-table-label">Nominal Voltage</span>
+            <span class="specs-table-val">${item.volt} Volts</span>
+          </div>
+          <div class="specs-table-row">
+            <span class="specs-table-label">Capacity (C20 / C10)</span>
+            <span class="specs-table-val">${item.ah20 || item.ah5} Ah</span>
+          </div>
+          <div class="specs-table-row">
+            <span class="specs-table-label">Cold Cranking Amps (CCA)</span>
+            <span class="specs-table-val">${item.cca || 'N/A'} A</span>
+          </div>
+          <div class="specs-table-row">
+            <span class="specs-table-label">Dimensions (L x W x H)</span>
+            <span class="specs-table-val">${item.dimensions || 'Standard DIN/JIS'}</span>
+          </div>
+          <div class="specs-table-row">
+            <span class="specs-table-label">Terminal / Polarity</span>
+            <span class="specs-table-val">${item.layout || 'Layout 0/1'}</span>
+          </div>
+          <div class="specs-table-row">
+            <span class="specs-table-label">Warranty</span>
+            <span class="specs-table-val" style="color:var(--felix-green-dark)">${item.warranty}</span>
+          </div>
+        </div>
+
+        <div style="font-size:0.82rem;font-weight:700;color:var(--text-secondary);margin-top:14px">RECOMMENDED APPLICATION:</div>
+        <div style="font-size:0.84rem;color:var(--text-primary);margin-top:2px">${item.suitableFor || 'Automotive & Commercial Vehicles'}</div>
+
+        <div class="specs-features-list">
+          ${(item.features || ['Maintenance Free', 'High Cranking', 'Calcium Alloy']).map(f => `<span class="specs-feature-pill"><i class="fa-solid fa-check" style="margin-right:4px"></i>${f}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="specs-actions-bar">
+      <a href="https://wa.me/919922272688?text=Hello%20Felix%20Batteries%2C%20I%20am%20interested%20in%20${encodeURIComponent(item.model)}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="display:inline-flex;align-items:center;gap:8px">
+        <i class="fa-brands fa-whatsapp" style="color:#25D366;font-size:1.1rem"></i> Order via WhatsApp
+      </a>
+      <button class="btn btn-primary" onclick="openQuoteModal('${item.model.replace(/'/g, "\\'")}')">
+        <i class="fa-solid fa-bolt"></i> Request Official Quote
+      </button>
+    </div>
+  `;
+
+  modal.classList.add('open');
+};
+
 // ==========================================================================
-// 10. Contact Form Submission
+// 16. Contact Form & Toast
 // ==========================================================================
 function initContactForm() {
   const form = document.getElementById('contactEnquiryForm');
@@ -690,7 +1222,6 @@ function initContactForm() {
   });
 }
 
-// Toast notification
 function showToast(msg) {
   let toast = document.getElementById('appToast');
   if (!toast) {
@@ -705,7 +1236,7 @@ function showToast(msg) {
 }
 
 // ==========================================================================
-// 11. Mobile Navigation & Scroll Progress
+// 17. Mobile Navigation & Progress Bar
 // ==========================================================================
 function initMobileNav() {
   const toggle = document.getElementById('mobileMenuToggle');
@@ -737,15 +1268,12 @@ function initMobileNav() {
     });
   });
 
-  // Sticky Navbar Scroll effect
+  // Sticky Navbar Scroll Transition
   const navbar = document.getElementById('navbarMain');
   window.addEventListener('scroll', () => {
     if (navbar) {
-      if (window.scrollY > 40) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
-      }
+      if (window.scrollY > 40) navbar.classList.add('scrolled');
+      else navbar.classList.remove('scrolled');
     }
   });
 }
@@ -757,8 +1285,10 @@ function initScrollProgressBar() {
   window.addEventListener('scroll', () => {
     const scrollTop = window.scrollY;
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = (scrollTop / docHeight) * 100;
-    bar.style.width = `${progress}%`;
+    if (docHeight > 0) {
+      const progress = (scrollTop / docHeight) * 100;
+      bar.style.width = `${progress}%`;
+    }
   });
 }
 
@@ -767,14 +1297,15 @@ function initBackToTop() {
   if (!btn) return;
 
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 400) {
-      btn.classList.add('show');
-    } else {
-      btn.classList.remove('show');
-    }
+    if (window.scrollY > 400) btn.classList.add('show');
+    else btn.classList.remove('show');
   });
 
   btn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (lenis) {
+      lenis.scrollTo(0, { duration: 1.2 });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   });
 }
