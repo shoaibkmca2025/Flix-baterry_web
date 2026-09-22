@@ -110,6 +110,39 @@ html.lenis, html.lenis body {
   pointer-events: none;
 }
 
+/* ==========================================================================
+   Scroll-Animated Elements: will-change hints for GPU compositing
+   ========================================================================== */
+.benefit-card,
+.app-card,
+.timeline-step-card,
+.stat-metric-box,
+.testimonial-card,
+.floating-callout-card,
+.drive-card,
+.exploded-layer-card,
+.showcase-product-card {
+  will-change: opacity, transform;
+}
+
+/* ==========================================================================
+   Battery Protagonist: Idle Floating Keyframe (pure CSS fallback if GSAP fails)
+   ========================================================================== */
+@keyframes batteryFloat {
+  0%, 100% { transform: translateY(0px) rotateZ(0deg); }
+  33% { transform: translateY(-14px) rotateZ(0.8deg); }
+  66% { transform: translateY(-6px) rotateZ(-0.5deg); }
+}
+
+@keyframes auraGlowPulse {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.08); }
+}
+
+.battery-aura-glow {
+  animation: auraGlowPulse 4s ease-in-out infinite;
+}
+
 body {
   font-family: var(--font-body);
   background-color: var(--bg-main);
@@ -914,13 +947,13 @@ h1, h2, h3, h4, h5, h6 {
 .product-showcase-section {
   background: var(--bg-surface);
   position: relative;
-  overflow: hidden;
+  /* overflow:hidden removed — it clips GSAP horizontal scroll track */
 }
 
 .product-horizontal-wrap {
   position: relative;
   width: 100%;
-  overflow-x: auto;
+  overflow: hidden; /* Contains the horizontal track on mobile & tablet */
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   padding: 20px 0 40px;
@@ -2636,6 +2669,9 @@ h1, h2, h3, h4, h5, h6 {
   .calc-container-grid { grid-template-columns: 1fr; }
   .specs-modal-grid { grid-template-columns: 1fr; gap: 20px; }
   .specs-actions-bar { flex-direction: column; align-items: stretch; }
+  /* Restore native horizontal scroll for product showcase on tablet/mobile */
+  .product-horizontal-wrap { overflow-x: auto; overflow-y: hidden; }
+  .product-horizontal-track { padding-left: 24px; padding-right: 24px; }
 }
 
 @media (max-width: 768px) {

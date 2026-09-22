@@ -251,8 +251,11 @@ function initHeroAntigravityMotion() {
   }
 
   // Independent multi-speed parallax on floating technical labels
+  // Uses a wrapper approach: GSAP scroll acts on the tag's BASE position, idle float adds a separate y animation
   floatingTags.forEach((tag, idx) => {
     const speed = parseFloat(tag.dataset.speed) || 0.4;
+
+    // Scroll parallax (acts on the wrapper, independent of idle float)
     gsap.to(tag, {
       scrollTrigger: {
         trigger: '#hero',
@@ -260,30 +263,35 @@ function initHeroAntigravityMotion() {
         end: 'bottom top',
         scrub: 1.4
       },
-      y: -150 * speed,
-      opacity: 0.25,
+      y: -130 * speed,
+      opacity: 0,
       ease: 'power1.out'
     });
 
-    // Gentle idle floating oscillation
-    gsap.to(tag, {
-      y: '+=7',
-      duration: 2.2 + idx * 0.4,
-      repeat: -1,
-      yoyo: true,
-      ease: 'sine.inOut'
-    });
+    // Gentle idle floating oscillation — uses yoyoEase so it never resets awkwardly
+    gsap.fromTo(tag,
+      { y: 0 },
+      {
+        y: 8,
+        duration: 2.2 + idx * 0.35,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+        delay: idx * 0.3
+      }
+    );
   });
 
-  // Hero Content Entrance Animation
-  const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  // Hero Content Entrance Animation — runs on page load, separate from scroll triggers
+  const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' }, delay: 0.15 });
   heroTl
-    .from('.hero-eyebrow-pill', { y: 24, opacity: 0, duration: 0.6, delay: 0.1 })
-    .from('.hero-headline', { y: 35, opacity: 0, duration: 0.8 }, '-=0.4')
-    .from('.hero-subheadline', { y: 24, opacity: 0, duration: 0.7 }, '-=0.5')
-    .from('.hero-cta-row', { y: 20, opacity: 0, duration: 0.6 }, '-=0.4')
-    .from('.hero-metrics-strip > div', { y: 20, opacity: 0, stagger: 0.1, duration: 0.5 }, '-=0.3')
-    .from(heroBattery, { scale: 0.9, opacity: 0, duration: 1, ease: 'power2.out' }, '-=0.8');
+    .from('.hero-eyebrow-pill', { y: 28, opacity: 0, duration: 0.65 })
+    .from('.hero-headline', { y: 42, opacity: 0, duration: 0.85 }, '-=0.45')
+    .from('.hero-subheadline', { y: 28, opacity: 0, duration: 0.7 }, '-=0.5')
+    .from('.hero-cta-row', { y: 22, opacity: 0, duration: 0.6 }, '-=0.4')
+    .from('.hero-metrics-strip > div', { y: 18, opacity: 0, stagger: 0.12, duration: 0.55 }, '-=0.35')
+    .from('.hero-floating-tag', { scale: 0.8, opacity: 0, stagger: 0.08, duration: 0.6, ease: 'back.out(1.5)' }, '-=0.55')
+    .from(heroBattery, { scale: 0.85, opacity: 0, y: 30, duration: 1.1, ease: 'power2.out' }, '-=0.9');
 }
 
 // ==========================================================================
@@ -712,35 +720,126 @@ function initPerformanceCounters() {
 }
 
 // ==========================================================================
-// 11. Applications & Manufacturing Scroll Stagger
+// 11. Applications, Why Felix & Manufacturing Scroll Stagger
 // ==========================================================================
 function initApplicationsAndManufacturingMotion() {
-  if (typeof gsap === 'undefined' || typeof ScrollTrigger !== 'undefined') return;
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
+  // Applications cards staggered entrance
   gsap.from('.app-card', {
     scrollTrigger: {
       trigger: '#applications',
-      start: 'top 75%',
+      start: 'top 78%',
+      toggleActions: 'play none none reverse'
+    },
+    y: 40,
+    opacity: 0,
+    scale: 0.95,
+    stagger: 0.1,
+    duration: 0.7,
+    ease: 'power2.out'
+  });
+
+  // Manufacturing timeline cards
+  gsap.from('.timeline-step-card', {
+    scrollTrigger: {
+      trigger: '#manufacturing',
+      start: 'top 78%',
       toggleActions: 'play none none reverse'
     },
     y: 35,
     opacity: 0,
-    stagger: 0.1,
+    scale: 0.96,
+    stagger: 0.12,
     duration: 0.65,
     ease: 'power2.out'
   });
 
-  gsap.from('.timeline-step-card', {
+  // Why Felix benefit cards
+  gsap.from('.benefit-card', {
     scrollTrigger: {
-      trigger: '#manufacturing',
-      start: 'top 75%',
+      trigger: '#why-felix',
+      start: 'top 78%',
+      toggleActions: 'play none none reverse'
+    },
+    y: 35,
+    opacity: 0,
+    scale: 0.95,
+    stagger: 0.09,
+    duration: 0.6,
+    ease: 'back.out(1.4)'
+  });
+
+  // Section headers — all sections get a subtle reveal
+  gsap.utils.toArray('.section-header').forEach(header => {
+    gsap.from(header.children, {
+      scrollTrigger: {
+        trigger: header,
+        start: 'top 85%',
+        toggleActions: 'play none none reverse'
+      },
+      y: 30,
+      opacity: 0,
+      stagger: 0.12,
+      duration: 0.7,
+      ease: 'power2.out'
+    });
+  });
+
+  // Stats counters boxes
+  gsap.from('.stat-metric-box', {
+    scrollTrigger: {
+      trigger: '#statistics',
+      start: 'top 80%',
       toggleActions: 'play none none reverse'
     },
     y: 30,
     opacity: 0,
+    scale: 0.92,
+    stagger: 0.12,
+    duration: 0.65,
+    ease: 'back.out(1.6)'
+  });
+
+  // Reviews aggregate box
+  gsap.from('.reviews-aggregate-box', {
+    scrollTrigger: {
+      trigger: '#testimonials',
+      start: 'top 80%',
+      toggleActions: 'play none none reverse'
+    },
+    y: 25,
+    opacity: 0,
+    duration: 0.7,
+    ease: 'power2.out'
+  });
+
+  // Testimonial cards stagger
+  gsap.from('.testimonial-card', {
+    scrollTrigger: {
+      trigger: '#testimonials',
+      start: 'top 75%',
+      toggleActions: 'play none none reverse'
+    },
+    y: 40,
+    opacity: 0,
     stagger: 0.1,
     duration: 0.6,
     ease: 'power2.out'
+  });
+
+  // Floating callout cards in experience section
+  gsap.from('.floating-callout-card', {
+    scrollTrigger: {
+      trigger: '#experience',
+      start: 'top 75%',
+      toggleActions: 'play none none reverse'
+    },
+    scale: 0.85,
+    opacity: 0,
+    stagger: 0.1,
+    duration: 0.65,
+    ease: 'back.out(1.4)'
   });
 }
 
