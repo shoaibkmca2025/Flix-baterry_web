@@ -5,7 +5,7 @@
    Typography: Space Grotesk (Headings) + Inter (Body) + JetBrains Mono (Tech)
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+/* Fonts are loaded via <link> in index.html (an @import here would block a second time). */
 
 :root {
   /* Felix Brand Color Tokens */
@@ -91,6 +91,9 @@ html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
 /* Lenis Smooth Scroll Engine Styles */
@@ -150,6 +153,33 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   position: relative;
+  /* Kill the grey flash Android/iOS paint over every tapped element */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Long unbreakable strings (model codes, phone numbers, emails) must not
+   push the layout sideways on a 320px screen */
+p, li, h1, h2, h3, h4, h5, h6, span, a, td, th, label {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Media never exceeds its column */
+img, svg, video, canvas, iframe {
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+/* Body freeze used by the mobile drawer and modals */
+body.nav-scroll-locked {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 /* Reading Progress Bar */
@@ -170,24 +200,24 @@ body {
   width: 100%;
   max-width: 1320px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 clamp(16px, 4vw, 24px);
 }
 
 .container-wide {
   width: 100%;
   max-width: 1540px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 clamp(16px, 4vw, 24px);
 }
 
-/* Section Spacing */
+/* Section Spacing — fluid so phones do not inherit desktop whitespace */
 .section-py {
-  padding: 110px 0;
+  padding: clamp(56px, 9vw, 110px) 0;
   position: relative;
 }
 
 .section-py-lg {
-  padding: 140px 0;
+  padding: clamp(64px, 11vw, 140px) 0;
   position: relative;
 }
 
@@ -224,11 +254,11 @@ h1, h2, h3, h4, h5, h6 {
 .section-header {
   text-align: center;
   max-width: 760px;
-  margin: 0 auto 60px;
+  margin: 0 auto clamp(32px, 5vw, 60px);
 }
 
 .section-title {
-  font-size: clamp(2.2rem, 3.8vw, 3.5rem);
+  font-size: clamp(1.75rem, 5.4vw, 3.5rem);
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 1.12;
@@ -243,7 +273,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .section-subtitle {
-  font-size: 1.05rem;
+  font-size: clamp(0.95rem, 2.6vw, 1.05rem);
   color: var(--text-secondary);
   line-height: 1.65;
   font-weight: 400;
@@ -548,12 +578,13 @@ h1, h2, h3, h4, h5, h6 {
 .hero-cinematic {
   position: relative;
   min-height: 92vh;
+  min-height: calc(var(--vh, 1vh) * 92);
   display: flex;
   align-items: center;
   overflow: hidden;
   background: radial-gradient(circle at 75% 45%, rgba(0, 168, 45, 0.08) 0%, transparent 60%),
               linear-gradient(180deg, #FFFFFF 0%, var(--bg-surface) 100%);
-  padding: 80px 0 100px;
+  padding: clamp(40px, 8vw, 80px) 0 clamp(56px, 9vw, 100px);
 }
 
 /* Interactive Canvas for Energy Particles */
@@ -614,7 +645,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hero-headline {
-  font-size: clamp(2.8rem, 5.2vw, 4.6rem);
+  font-size: clamp(2.1rem, 7.4vw, 4.6rem);
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.05;
@@ -681,14 +712,14 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 520px;
+  min-height: min(520px, 62vh);
   perspective: 1200px;
 }
 
 .battery-aura-glow {
   position: absolute;
-  width: 440px;
-  height: 440px;
+  width: min(440px, 82vw);
+  height: min(440px, 82vw);
   border-radius: 50%;
   background: radial-gradient(circle, rgba(0, 184, 63, 0.22) 0%, rgba(0, 168, 45, 0.05) 50%, transparent 70%);
   filter: blur(40px);
@@ -717,7 +748,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .battery-protagonist-img {
   max-width: 100%;
-  width: 480px;
+  width: min(480px, 78vw);
   height: auto;
   object-fit: contain;
   filter: drop-shadow(0 30px 45px rgba(0, 0, 0, 0.22)) drop-shadow(0 10px 15px rgba(0, 168, 45, 0.2));
@@ -853,7 +884,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .central-node-img {
-  width: 320px;
+  width: min(320px, 68vw);
   height: auto;
   filter: drop-shadow(0 0 35px rgba(0, 184, 63, 0.45));
 }
@@ -874,6 +905,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Floating Telemetry Panels */
 .telemetry-card {
   position: absolute;
+  max-width: min(280px, 86vw);
   z-index: 4;
   background: rgba(23, 24, 24, 0.88);
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -968,6 +1000,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .showcase-product-card {
   width: 360px;
+  max-width: 82vw;
+  flex: 0 0 auto;
   background: #FFFFFF;
   border: 1px solid var(--border-light);
   border-radius: var(--radius-2xl);
@@ -1268,7 +1302,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .detail-experience-stage {
   position: relative;
-  min-height: 640px;
+  min-height: min(640px, 82vh);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1278,7 +1312,7 @@ h1, h2, h3, h4, h5, h6 {
 .detail-central-battery {
   position: relative;
   z-index: 3;
-  width: 440px;
+  width: min(440px, 76vw);
   filter: drop-shadow(0 25px 40px rgba(0, 0, 0, 0.18)) drop-shadow(0 0 30px rgba(0, 168, 45, 0.15));
   transition: transform 0.2s linear;
 }
@@ -1482,7 +1516,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .stat-number-giant {
   font-family: var(--font-display);
-  font-size: clamp(2.8rem, 4.2vw, 4.4rem);
+  font-size: clamp(2.4rem, 8vw, 4.4rem);
   font-weight: 800;
   color: #FFFFFF;
   line-height: 1;
@@ -1972,7 +2006,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-width: 220px;
+  min-width: min(220px, 100%);
 }
 
 .reviews-source-item {
@@ -2235,6 +2269,29 @@ h1, h2, h3, h4, h5, h6 {
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   margin-bottom: 32px;
+}
+
+/* Load calculator quantity stepper */
+.calc-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border-medium);
+  background: #FFFFFF;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--trans-fast), background var(--trans-fast);
+}
+
+.calc-btn:hover {
+  border-color: var(--felix-green);
+  color: var(--felix-green-dark);
 }
 
 .finder-results-box {
@@ -2640,6 +2697,131 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 12px 30px rgba(0, 168, 45, 0.4);
 }
 
+/* Footer legal links */
+.footer-legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.footer-legal-links a {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  font-size: 0.82rem;
+  transition: color var(--trans-fast);
+}
+
+.footer-legal-links a:hover {
+  color: var(--felix-green-glow);
+}
+
+/* ==========================================================================
+   TOUCH-DEVICE ADAPTATIONS
+   Hover is not available on touch hardware. Anything revealed only on :hover
+   is invisible content on a phone, so it is shown unconditionally here.
+   ========================================================================== */
+@media (hover: none), (pointer: coarse) {
+  /* Drive category cards hide their description + specs behind :hover */
+  .drive-card-content { transform: translateY(0); }
+  .drive-desc,
+  .drive-specs-reveal { opacity: 1; }
+  .drive-card-bg { opacity: 0.55; }
+
+  /* No lift-on-hover transforms that stick after a tap */
+  .btn:hover,
+  .benefit-card:hover,
+  .app-card:hover,
+  .timeline-step-card:hover,
+  .testimonial-card:hover,
+  .showcase-product-card:hover,
+  .telemetry-card:hover,
+  .floating-callout-card:hover,
+  .reviews-source-item:hover,
+  .footer-social-btn:hover,
+  .back-to-top-btn:hover {
+    transform: none;
+  }
+
+  /* Ticker cannot be paused by hover on touch — keep it readable but calm */
+  .ticker-track { animation-duration: 46s; }
+}
+
+/* ==========================================================================
+   MOBILE NAVIGATION DRAWER
+   ========================================================================== */
+.mobile-toggle-btn {
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+}
+
+.mobile-toggle-btn:focus-visible {
+  outline: 2px solid var(--felix-green);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: calc(100vh - var(--nav-h, 64px));
+    max-height: calc((var(--vh, 1vh) * 100) - var(--nav-h, 64px));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    background: #FFFFFF;
+    padding: 12px 20px calc(24px + env(safe-area-inset-bottom));
+    border-bottom: 1px solid var(--border-light);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
+    /* Closed state: collapsed and non-interactive, but still animatable */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-12px);
+    transition: opacity 0.26s var(--ease-out-expo),
+                transform 0.26s var(--ease-out-expo),
+                visibility 0.26s;
+    z-index: 999;
+  }
+
+  .nav-menu.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  /* Full-width rows with a comfortable 48px touch target */
+  .nav-menu li { width: 100%; }
+
+  .nav-menu .nav-link {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 8px;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .nav-menu .nav-link::after { display: none; }
+
+  .nav-menu .nav-link.active {
+    color: var(--felix-green-dark);
+    background: var(--felix-green-subtle);
+    border-radius: var(--radius-sm);
+    padding-left: 14px;
+  }
+
+  .nav-menu li:last-child .nav-link { border-bottom: none; }
+}
+
 /* ==========================================================================
    Responsive Adaptations
    ========================================================================== */
@@ -2660,7 +2842,7 @@ h1, h2, h3, h4, h5, h6 {
   .drive-category-grid { grid-template-columns: repeat(2, 1fr); }
   .benefits-grid { grid-template-columns: repeat(2, 1fr); }
   .apps-grid { grid-template-columns: repeat(2, 1fr); }
-  .exploded-cutaway-stage { grid-template-columns: 1fr; }
+  .exploded-cutaway-stage { grid-template-columns: 1fr; gap: 32px; }
   .dealer-cta-box { grid-template-columns: 1fr; text-align: center; padding: 44px 32px; }
   .dealer-cta-actions { justify-content: center; }
   .dealer-cta-img { margin: 0 auto; }
@@ -2670,30 +2852,329 @@ h1, h2, h3, h4, h5, h6 {
   .specs-modal-grid { grid-template-columns: 1fr; gap: 20px; }
   .specs-actions-bar { flex-direction: column; align-items: stretch; }
   /* Restore native horizontal scroll for product showcase on tablet/mobile */
-  .product-horizontal-wrap { overflow-x: auto; overflow-y: hidden; }
-  .product-horizontal-track { padding-left: 24px; padding-right: 24px; }
+  .product-horizontal-wrap {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .product-horizontal-wrap::-webkit-scrollbar { display: none; }
+  .product-horizontal-track {
+    padding-left: 24px;
+    padding-right: 24px;
+    width: max-content;
+  }
+  .showcase-product-card { scroll-snap-align: center; }
 }
 
+/* --------------------------------------------------------------------------
+   PHONE — primary mobile breakpoint
+   -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
-  .nav-menu { display: none; }
-  .mobile-toggle-btn { display: block; }
+  :root { --nav-h: 64px; }
+
+  /* --- Header & ticker --- */
+  .top-ticker { font-size: 0.7rem; padding: 7px 0; }
+  .ticker-track { gap: 28px; }
+
+  .navbar-container { height: var(--nav-h); }
+  .brand-logo-img { height: 34px; }
+  .mobile-toggle-btn { display: flex; }
+  .nav-actions { gap: 6px; }
+
+  /* The two header CTAs do not fit beside the burger on a phone.
+     "Become a Dealer" survives as the single primary action. */
+  .nav-actions .btn-secondary { display: none; }
+  .nav-actions .btn-primary {
+    padding: 9px 14px;
+    font-size: 0.74rem;
+  }
+  .nav-actions .btn-primary i { display: none; }
+
+  /* --- Buttons: full-width stacking + 44px minimum target --- */
+  .btn {
+    min-height: 46px;
+    padding: 12px 22px;
+    font-size: 0.88rem;
+    white-space: normal;
+    text-align: center;
+  }
+  .btn-lg { padding: 14px 26px; font-size: 0.95rem; }
+  .btn-sm { min-height: 40px; }
+
+  .hero-cta-row,
+  .dealer-cta-actions,
+  .specs-actions-bar {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 12px;
+  }
+  .hero-cta-row .btn,
+  .dealer-cta-actions .btn,
+  .specs-actions-bar .btn { width: 100%; }
+
+  /* --- Hero --- */
+  .hero-cinematic {
+    min-height: auto;
+    padding: 36px 0 56px;
+  }
+  .hero-grid { gap: 28px; }
+  .hero-eyebrow-pill {
+    font-size: 0.68rem;
+    padding: 7px 14px;
+    margin-bottom: 18px;
+  }
+  .hero-subheadline { font-size: 0.98rem; margin-bottom: 26px; }
   .hero-floating-tag { display: none; }
-  .telemetry-card { position: static; margin: 12px auto; }
-  .energy-ecosystem-visual { flex-direction: column; padding: 40px 20px; }
+  .hero-metrics-strip { gap: 18px 24px; flex-wrap: wrap; }
+  .hero-antigravity-stage { min-height: auto; padding: 16px 0; }
+
+  /* --- Energy / telemetry --- */
+  .telemetry-card {
+    position: static;
+    margin: 12px auto;
+    max-width: 100%;
+    padding: 16px 18px;
+  }
+  .energy-ecosystem-visual { flex-direction: column; padding: 32px 18px; }
   .energy-vector-svg { display: none; }
+
+  /* --- Grid collapses --- */
   .drive-category-grid { grid-template-columns: 1fr; }
   .benefits-grid { grid-template-columns: 1fr; }
   .apps-grid { grid-template-columns: 1fr; }
   .timeline-horizontal-track { grid-template-columns: 1fr; }
-  .stats-grid-row { grid-template-columns: 1fr; }
+  .stats-grid-row { grid-template-columns: repeat(2, 1fr); gap: 20px; }
   .footer-top-grid { grid-template-columns: 1fr; }
   .form-group-row { grid-template-columns: 1fr; }
-  .detail-experience-stage { flex-direction: column; min-height: auto; }
-  .floating-callout-card { position: static; margin: 12px auto; max-width: 100%; }
+
+  .stat-metric-box { padding: 12px 6px; }
+
+  /* --- Product detail experience --- */
+  .detail-experience-stage {
+    flex-direction: column;
+    min-height: auto;
+    gap: 16px;
+  }
+  .floating-callout-card {
+    position: static;
+    margin: 0 auto;
+    max-width: 100%;
+    width: 100%;
+  }
   .detail-connector-canvas { display: none !important; }
-  .reviews-aggregate-box { grid-template-columns: 1fr; text-align: center; }
-  .reviews-score-col { border-right: none; border-bottom: 1px solid var(--border-medium); padding: 0 0 20px; }
+
+  /* --- Reviews --- */
+  .reviews-aggregate-box {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 26px 20px;
+    gap: 22px;
+  }
+  .reviews-score-col {
+    border-right: none;
+    border-bottom: 1px solid var(--border-medium);
+    padding: 0 0 20px;
+  }
   .testimonials-track { grid-template-columns: 1fr; }
+
+  /* Filter pills become a swipeable row instead of a cramped wrap */
+  .reviews-filter-bar { flex-direction: column; align-items: stretch; gap: 14px; }
+  .reviews-filter-pills {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .reviews-filter-pills::-webkit-scrollbar { display: none; }
+  .rev-filter-pill { flex: 0 0 auto; min-height: 40px; }
+
+  /* --- Cards & sections --- */
+  .app-card { height: 260px; }
+  .benefit-card,
+  .timeline-step-card,
+  .exploded-layer-card,
+  .finder-widget-card,
+  .contact-form-card,
+  .calc-appliance-board,
+  .calc-summary-panel { padding: 22px 18px; }
+
+  .cutaway-visual-wrap { padding: 22px 16px; }
+  .drive-title { font-size: 1.45rem; }
+
+  /* --- Tools --- */
+  .finder-steps-row { grid-template-columns: 1fr; gap: 16px; margin-bottom: 24px; }
+  .calc-metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+  /* --- Contact --- */
+  .contact-channel-item { padding: 14px 16px; }
+
+  /* --- Modals: bottom sheet, safe-area aware --- */
+  .modal-backdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .modal-box,
+  .modal-box-wide {
+    width: 100%;
+    max-width: 100%;
+    max-height: 92vh;
+    max-height: calc(var(--vh, 1vh) * 92);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+    overscroll-behavior: contain;
+  }
+  .modal-title { font-size: 1.15rem; }
+  .modal-close-btn { min-width: 44px; min-height: 44px; }
+
+  /* --- Floating controls clear the home indicator --- */
+  .back-to-top-btn {
+    bottom: calc(18px + env(safe-area-inset-bottom));
+    left: calc(16px + env(safe-area-inset-left));
+    width: 46px;
+    height: 46px;
+  }
+
+  .toast-msg {
+    left: 16px;
+    right: 16px;
+    bottom: calc(18px + env(safe-area-inset-bottom));
+    max-width: none;
+  }
+
+  /* --- Cheaper compositing: heavy blur is expensive on mobile GPUs --- */
+  .navbar-main {
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .telemetry-card,
+  .modal-backdrop {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .telemetry-card { background: rgba(23, 24, 24, 0.96); }
+  .battery-aura-glow { filter: blur(28px); }
+}
+
+/* --------------------------------------------------------------------------
+   SMALL PHONE
+   -------------------------------------------------------------------------- */
+@media (max-width: 576px) {
+  .section-badge { font-size: 0.68rem; padding: 5px 12px; margin-bottom: 14px; }
+  .stats-grid-row { grid-template-columns: 1fr; }
+  .calc-metrics-grid { grid-template-columns: 1fr; }
+  .reviews-aggregate-box { padding: 22px 16px; }
+  .dealer-cta-box { padding: 32px 20px; }
+  .app-card { height: 230px; }
+  .drive-title { font-size: 1.3rem; }
+  .footer-bottom-bar { flex-direction: column; gap: 12px; text-align: center; }
+  .footer-links { justify-content: center; flex-wrap: wrap; }
+}
+
+/* --------------------------------------------------------------------------
+   VERY SMALL PHONE (320-400px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 400px) {
+  .brand-logo-img { height: 30px; }
+  .nav-actions .btn-primary { padding: 8px 11px; font-size: 0.68rem; }
+  .showcase-product-card { max-width: 88vw; padding: 24px 20px; }
+  .btn { padding: 12px 16px; font-size: 0.84rem; }
+  .hero-metrics-strip { gap: 14px 18px; }
+}
+
+/* --------------------------------------------------------------------------
+   LANDSCAPE PHONE - height is the scarce axis, not width
+   -------------------------------------------------------------------------- */
+@media (max-height: 520px) and (orientation: landscape) {
+  .hero-cinematic { min-height: auto; padding: 28px 0 36px; }
+  .hero-antigravity-stage { min-height: auto; }
+  .battery-protagonist-img { width: min(300px, 40vw); }
+  .modal-box, .modal-box-wide { max-height: 96vh; }
+}
+
+/* ==========================================================================
+   FORMS & CONTROLS ON TOUCH DEVICES
+   iOS zooms the viewport whenever a focused field is under 16px, and the zoom
+   is never undone. 16px inputs keep the page at scale.
+   ========================================================================== */
+@media (hover: none), (pointer: coarse), (max-width: 992px) {
+  .form-input,
+  .form-select,
+  .form-textarea,
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px;
+    min-height: 48px;
+    padding: 12px 16px;
+  }
+
+  .form-textarea, textarea { min-height: 110px; }
+
+  /* Range slider with a finger-sized thumb and a 44px drag band */
+  input[type="range"],
+  .form-range {
+    height: 44px;
+    touch-action: pan-y;
+  }
+  input[type="range"]::-webkit-slider-thumb,
+  .form-range::-webkit-slider-thumb { width: 26px; height: 26px; }
+
+  /* Logo, footer and inline text links all need a real touch target */
+  .brand-logo-wrap { min-height: 44px; }
+
+  .footer-links-col a,
+  .footer-links a,
+  .footer-legal-links a,
+  .footer-credit-line a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+  }
+
+  /* Every interactive control clears the 44px accessibility floor */
+  button,
+  .btn,
+  .qty-btn,
+  .calc-btn,
+  .rev-filter-pill,
+  .showcase-arrow-btn,
+  .footer-social-btn,
+  .modal-close-btn {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  .qty-btn,
+  .calc-btn,
+  .showcase-arrow-btn,
+  .footer-social-btn { min-width: 44px; }
+
+  .calc-btn { width: 44px; height: 44px; font-size: 1.15rem; }
+
+  /* Tel/mail/WhatsApp links are the primary conversion path on a phone */
+  a[href^="tel:"],
+  a[href^="mailto:"],
+  a[href*="wa.me"] { touch-action: manipulation; }
+}
+
+/* ==========================================================================
+   Focus Visibility (keyboard + switch-control users)
+   ========================================================================== */
+:focus-visible {
+  outline: 2px solid var(--felix-green);
+  outline-offset: 2px;
 }
 
 /* Reduced Motion Support */
@@ -2704,4 +3185,7 @@ h1, h2, h3, h4, h5, h6 {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+
+  .ticker-track { animation: none !important; }
+  .battery-aura-glow { animation: none !important; }
 }

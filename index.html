@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#00A82D">
+  <meta name="format-detection" content="telephone=yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <title>Felix Automotive Batteries | Power That Moves You | Official Corporate Website</title>
   <meta name="description" content="Felix Automotive Batteries — Advanced automotive, commercial, inverter & solar batteries engineered with calcium technology, explosive cranking power and next-generation energy storage.">
   <meta name="keywords" content="Felix Automotive Batteries, Car Battery, Tractor Battery, Inverter Battery, Calcium Technology, Maintenance Free Battery, Nashik Battery Manufacturer">
@@ -26,6 +29,9 @@
 
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="assets/css/styles.css">
+
+  <!-- Preload the LCP hero image so mobile paints it without waiting on CSS/JS -->
+  <link rel="preload" as="image" href="assets/images/products/battery-fx700-automotive.png" fetchpriority="high">
 
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -101,7 +107,7 @@
   <header class="navbar-main" id="navbarMain">
     <div class="container navbar-container">
       <a href="#hero" class="brand-logo-wrap" title="Felix Automotive Batteries">
-        <img src="assets/images/felix-logo.png" alt="Felix Automotive Batteries Logo" class="brand-logo-img">
+        <img decoding="async" fetchpriority="high" src="assets/images/felix-logo.png" alt="Felix Automotive Batteries Logo" class="brand-logo-img">
       </a>
       <nav>
         <ul class="nav-menu" id="navMenuList">
@@ -180,7 +186,7 @@
           <div class="battery-aura-glow"></div>
           <div class="battery-protagonist-wrapper" id="heroBatteryWrapper">
             <div class="battery-protagonist-tilt" id="heroBatteryTilt">
-              <img src="assets/images/products/battery-fx700-automotive.png" alt="Felix FX-700 Automotive Battery Protagonist" class="battery-protagonist-img" id="heroBatteryImg">
+              <img decoding="async" fetchpriority="high" src="assets/images/products/battery-fx700-automotive.png" alt="Felix FX-700 Automotive Battery Protagonist" class="battery-protagonist-img" id="heroBatteryImg">
             </div>
           </div>
 
@@ -220,7 +226,7 @@
       </div>
 
       <div class="energy-ecosystem-visual" id="energyVisual">
-        <img src="assets/images/plant-aerial-main.jpg" alt="Felix Energy Infrastructure" class="energy-bg-image">
+        <img loading="lazy" decoding="async" src="assets/images/plant-aerial-main.jpg" alt="Felix Energy Infrastructure" class="energy-bg-image">
 
         <!-- Animated SVG Energy Connector Lines -->
         <svg class="energy-vector-svg" viewBox="0 0 1000 580" preserveAspectRatio="none">
@@ -241,7 +247,7 @@
 
         <!-- Central Battery Node -->
         <div class="central-battery-node">
-          <img src="assets/images/products/battery-tubular-tall-handle.png" alt="Felix Solar Deep Cycle Battery" class="central-node-img">
+          <img loading="lazy" decoding="async" src="assets/images/products/battery-tubular-tall-handle.png" alt="Felix Solar Deep Cycle Battery" class="central-node-img">
           <div class="central-node-badge"><i class="fa-solid fa-microchip"></i> FELIX BMS DUAL-GRID STORAGE</div>
         </div>
 
@@ -293,7 +299,7 @@
             <h3 class="showcase-model-title">FELIX FX 800</h3>
             <p class="showcase-suitable">Premium SUVs, Heavy Diesel Vehicles & All-Wheel Drives</p>
             <div class="showcase-img-stage">
-              <img src="assets/images/products/battery-fx700-automotive.png" alt="Felix FX 800" class="showcase-product-img">
+              <img loading="lazy" decoding="async" src="assets/images/products/battery-fx700-automotive.png" alt="Felix FX 800" class="showcase-product-img">
             </div>
             <div class="showcase-specs-list">
               <div><div class="spec-item-label">Capacity</div><div class="spec-item-value">80 Ah (20Hr)</div></div>
@@ -314,7 +320,7 @@
             <h3 class="showcase-model-title">FELIX FX 700</h3>
             <p class="showcase-suitable">Executive Sedans, Mid SUVs & Modern Commercial Transits</p>
             <div class="showcase-img-stage">
-              <img src="assets/images/products/battery-fx700-automotive.png" alt="Felix FX 700" class="showcase-product-img">
+              <img loading="lazy" decoding="async" src="assets/images/products/battery-fx700-automotive.png" alt="Felix FX 700" class="showcase-product-img">
             </div>
             <div class="showcase-specs-list">
               <div><div class="spec-item-label">Capacity</div><div class="spec-item-value">65 Ah (20Hr)</div></div>
@@ -335,7 +341,7 @@
             <h3 class="showcase-model-title">FELIX FX 600</h3>
             <p class="showcase-suitable">Compact SUVs, Family Sedans & Urban Hatchbacks</p>
             <div class="showcase-img-stage">
-              <img src="assets/images/products/battery-fx400-compact.png" alt="Felix FX 600" class="showcase-product-img">
+              <img loading="lazy" decoding="async" src="assets/images/products/battery-fx400-compact.png" alt="Felix FX 600" class="showcase-product-img">
             </div>
             <div class="showcase-specs-list">
               <div><div class="spec-item-label">Capacity</div><div class="spec-item-value">55 Ah (20Hr)</div></div>
@@ -356,7 +362,7 @@
             <h3 class="showcase-model-title">FELIX FX 500</h3>
             <p class="showcase-suitable">Hatchbacks, Taxis & High-Efficiency City Commuters</p>
             <div class="showcase-img-stage">
-              <img src="assets/images/products/battery-fx400-compact.png" alt="Felix FX 500" class="showcase-product-img">
+              <img loading="lazy" decoding="async" src="assets/images/products/battery-fx400-compact.png" alt="Felix FX 500" class="showcase-product-img">
             </div>
             <div class="showcase-specs-list">
               <div><div class="spec-item-label">Capacity</div><div class="spec-item-value">45 Ah (20Hr)</div></div>
@@ -377,7 +383,7 @@
             <h3 class="showcase-model-title">FELIX IT-1800</h3>
             <p class="showcase-suitable">High-End Inverters, Clinics & Continuous Commercial Backup</p>
             <div class="showcase-img-stage">
-              <img src="assets/images/products/battery-tubular-inverter.png" alt="Felix IT-1800 Tubular" class="showcase-product-img">
+              <img loading="lazy" decoding="async" src="assets/images/products/battery-tubular-inverter.png" alt="Felix IT-1800 Tubular" class="showcase-product-img">
             </div>
             <div class="showcase-specs-list">
               <div><div class="spec-item-label">Capacity</div><div class="spec-item-value">180 Ah (C20)</div></div>
@@ -398,7 +404,7 @@
             <h3 class="showcase-model-title">FELIX SOLAR 220</h3>
             <p class="showcase-suitable">Off-Grid Solar Farms, Agricultural Pumps & UPS Arrays</p>
             <div class="showcase-img-stage">
-              <img src="assets/images/products/battery-tubular-tall-handle.png" alt="Felix Solar 220" class="showcase-product-img">
+              <img loading="lazy" decoding="async" src="assets/images/products/battery-tubular-tall-handle.png" alt="Felix Solar 220" class="showcase-product-img">
             </div>
             <div class="showcase-specs-list">
               <div><div class="spec-item-label">Capacity</div><div class="spec-item-value">220 Ah (C10)</div></div>
@@ -449,7 +455,7 @@
 
         <!-- 1. CAR -->
         <div class="drive-card" onclick="openQuoteModal('Category: Passenger Car')">
-          <img src="assets/images/battery-cover-showcase.jpg" alt="Passenger Cars" class="drive-card-bg">
+          <img loading="lazy" decoding="async" src="assets/images/battery-cover-showcase.jpg" alt="Passenger Cars" class="drive-card-bg">
           <div class="drive-card-overlay"></div>
           <div class="drive-card-content">
             <span class="drive-tag">SEGMENT 01</span>
@@ -465,7 +471,7 @@
 
         <!-- 2. SUV -->
         <div class="drive-card" onclick="openQuoteModal('Category: Luxury SUV & 4x4')">
-          <img src="assets/images/battery-range-hero.jpg" alt="SUVs and 4x4" class="drive-card-bg">
+          <img loading="lazy" decoding="async" src="assets/images/battery-range-hero.jpg" alt="SUVs and 4x4" class="drive-card-bg">
           <div class="drive-card-overlay"></div>
           <div class="drive-card-content">
             <span class="drive-tag">SEGMENT 02</span>
@@ -481,7 +487,7 @@
 
         <!-- 3. TRUCK -->
         <div class="drive-card" onclick="openQuoteModal('Category: Heavy Duty Trucks')">
-          <img src="assets/images/page_8_Im43.jpg" alt="Heavy Trucks" class="drive-card-bg">
+          <img loading="lazy" decoding="async" src="assets/images/page_8_Im43.jpg" alt="Heavy Trucks" class="drive-card-bg">
           <div class="drive-card-overlay"></div>
           <div class="drive-card-content">
             <span class="drive-tag">SEGMENT 03</span>
@@ -497,7 +503,7 @@
 
         <!-- 4. BUS -->
         <div class="drive-card" onclick="openQuoteModal('Category: Passenger Bus')">
-          <img src="assets/images/page_12_Im55.jpg" alt="Passenger Buses" class="drive-card-bg">
+          <img loading="lazy" decoding="async" src="assets/images/page_12_Im55.jpg" alt="Passenger Buses" class="drive-card-bg">
           <div class="drive-card-overlay"></div>
           <div class="drive-card-content">
             <span class="drive-tag">SEGMENT 04</span>
@@ -513,7 +519,7 @@
 
         <!-- 5. COMMERCIAL VEHICLES -->
         <div class="drive-card" onclick="openQuoteModal('Category: Commercial Vehicles & JCB')">
-          <img src="assets/images/manufacturing-1.jpg" alt="Commercial Vehicles" class="drive-card-bg">
+          <img loading="lazy" decoding="async" src="assets/images/manufacturing-1.jpg" alt="Commercial Vehicles" class="drive-card-bg">
           <div class="drive-card-overlay"></div>
           <div class="drive-card-content">
             <span class="drive-tag">SEGMENT 05</span>
@@ -529,7 +535,7 @@
 
         <!-- 6. AGRICULTURAL VEHICLES -->
         <div class="drive-card" onclick="openQuoteModal('Category: Tractors & Agricultural')">
-          <img src="assets/images/page_11_Im53.jpg" alt="Agricultural Vehicles" class="drive-card-bg">
+          <img loading="lazy" decoding="async" src="assets/images/page_11_Im53.jpg" alt="Agricultural Vehicles" class="drive-card-bg">
           <div class="drive-card-overlay"></div>
           <div class="drive-card-content">
             <span class="drive-tag">SEGMENT 06</span>
@@ -592,7 +598,7 @@
         </div>
 
         <!-- Central Suspended Battery -->
-        <img src="assets/images/products/battery-fx1000-tractor.png" alt="Felix Protagonist Battery Callouts" class="detail-central-battery" id="detailCentralBattery">
+        <img loading="lazy" decoding="async" src="assets/images/products/battery-fx1000-tractor.png" alt="Felix Protagonist Battery Callouts" class="detail-central-battery" id="detailCentralBattery">
 
         <!-- Floating Callout 4 -->
         <div class="floating-callout-card callout-pos-4">
@@ -640,7 +646,7 @@
 
       <div class="exploded-cutaway-stage">
         <div class="cutaway-visual-wrap">
-          <img src="assets/images/battery-cutaway-diagram.svg" alt="Exploded Battery Technology Architecture" class="cutaway-svg-img" id="cutawaySvgImg">
+          <img loading="lazy" decoding="async" src="assets/images/battery-cutaway-diagram.svg" alt="Exploded Battery Technology Architecture" class="cutaway-svg-img" id="cutawaySvgImg">
         </div>
 
         <div class="exploded-layers-list">
@@ -742,7 +748,7 @@
 
       <div class="apps-grid">
         <div class="app-card">
-          <img src="assets/images/battery-cover-showcase.jpg" alt="Passenger Vehicles" class="app-card-img">
+          <img loading="lazy" decoding="async" src="assets/images/battery-cover-showcase.jpg" alt="Passenger Vehicles" class="app-card-img">
           <div class="app-card-grad"></div>
           <div class="app-card-info">
             <h3 class="app-card-title">PASSENGER VEHICLES</h3>
@@ -751,7 +757,7 @@
         </div>
 
         <div class="app-card">
-          <img src="assets/images/page_8_Im43.jpg" alt="Commercial Fleets" class="app-card-img">
+          <img loading="lazy" decoding="async" src="assets/images/page_8_Im43.jpg" alt="Commercial Fleets" class="app-card-img">
           <div class="app-card-grad"></div>
           <div class="app-card-info">
             <h3 class="app-card-title">COMMERCIAL FLEETS</h3>
@@ -760,7 +766,7 @@
         </div>
 
         <div class="app-card">
-          <img src="assets/images/manufacturing-2.jpg" alt="Heavy Duty & Mining" class="app-card-img">
+          <img loading="lazy" decoding="async" src="assets/images/manufacturing-2.jpg" alt="Heavy Duty & Mining" class="app-card-img">
           <div class="app-card-grad"></div>
           <div class="app-card-info">
             <h3 class="app-card-title">HEAVY DUTY & MINING</h3>
@@ -769,7 +775,7 @@
         </div>
 
         <div class="app-card">
-          <img src="assets/images/page_11_Im53.jpg" alt="Agriculture" class="app-card-img">
+          <img loading="lazy" decoding="async" src="assets/images/page_11_Im53.jpg" alt="Agriculture" class="app-card-img">
           <div class="app-card-grad"></div>
           <div class="app-card-info">
             <h3 class="app-card-title">AGRICULTURE & HARVESTING</h3>
@@ -778,7 +784,7 @@
         </div>
 
         <div class="app-card">
-          <img src="assets/images/page_10_Im51.jpg" alt="Industrial & Telecom" class="app-card-img">
+          <img loading="lazy" decoding="async" src="assets/images/page_10_Im51.jpg" alt="Industrial & Telecom" class="app-card-img">
           <div class="app-card-grad"></div>
           <div class="app-card-info">
             <h3 class="app-card-title">INDUSTRIAL & TELECOM</h3>
@@ -787,7 +793,7 @@
         </div>
 
         <div class="app-card">
-          <img src="assets/images/page_9_Im46.jpg" alt="Energy Storage" class="app-card-img">
+          <img loading="lazy" decoding="async" src="assets/images/page_9_Im46.jpg" alt="Energy Storage" class="app-card-img">
           <div class="app-card-grad"></div>
           <div class="app-card-info">
             <h3 class="app-card-title">SOLAR & ENERGY STORAGE</h3>
@@ -1181,7 +1187,7 @@
 
         <div class="finder-results-box" id="finderResultBox" style="display:none">
           <div style="display:grid;grid-template-columns:140px 1fr auto;gap:24px;align-items:center">
-            <img src="assets/images/products/battery-fx700-automotive.png" alt="Recommended Battery" id="finderResImg" style="max-height:100px;object-fit:contain">
+            <img loading="lazy" decoding="async" src="assets/images/products/battery-fx700-automotive.png" alt="Recommended Battery" id="finderResImg" style="max-height:100px;object-fit:contain">
             <div>
               <div style="font-size:0.75rem;font-weight:700;color:var(--felix-green);text-transform:uppercase">MATCHED RECOMMENDATION</div>
               <h4 id="finderResModel" style="font-size:1.3rem;font-weight:800;margin:2px 0">Felix FX 700 (65Ah)</h4>
@@ -1257,7 +1263,7 @@
           </div>
         </div>
         <div>
-          <img src="assets/images/products/battery-fx1000-tractor.png" alt="Felix Dealer Partnership" class="dealer-cta-img">
+          <img loading="lazy" decoding="async" src="assets/images/products/battery-fx1000-tractor.png" alt="Felix Dealer Partnership" class="dealer-cta-img">
         </div>
       </div>
     </div>
@@ -1368,7 +1374,7 @@
     <div class="container">
       <div class="footer-top-grid">
         <div>
-          <img src="assets/images/felix-logo.png" alt="Felix Automotive Batteries" class="footer-brand-logo">
+          <img loading="lazy" decoding="async" src="assets/images/felix-logo.png" alt="Felix Automotive Batteries" class="footer-brand-logo">
           <p class="footer-brand-desc">
             Felix Automotive Batteries is an ISO 9001:2008 Certified battery manufacturer based in Nashik, Maharashtra. Engineering advanced calcium automotive, inverter, solar, and industrial stationary cells.
           </p>
@@ -1422,10 +1428,10 @@
         <div class="footer-credit-line">
           Digitally Designed by <a href="https://4amglobalmedia.com" target="_blank" rel="noopener">4am Global Media</a>
         </div>
-        <div style="display:flex;gap:20px">
-          <a href="#" style="color:rgba(255,255,255,0.5);text-decoration:none">Privacy Policy</a>
-          <a href="#" style="color:rgba(255,255,255,0.5);text-decoration:none">Terms & Conditions</a>
-          <a href="#manufacturing" style="color:rgba(255,255,255,0.5);text-decoration:none">Plant Compliance</a>
+        <div class="footer-legal-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms &amp; Conditions</a>
+          <a href="#manufacturing">Plant Compliance</a>
         </div>
       </div>
     </div>

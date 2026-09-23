@@ -5,6 +5,54 @@
 
 let lenis = null;
 
+// ==========================================================================
+// 0. Device & Capability Helpers (mobile-first guards)
+// ==========================================================================
+const MQ_TOUCH = window.matchMedia('(hover: none) and (pointer: coarse)');
+const MQ_MOBILE = window.matchMedia('(max-width: 768px)');
+const MQ_TABLET = window.matchMedia('(max-width: 992px)');
+const MQ_REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+const isTouch = () => MQ_TOUCH.matches;
+const isMobile = () => MQ_MOBILE.matches;
+const isTablet = () => MQ_TABLET.matches;
+const prefersReducedMotion = () => MQ_REDUCED.matches;
+// Heavy continuous effects (canvas particles, smooth-scroll hijacking, 3D tilt)
+// are skipped on touch/handheld hardware where they cost battery and jank.
+const allowHeavyMotion = () => !isTablet() && !isTouch() && !prefersReducedMotion();
+
+// Single rAF-throttled scroll dispatcher — replaces multiple raw scroll listeners
+const scrollSubscribers = [];
+let scrollTicking = false;
+function onScrollThrottled(fn) {
+  scrollSubscribers.push(fn);
+  fn();
+}
+window.addEventListener('scroll', () => {
+  if (scrollTicking) return;
+  scrollTicking = true;
+  requestAnimationFrame(() => {
+    scrollSubscribers.forEach(fn => fn());
+    scrollTicking = false;
+  });
+}, { passive: true });
+
+function debounce(fn, wait = 150) {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), wait);
+  };
+}
+
+// Real viewport unit for mobile browsers whose address bar changes 100vh
+function setViewportUnit() {
+  document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+}
+setViewportUnit();
+window.addEventListener('resize', debounce(setViewportUnit, 120), { passive: true });
+window.addEventListener('orientationchange', () => setTimeout(setViewportUnit, 250));
+
 document.addEventListener('DOMContentLoaded', () => {
   initLenis();
   initCustomCursor();
@@ -25,13 +73,107 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollProgressBar();
   initBackToTop();
   initContactForm();
+  initScrollTriggerRefresh();
 });
+
+// ==========================================================================
+// 0b. ScrollTrigger position refresh
+// Reveal animations are `gsap.from()` tweens, so their start state is
+// opacity 0. ScrollTrigger measures trigger positions once at init — before
+// images and webfonts have loaded. On mobile those assets change the page
+// height by thousands of pixels, the cached positions go stale, and whole
+// sections (Why Felix, Applications, Manufacturing, Testimonials) stay
+// stuck at opacity 0 because their trigger never resolves correctly.
+// ==========================================================================
+function initScrollTriggerRefresh() {
+  if (typeof ScrollTrigger === 'undefined') return;
+
+  const refresh = () => ScrollTrigger.refresh();
+
+  window.addEventListener('load', refresh);
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(refresh).catch(() => {});
+  }
+
+  // Lazy images resolve well after load; each one that lands shifts layout.
+  const lazyImgs = document.querySelectorAll('img[loading="lazy"]');
+  const debouncedRefresh = debounce(refresh, 250);
+  lazyImgs.forEach(img => {
+    if (img.complete) return;
+    img.addEventListener('load', debouncedRefresh, { once: true });
+    img.addEventListener('error', debouncedRefresh, { once: true });
+  });
+
+  // Orientation changes and address-bar resizes invalidate every measurement
+  window.addEventListener('orientationchange', () => setTimeout(refresh, 320));
+
+  let lastW = window.innerWidth;
+  window.addEventListener('resize', debounce(() => {
+    if (window.innerWidth === lastW) return;
+    lastW = window.innerWidth;
+    refresh();
+  }, 220), { passive: true });
+
+  // Final safety net for slow connections
+  setTimeout(refresh, 1200);
+  setTimeout(refresh, 3000);
+}
+
+// ==========================================================================
+// 0c. Safe scroll reveal
+// `gsap.from()` writes its start state (opacity 0) to the element straight
+// away and leans on the trigger to undo it. If the trigger is stranded — a
+// ScrollTrigger.refresh() after the tween has completed reverts it without
+// replaying, which is what mobile's lazy images and address-bar resizes
+// cause — the content stays invisible forever.
+//
+// revealOnScroll() uses fromTo with immediateRender:false instead, so the
+// element renders at its natural CSS until the tween actually runs. The worst
+// case becomes "content appears without animating" rather than "content is
+// never shown".
+// ==========================================================================
+function revealOnScroll(targets, fromVars, opts = {}) {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return null;
+
+  const list = typeof targets === 'string' ? document.querySelectorAll(targets) : targets;
+  if (!list || (list.length !== undefined && list.length === 0)) return null;
+
+  const { trigger, start = 'top 80%', stagger, duration = 0.65, ease = 'power2.out', delay } = opts;
+
+  return gsap.fromTo(targets, fromVars, {
+    opacity: 1,
+    x: 0,
+    y: 0,
+    scale: 1,
+    duration,
+    ease,
+    stagger,
+    delay,
+    immediateRender: false,
+    overwrite: 'auto',
+    scrollTrigger: {
+      trigger: trigger || targets,
+      start,
+      // Deliberately no 'reverse': re-hiding content the reader has already
+      // scrolled past buys nothing and is the state that gets stranded.
+      toggleActions: 'play none none none',
+      once: true,
+      invalidateOnRefresh: true
+    }
+  });
+}
 
 // ==========================================================================
 // 1. Lenis Smooth Momentum Scrolling
 // ==========================================================================
 function initLenis() {
-  if (typeof Lenis === 'undefined') return;
+  // Touch devices keep native momentum scrolling: Lenis fights the OS scroller,
+  // breaks address-bar collapse and adds constant rAF work on mobile.
+  if (typeof Lenis === 'undefined' || isTouch() || isMobile() || prefersReducedMotion()) {
+    initNativeAnchorScroll();
+    return;
+  }
 
   lenis = new Lenis({
     duration: 1.2,
@@ -72,6 +214,23 @@ function initLenis() {
           }
         }
       }
+    });
+  });
+}
+
+// Native smooth anchor scrolling (used whenever Lenis is disabled, e.g. mobile)
+function initNativeAnchorScroll() {
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', function (e) {
+      const id = this.getAttribute('href');
+      if (!id || id === '#') return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      const header = document.getElementById('navbarMain');
+      const offset = header ? header.offsetHeight + 8 : 60;
+      const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
     });
   });
 }
@@ -135,42 +294,73 @@ function initHeroEnergyCanvas() {
   const canvas = document.getElementById('heroEnergyCanvas');
   if (!canvas) return;
 
-  const ctx = canvas.getContext('2d');
-  let width = (canvas.width = canvas.parentElement.offsetWidth);
-  let height = (canvas.height = canvas.parentElement.offsetHeight);
-
-  window.addEventListener('resize', () => {
-    if (!canvas.parentElement) return;
-    width = canvas.width = canvas.parentElement.offsetWidth;
-    height = canvas.height = canvas.parentElement.offsetHeight;
-  });
-
-  const particleCount = Math.min(Math.floor(width / 30), 45);
-  const particles = [];
-  for (let i = 0; i < particleCount; i++) {
-    particles.push({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.6,
-      vy: (Math.random() - 0.5) * 0.6,
-      radius: Math.random() * 2.2 + 1,
-      alpha: Math.random() * 0.5 + 0.25
-    });
+  // The particle field is decorative. On phones and reduced-motion setups it is
+  // pure battery cost, so the canvas is removed from the paint path entirely.
+  if (isMobile() || prefersReducedMotion()) {
+    canvas.style.display = 'none';
+    return;
   }
+
+  const ctx = canvas.getContext('2d', { alpha: true });
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let width = 0;
+  let height = 0;
+  let particles = [];
+  let rafId = null;
+  let visible = true;
+
+  function sizeCanvas() {
+    if (!canvas.parentElement) return;
+    width = canvas.parentElement.offsetWidth;
+    height = canvas.parentElement.offsetHeight;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function buildParticles() {
+    // Scale the field down on narrower/lower-power screens: the link pass is O(n^2).
+    const cap = isTablet() ? 20 : 42;
+    const count = Math.max(10, Math.min(Math.floor(width / 34), cap));
+    particles = [];
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
+        radius: Math.random() * 2.2 + 1,
+        alpha: Math.random() * 0.5 + 0.25
+      });
+    }
+  }
+
+  sizeCanvas();
+  buildParticles();
+
+  window.addEventListener('resize', debounce(() => {
+    sizeCanvas();
+    buildParticles();
+  }, 200), { passive: true });
+
+  const LINK_DIST = 130;
+  const LINK_DIST_SQ = LINK_DIST * LINK_DIST;
 
   function draw() {
     ctx.clearRect(0, 0, width, height);
 
+    ctx.lineWidth = 1;
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
         const dx = particles[i].x - particles[j].x;
         const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        const distSq = dx * dx + dy * dy;
 
-        if (dist < 130) {
-          const opacity = (1 - dist / 130) * 0.18;
+        if (distSq < LINK_DIST_SQ) {
+          const opacity = (1 - Math.sqrt(distSq) / LINK_DIST) * 0.18;
           ctx.strokeStyle = `rgba(0, 184, 63, ${opacity})`;
-          ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
@@ -179,6 +369,8 @@ function initHeroEnergyCanvas() {
       }
     }
 
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = '#00B83F';
     particles.forEach(p => {
       p.x += p.vx;
       p.y += p.vy;
@@ -189,17 +381,39 @@ function initHeroEnergyCanvas() {
       if (p.y > height) p.y = 0;
 
       ctx.fillStyle = `rgba(0, 184, 63, ${p.alpha})`;
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = '#00B83F';
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
       ctx.fill();
-      ctx.shadowBlur = 0;
     });
+    ctx.shadowBlur = 0;
 
-    requestAnimationFrame(draw);
+    rafId = requestAnimationFrame(draw);
   }
-  requestAnimationFrame(draw);
+
+  function start() {
+    if (rafId === null) rafId = requestAnimationFrame(draw);
+  }
+  function stop() {
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+  }
+
+  // Stop painting once the hero scrolls away or the tab is backgrounded.
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => {
+      visible = entries[0].isIntersecting;
+      if (visible && !document.hidden) start();
+      else stop();
+    }, { threshold: 0 }).observe(canvas);
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden || !visible) stop();
+    else start();
+  });
+
+  start();
 }
 
 // ==========================================================================
@@ -232,7 +446,8 @@ function initHeroAntigravityMotion() {
   }
 
   // 3D Perspective Tilt on Mousemove (Using GSAP quickTo - Zero Conflict with Scroll)
-  if (heroStage && tiltEl) {
+  // Pointer-driven only: on touch there is no hover, so the listener is dead weight.
+  if (heroStage && tiltEl && !isTouch()) {
     const xTo = gsap.quickTo(tiltEl, 'rotationY', { duration: 0.5, ease: 'power2.out' });
     const yTo = gsap.quickTo(tiltEl, 'rotationX', { duration: 0.5, ease: 'power2.out' });
 
@@ -323,19 +538,8 @@ function initEnergySectionMotion() {
 
   // Telemetry Cards Parallax Entrance
   gsap.utils.toArray('.telemetry-card').forEach((card, idx) => {
-    gsap.from(card, {
-      scrollTrigger: {
-        trigger: '#energy',
-        start: 'top 75%',
-        toggleActions: 'play none none reverse'
-      },
-      y: 45 + idx * 25,
-      opacity: 0,
-      scale: 0.94,
-      duration: 0.8,
-      delay: idx * 0.15,
-      ease: 'back.out(1.4)'
-    });
+    revealOnScroll(card, { y: 45 + idx * 25, opacity: 0, scale: 0.94 },
+      { trigger: '#energy', start: 'top 75%', duration: 0.8, delay: idx * 0.15, ease: 'back.out(1.4)' });
   });
 
   // Central Battery Node Floating Pulse
@@ -370,6 +574,18 @@ function initShowcaseScroll() {
 
   let showcaseTween = null;
 
+  // Measured card pitch (width + gap) so the counter and arrows stay accurate
+  // across the fluid mobile card widths.
+  function cardStep() {
+    if (cards.length > 1) {
+      const a = cards[0].getBoundingClientRect();
+      const b = cards[1].getBoundingClientRect();
+      const step = b.left - a.left;
+      if (step > 0) return step;
+    }
+    return cards[0] ? cards[0].getBoundingClientRect().width + 16 : 340;
+  }
+
   function setupDesktopPin() {
     if (window.innerWidth > 992 && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
       const getScrollAmount = () => -(track.scrollWidth - window.innerWidth + 80);
@@ -397,7 +613,7 @@ function initShowcaseScroll() {
         }
       });
     } else {
-      // Mobile & Tablet: Native horizontal touch scrolling
+      // Mobile & Tablet: Native horizontal touch scrolling with snap
       wrap.addEventListener('scroll', () => {
         const scrollLeft = wrap.scrollLeft;
         const maxScroll = wrap.scrollWidth - wrap.clientWidth;
@@ -406,24 +622,33 @@ function initShowcaseScroll() {
           progressBar.style.width = `${Math.max(pct, 16.66)}%`;
         }
         if (counterEl && maxScroll > 0) {
-          const cardWidth = 360 + 28;
-          const cardIdx = Math.min(Math.floor(scrollLeft / cardWidth) + 1, cards.length);
+          // Map scroll progress across the range so the last card always reads
+          // as the last index — the track's max scroll stops short of a full
+          // card pitch, which an offset-based count rounds down.
+          const progress = scrollLeft / maxScroll;
+          const cardIdx = Math.min(Math.round(progress * (cards.length - 1)) + 1, cards.length);
           counterEl.textContent = `${cardIdx} / ${cards.length}`;
         }
-      });
+      }, { passive: true });
     }
   }
 
   setupDesktopPin();
 
-  window.addEventListener('resize', () => {
+  // Only rebuild on a real width change: mobile browsers fire resize constantly
+  // as the address bar collapses, which would thrash the pinned timeline.
+  let lastWidth = window.innerWidth;
+  window.addEventListener('resize', debounce(() => {
+    if (window.innerWidth === lastWidth) return;
+    lastWidth = window.innerWidth;
     if (showcaseTween && showcaseTween.scrollTrigger) {
       showcaseTween.scrollTrigger.kill();
       showcaseTween.kill();
+      showcaseTween = null;
       gsap.set(track, { clearProps: 'all' });
       setupDesktopPin();
     }
-  });
+  }, 200), { passive: true });
 
   // Prev / Next button navigation
   if (prevBtn) {
@@ -437,7 +662,7 @@ function initShowcaseScroll() {
         if (lenis) lenis.scrollTo(targetScroll, { duration: 0.8 });
         else window.scrollTo({ top: targetScroll, behavior: 'smooth' });
       } else {
-        wrap.scrollBy({ left: -380, behavior: 'smooth' });
+        wrap.scrollBy({ left: -cardStep(), behavior: 'smooth' });
       }
     });
   }
@@ -453,13 +678,13 @@ function initShowcaseScroll() {
         if (lenis) lenis.scrollTo(targetScroll, { duration: 0.8 });
         else window.scrollTo({ top: targetScroll, behavior: 'smooth' });
       } else {
-        wrap.scrollBy({ left: 380, behavior: 'smooth' });
+        wrap.scrollBy({ left: cardStep(), behavior: 'smooth' });
       }
     });
   }
 
-  // Floating hover physics for battery cards
-  cards.forEach(card => {
+  // Floating hover physics for battery cards (pointer devices only)
+  if (!isTouch()) cards.forEach(card => {
     const img = card.querySelector('.showcase-product-img');
     if (!img) return;
 
@@ -483,18 +708,8 @@ function initAutomotiveSectionMotion() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
   gsap.utils.toArray('.drive-card').forEach((card, idx) => {
-    gsap.from(card, {
-      scrollTrigger: {
-        trigger: '#automotive',
-        start: 'top 78%',
-        toggleActions: 'play none none reverse'
-      },
-      y: 40,
-      opacity: 0,
-      duration: 0.65,
-      delay: idx * 0.08,
-      ease: 'power2.out'
-    });
+    revealOnScroll(card, { y: 40, opacity: 0 },
+      { trigger: '#automotive', start: 'top 78%', duration: 0.65, delay: idx * 0.08 });
   });
 }
 
@@ -511,9 +726,14 @@ function initProductDetailConnectors() {
   const ctx = canvas.getContext('2d');
   let animationFrameId = null;
   let pulseProgress = 0;
+  let inView = true;
+
+  // Connector curves only make sense in the two-column desktop layout; on mobile
+  // the callouts stack, so the loop is stopped rather than left idling on rAF.
+  const connectorsDisabled = () => isMobile() || prefersReducedMotion();
 
   function resizeCanvas() {
-    if (window.innerWidth <= 768) {
+    if (connectorsDisabled()) {
       canvas.style.display = 'none';
       return;
     }
@@ -526,14 +746,14 @@ function initProductDetailConnectors() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
-  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('resize', debounce(() => {
+    resizeCanvas();
+    if (connectorsDisabled()) stopDraw();
+    else startDraw();
+  }, 180), { passive: true });
   resizeCanvas();
 
   function draw() {
-    if (window.innerWidth <= 768) {
-      animationFrameId = requestAnimationFrame(draw);
-      return;
-    }
 
     ctx.clearRect(0, 0, stage.offsetWidth, stage.offsetHeight);
     const stageRect = stage.getBoundingClientRect();
@@ -596,7 +816,32 @@ function initProductDetailConnectors() {
     animationFrameId = requestAnimationFrame(draw);
   }
 
-  draw();
+  function startDraw() {
+    if (connectorsDisabled() || !inView) return;
+    if (animationFrameId === null) animationFrameId = requestAnimationFrame(draw);
+  }
+
+  function stopDraw() {
+    if (animationFrameId !== null) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+  }
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => {
+      inView = entries[0].isIntersecting;
+      if (inView) startDraw();
+      else stopDraw();
+    }, { threshold: 0 }).observe(stage);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopDraw();
+    else startDraw();
+  });
+
+  startDraw();
 
   // Subtle Protagonist Battery 3D Rotation on Scroll
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
@@ -625,18 +870,8 @@ function initExplodedCutawayMotion() {
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     // Staggered reveal for layer cards
     gsap.utils.toArray(layerCards).forEach((card, idx) => {
-      gsap.from(card, {
-        scrollTrigger: {
-          trigger: '#technology',
-          start: 'top 75%',
-          toggleActions: 'play none none reverse'
-        },
-        x: 40,
-        opacity: 0,
-        duration: 0.6,
-        delay: idx * 0.1,
-        ease: 'power2.out'
-      });
+      revealOnScroll(card, { x: 40, opacity: 0 },
+        { trigger: '#technology', start: 'top 75%', duration: 0.6, delay: idx * 0.1 });
     });
 
     // Active layer highlight on scroll
@@ -726,121 +961,38 @@ function initApplicationsAndManufacturingMotion() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
   // Applications cards staggered entrance
-  gsap.from('.app-card', {
-    scrollTrigger: {
-      trigger: '#applications',
-      start: 'top 78%',
-      toggleActions: 'play none none reverse'
-    },
-    y: 40,
-    opacity: 0,
-    scale: 0.95,
-    stagger: 0.1,
-    duration: 0.7,
-    ease: 'power2.out'
-  });
+  revealOnScroll('.app-card', { y: 40, opacity: 0, scale: 0.95 },
+    { trigger: '#applications', start: 'top 78%', stagger: 0.1, duration: 0.7 });
 
   // Manufacturing timeline cards
-  gsap.from('.timeline-step-card', {
-    scrollTrigger: {
-      trigger: '#manufacturing',
-      start: 'top 78%',
-      toggleActions: 'play none none reverse'
-    },
-    y: 35,
-    opacity: 0,
-    scale: 0.96,
-    stagger: 0.12,
-    duration: 0.65,
-    ease: 'power2.out'
-  });
+  revealOnScroll('.timeline-step-card', { y: 35, opacity: 0, scale: 0.96 },
+    { trigger: '#manufacturing', start: 'top 78%', stagger: 0.12, duration: 0.65 });
 
   // Why Felix benefit cards
-  gsap.from('.benefit-card', {
-    scrollTrigger: {
-      trigger: '#why-felix',
-      start: 'top 78%',
-      toggleActions: 'play none none reverse'
-    },
-    y: 35,
-    opacity: 0,
-    scale: 0.95,
-    stagger: 0.09,
-    duration: 0.6,
-    ease: 'back.out(1.4)'
-  });
+  revealOnScroll('.benefit-card', { y: 35, opacity: 0, scale: 0.95 },
+    { trigger: '#why-felix', start: 'top 78%', stagger: 0.09, duration: 0.6, ease: 'back.out(1.4)' });
 
   // Section headers — all sections get a subtle reveal
   gsap.utils.toArray('.section-header').forEach(header => {
-    gsap.from(header.children, {
-      scrollTrigger: {
-        trigger: header,
-        start: 'top 85%',
-        toggleActions: 'play none none reverse'
-      },
-      y: 30,
-      opacity: 0,
-      stagger: 0.12,
-      duration: 0.7,
-      ease: 'power2.out'
-    });
+    revealOnScroll(header.children, { y: 30, opacity: 0 },
+      { trigger: header, start: 'top 85%', stagger: 0.12, duration: 0.7 });
   });
 
   // Stats counters boxes
-  gsap.from('.stat-metric-box', {
-    scrollTrigger: {
-      trigger: '#statistics',
-      start: 'top 80%',
-      toggleActions: 'play none none reverse'
-    },
-    y: 30,
-    opacity: 0,
-    scale: 0.92,
-    stagger: 0.12,
-    duration: 0.65,
-    ease: 'back.out(1.6)'
-  });
+  revealOnScroll('.stat-metric-box', { y: 30, opacity: 0, scale: 0.92 },
+    { trigger: '#statistics', start: 'top 80%', stagger: 0.12, duration: 0.65, ease: 'back.out(1.6)' });
 
   // Reviews aggregate box
-  gsap.from('.reviews-aggregate-box', {
-    scrollTrigger: {
-      trigger: '#testimonials',
-      start: 'top 80%',
-      toggleActions: 'play none none reverse'
-    },
-    y: 25,
-    opacity: 0,
-    duration: 0.7,
-    ease: 'power2.out'
-  });
+  revealOnScroll('.reviews-aggregate-box', { y: 25, opacity: 0 },
+    { trigger: '#testimonials', start: 'top 80%', duration: 0.7 });
 
   // Testimonial cards stagger
-  gsap.from('.testimonial-card', {
-    scrollTrigger: {
-      trigger: '#testimonials',
-      start: 'top 75%',
-      toggleActions: 'play none none reverse'
-    },
-    y: 40,
-    opacity: 0,
-    stagger: 0.1,
-    duration: 0.6,
-    ease: 'power2.out'
-  });
+  revealOnScroll('.testimonial-card', { y: 40, opacity: 0 },
+    { trigger: '#testimonials', start: 'top 75%', stagger: 0.1, duration: 0.6 });
 
   // Floating callout cards in experience section
-  gsap.from('.floating-callout-card', {
-    scrollTrigger: {
-      trigger: '#experience',
-      start: 'top 75%',
-      toggleActions: 'play none none reverse'
-    },
-    scale: 0.85,
-    opacity: 0,
-    stagger: 0.1,
-    duration: 0.65,
-    ease: 'back.out(1.4)'
-  });
+  revealOnScroll('.floating-callout-card', { scale: 0.85, opacity: 0 },
+    { trigger: '#experience', start: 'top 75%', stagger: 0.1, duration: 0.65, ease: 'back.out(1.4)' });
 }
 
 // ==========================================================================
@@ -1041,9 +1193,9 @@ function initLoadCalculator() {
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:10px">
-        <button type="button" class="calc-btn minus" data-idx="${idx}" style="width:28px;height:28px;border-radius:50%;border:1px solid var(--border-medium);background:#FFFFFF;cursor:pointer">-</button>
+        <button type="button" class="calc-btn minus" data-idx="${idx}" aria-label="Decrease quantity">-</button>
         <span id="qty_${idx}" style="font-family:var(--font-display);font-weight:700;width:24px;text-align:center">${app.defaultQty}</span>
-        <button type="button" class="calc-btn plus" data-idx="${idx}" style="width:28px;height:28px;border-radius:50%;border:1px solid var(--border-medium);background:#FFFFFF;cursor:pointer">+</button>
+        <button type="button" class="calc-btn plus" data-idx="${idx}" aria-label="Increase quantity">+</button>
       </div>
     `;
     container.appendChild(item);
@@ -1108,13 +1260,40 @@ function initLoadCalculator() {
 // ==========================================================================
 // 15. Modals & Technical Specifications Viewer
 // ==========================================================================
+let modalScrollY = 0;
+
+// Opening a modal must freeze the page behind it. Without this, iOS Safari keeps
+// scrolling the body under the overlay and loses the reader's place on close.
+window.openModalEl = function (modal) {
+  if (!modal) return;
+  modalScrollY = window.scrollY;
+  modal.classList.add('open');
+  document.body.style.top = `-${modalScrollY}px`;
+  document.body.classList.add('nav-scroll-locked');
+  if (lenis) lenis.stop();
+};
+
+window.closeAllModals = function () {
+  const wasOpen = document.querySelector('.modal-backdrop.open');
+  document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('open'));
+  if (!wasOpen) return;
+  document.body.classList.remove('nav-scroll-locked');
+  document.body.style.top = '';
+  window.scrollTo(0, modalScrollY);
+  if (lenis) lenis.start();
+};
+
 function initModals() {
   document.querySelectorAll('.modal-close-btn, .modal-backdrop').forEach(el => {
     el.addEventListener('click', (e) => {
       if (e.target === el || e.target.classList.contains('modal-close-btn')) {
-        document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('open'));
+        window.closeAllModals();
       }
     });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') window.closeAllModals();
   });
 
   const quoteForm = document.getElementById('quickQuoteForm');
@@ -1124,7 +1303,7 @@ function initModals() {
       const name = document.getElementById('quoteNameInput').value;
       const model = document.getElementById('quoteModelInput').value;
       showToast(`Thank you, ${name}! Your quote request for ${model} has been dispatched.`);
-      document.getElementById('quoteModal').classList.remove('open');
+      window.closeAllModals();
       quoteForm.reset();
     });
   }
@@ -1134,7 +1313,7 @@ window.openQuoteModal = function(modelName) {
   const modal = document.getElementById('quoteModal');
   const input = document.getElementById('quoteModelInput');
   if (input && modelName) input.value = modelName;
-  if (modal) modal.classList.add('open');
+  window.openModalEl(modal);
 };
 
 window.openSpecsModal = function(modelId) {
@@ -1302,7 +1481,7 @@ window.openSpecsModal = function(modelId) {
     </div>
   `;
 
-  modal.classList.add('open');
+  window.openModalEl(modal);
 };
 
 // ==========================================================================
@@ -1340,48 +1519,136 @@ function showToast(msg) {
 function initMobileNav() {
   const toggle = document.getElementById('mobileMenuToggle');
   const menu = document.getElementById('navMenuList');
+  const navbar = document.getElementById('navbarMain');
   if (!toggle || !menu) return;
 
-  toggle.addEventListener('click', () => {
-    const isVisible = menu.style.display === 'flex';
-    if (isVisible) {
-      menu.style.display = 'none';
-    } else {
-      menu.style.display = 'flex';
-      menu.style.flexDirection = 'column';
-      menu.style.position = 'absolute';
-      menu.style.top = '76px';
-      menu.style.left = '0';
-      menu.style.right = '0';
-      menu.style.background = '#FFFFFF';
-      menu.style.padding = '24px';
-      menu.style.borderBottom = '1px solid var(--border-light)';
-      menu.style.gap = '16px';
-      menu.style.boxShadow = '0 15px 30px rgba(0,0,0,0.1)';
-    }
+  const toggleIcon = toggle.querySelector('i');
+  let scrollLockY = 0;
+
+  function lockBody() {
+    scrollLockY = window.scrollY;
+    document.body.style.top = `-${scrollLockY}px`;
+    document.body.classList.add('nav-scroll-locked');
+  }
+
+  function unlockBody() {
+    document.body.classList.remove('nav-scroll-locked');
+    document.body.style.top = '';
+    window.scrollTo(0, scrollLockY);
+  }
+
+  function openMenu() {
+    menu.classList.add('open');
+    document.body.classList.add('mobile-nav-open');
+    toggle.setAttribute('aria-expanded', 'true');
+    if (toggleIcon) toggleIcon.className = 'fa-solid fa-xmark';
+    lockBody();
+    if (lenis) lenis.stop();
+  }
+
+  function closeMenu() {
+    if (!menu.classList.contains('open')) return;
+    menu.classList.remove('open');
+    document.body.classList.remove('mobile-nav-open');
+    toggle.setAttribute('aria-expanded', 'false');
+    if (toggleIcon) toggleIcon.className = 'fa-solid fa-bars';
+    unlockBody();
+    if (lenis) lenis.start();
+  }
+
+  toggle.setAttribute('aria-expanded', 'false');
+  toggle.setAttribute('aria-controls', 'navMenuList');
+
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (menu.classList.contains('open')) closeMenu();
+    else openMenu();
   });
 
+  // Close on link tap, then jump to the section.
+  // Order matters: closeMenu() unlocks the body, which restores the scroll
+  // position captured when the drawer opened. Scrolling to the anchor has to
+  // happen *after* that restore or it is immediately undone.
   menu.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      if (window.innerWidth <= 768) menu.style.display = 'none';
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      const target = href && href !== '#' ? document.querySelector(href) : null;
+
+      if (!target) {
+        closeMenu();
+        return;
+      }
+
+      e.preventDefault();
+      closeMenu();
+
+      // Let the drawer's collapse and the body unlock settle before measuring.
+      requestAnimationFrame(() => {
+        const offset = (navbar ? navbar.offsetHeight : 64) + 8;
+        if (lenis) {
+          lenis.scrollTo(target, { offset: -offset, duration: 1.2 });
+        } else {
+          const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+        }
+      });
     });
   });
 
-  // Sticky Navbar Scroll Transition
-  const navbar = document.getElementById('navbarMain');
-  window.addEventListener('scroll', () => {
-    if (navbar) {
-      if (window.scrollY > 40) navbar.classList.add('scrolled');
-      else navbar.classList.remove('scrolled');
-    }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
   });
+
+  document.addEventListener('click', (e) => {
+    if (!menu.classList.contains('open')) return;
+    if (!menu.contains(e.target) && !toggle.contains(e.target)) closeMenu();
+  });
+
+  window.addEventListener('resize', debounce(() => {
+    if (!isMobile()) closeMenu();
+  }, 150), { passive: true });
+
+  // Sticky Navbar Scroll Transition
+  onScrollThrottled(() => {
+    if (!navbar) return;
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Highlight the section currently in view
+  initScrollSpy();
+}
+
+// Marks the nav link for the section currently on screen
+function initScrollSpy() {
+  const links = Array.from(document.querySelectorAll('.nav-menu .nav-link'));
+  if (!links.length || !('IntersectionObserver' in window)) return;
+
+  const map = new Map();
+  links.forEach(link => {
+    const id = link.getAttribute('href');
+    if (!id || id === '#') return;
+    const section = document.querySelector(id);
+    if (section) map.set(section, link);
+  });
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const link = map.get(entry.target);
+      if (!link) return;
+      links.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+    });
+  }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+
+  map.forEach((_link, section) => observer.observe(section));
 }
 
 function initScrollProgressBar() {
   const bar = document.getElementById('scrollProgressBar');
   if (!bar) return;
 
-  window.addEventListener('scroll', () => {
+  onScrollThrottled(() => {
     const scrollTop = window.scrollY;
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
     if (docHeight > 0) {
@@ -1395,9 +1662,8 @@ function initBackToTop() {
   const btn = document.getElementById('backToTopBtn');
   if (!btn) return;
 
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 400) btn.classList.add('show');
-    else btn.classList.remove('show');
+  onScrollThrottled(() => {
+    btn.classList.toggle('show', window.scrollY > 400);
   });
 
   btn.addEventListener('click', () => {
