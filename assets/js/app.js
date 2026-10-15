@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initExplodedCutawayMotion();
   initPerformanceCounters();
   initApplicationsAndManufacturingMotion();
+  initGlobalPresence();
   initReviewsFilter();
   initBatteryFinder();
   initLoadCalculator();
@@ -1000,6 +1001,111 @@ function initApplicationsAndManufacturingMotion() {
   // Floating callout cards in experience section
   revealOnScroll('.floating-callout-card', { scale: 0.85, opacity: 0 },
     { trigger: '#experience', start: 'top 75%', stagger: 0.1, duration: 0.65, ease: 'back.out(1.4)' });
+}
+
+// ==========================================================================
+// 11b. Global Presence Map — zoom from world view to supply region, linked cards
+// ==========================================================================
+function initGlobalPresence() {
+  const section = document.getElementById('global');
+  const svg = document.getElementById('gpMap');
+  if (!section || !svg) return;
+
+  const parseBox = (s) => s.trim().split(/\s+/).map(Number);
+  const FULL = parseBox(svg.dataset.full);
+  const MQ_NARROW = window.matchMedia('(max-width: 576px)');
+  const regionBox = () => parseBox(MQ_NARROW.matches ? svg.dataset.regionMobile : svg.dataset.regionWide);
+  const bodies = svg.querySelectorAll('.gp-marker-body');
+  let current = parseBox(svg.getAttribute('viewBox'));
+  let revealed = false;
+
+  // Marker bodies and strokes are kept at a constant on-screen size whatever the zoom
+  function rescale() {
+    const rect = svg.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const u = Math.max(current[2] / rect.width, current[3] / rect.height);
+    svg.style.setProperty('--u', u.toFixed(4));
+    bodies.forEach(b => b.setAttribute('transform', `scale(${u.toFixed(4)})`));
+  }
+  function setBox(box) {
+    current = box;
+    svg.setAttribute('viewBox', box.map(n => n.toFixed(2)).join(' '));
+    rescale();
+  }
+
+  function reveal() {
+    revealed = true;
+    section.classList.add('gp-revealed');
+    if (svg.unpauseAnimations) svg.unpauseAnimations();
+  }
+
+  const reduced = MQ_REDUCED.matches;
+  if (reduced) {
+    if (svg.pauseAnimations) svg.pauseAnimations();
+    setBox(regionBox());
+  } else {
+    // Start on the whole world, then zoom into the supply region when on screen
+    section.classList.add('gp-animate');
+    if (svg.pauseAnimations) svg.pauseAnimations();
+    setBox(FULL.slice());
+
+    const zoomTo = (target, duration) => {
+      const from = current.slice();
+      const t0 = performance.now();
+      const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+      const frame = (now) => {
+        const t = Math.min((now - t0) / duration, 1);
+        const e = ease(t);
+        setBox(from.map((v, i) => v + (target[i] - v) * e));
+        if (t < 1) requestAnimationFrame(frame);
+        else reveal();
+      };
+      requestAnimationFrame(frame);
+    };
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect();
+        setTimeout(() => zoomTo(regionBox(), 1600), 250);
+      }, { threshold: 0.35 });
+      io.observe(svg);
+    } else {
+      setBox(regionBox());
+      reveal();
+    }
+  }
+
+  let lastNarrow = MQ_NARROW.matches;
+  window.addEventListener('resize', debounce(() => {
+    if (MQ_NARROW.matches !== lastNarrow && (revealed || reduced)) {
+      lastNarrow = MQ_NARROW.matches;
+      setBox(regionBox());
+    } else {
+      rescale();
+    }
+  }, 150), { passive: true });
+  rescale();
+
+  // Hovering a card highlights its country, arc and marker, and vice versa
+  const linked = (slug) => section.querySelectorAll(`[data-country="${slug}"]`);
+  const activate = (slug, on) => {
+    linked(slug).forEach(el => el.classList.toggle('is-active', on));
+    svg.classList.toggle('has-active', on);
+  };
+  section.querySelectorAll('.gp-card, .gp-marker[data-country]').forEach(el => {
+    const slug = el.dataset.country;
+    el.addEventListener('mouseenter', () => activate(slug, true));
+    el.addEventListener('mouseleave', () => activate(slug, false));
+  });
+
+  // "Become an International Distributor" pre-selects the matching enquiry type
+  section.querySelectorAll('[data-contact-requirement]').forEach(link => {
+    link.addEventListener('click', () => {
+      const select = document.getElementById('contactRequirement');
+      if (select) select.value = link.dataset.contactRequirement;
+    });
+  });
 }
 
 // ==========================================================================
