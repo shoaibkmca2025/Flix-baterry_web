@@ -115,17 +115,15 @@ html.lenis, html.lenis body {
 }
 
 /* ==========================================================================
-   Scroll-Animated Elements: will-change hints for GPU compositing
+   Off-screen sections pause their decorative infinite animations (see
+   initOffscreenAnimationPause in app.js). Card-level will-change hints were
+   removed: GSAP promotes elements to layers only while they animate.
    ========================================================================== */
-.benefit-card,
-.timeline-step-card,
-.stat-metric-box,
-.testimonial-card,
-.floating-callout-card,
-.drive-card,
-.exploded-layer-card,
-.range-card {
-  will-change: opacity, transform;
+.is-offscreen,
+.is-offscreen *,
+.is-offscreen *::before,
+.is-offscreen *::after {
+  animation-play-state: paused !important;
 }
 
 /* ==========================================================================
@@ -198,11 +196,12 @@ body.nav-stuck-lock .navbar-main {
   top: 0;
   left: 0;
   height: 3px;
-  width: 0%;
+  width: 100%;
   background: linear-gradient(90deg, var(--felix-green), var(--felix-green-glow), #4ADE80);
   z-index: 10000;
   box-shadow: 0 0 10px rgba(0, 184, 63, 0.8);
-  transition: width 0.05s linear;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
 }
 
 /* Container */
@@ -318,7 +317,7 @@ h1, h2, h3, h4, h5, h6 {
   pointer-events: none;
   z-index: 99998;
   transform: translate(-50%, -50%);
-  transition: width 0.3s var(--ease-out-expo), height 0.3s var(--ease-out-expo), border-color 0.2s, background-color 0.2s, transform 0.1s linear;
+  transition: width 0.3s var(--ease-out-expo), height 0.3s var(--ease-out-expo), border-color 0.2s, background-color 0.2s;
 }
 
 .custom-cursor-follower.cursor-hover {
@@ -640,18 +639,27 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .pulse-dot-green {
+  position: relative;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background-color: var(--felix-green-glow);
-  box-shadow: 0 0 0 0 rgba(0, 184, 63, 0.7);
+}
+
+/* Expanding ring drawn with transform + opacity (compositor-only, no repaint) */
+.pulse-dot-green::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 184, 63, 0.7);
   animation: pulseGlow 2s infinite;
 }
 
 @keyframes pulseGlow {
-  0% { box-shadow: 0 0 0 0 rgba(0, 184, 63, 0.7); }
-  70% { box-shadow: 0 0 0 10px rgba(0, 184, 63, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 184, 63, 0); }
+  0% { transform: scale(1); opacity: 0.7; }
+  70% { transform: scale(3.5); opacity: 0; }
+  100% { transform: scale(3.5); opacity: 0; }
 }
 
 .hero-headline {
@@ -2687,6 +2695,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .footer-brand-logo {
   height: 46px;
+  width: auto;
   margin-bottom: 20px;
 }
 

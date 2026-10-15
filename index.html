@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="assets/css/styles.css">
 
   <!-- Preload the LCP hero image so mobile paints it without waiting on CSS/JS -->
-  <link rel="preload" as="image" href="assets/images/products/battery-fx700-automotive.png" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/images/products/battery-fx700-automotive.webp" type="image/webp" fetchpriority="high">
 
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -114,7 +114,7 @@
   <header class="navbar-main" id="navbarMain">
     <div class="container navbar-container">
       <a href="#hero" class="brand-logo-wrap" title="Felix Automotive Batteries">
-        <img decoding="async" fetchpriority="high" src="assets/images/felix-logo.png" alt="Felix Automotive Batteries Logo" class="brand-logo-img">
+        <picture><source type="image/webp" srcset="assets/images/felix-logo-sm.webp"><img decoding="async" fetchpriority="high" src="assets/images/felix-logo-sm.png" width="240" height="120" alt="Felix Automotive Batteries Logo" class="brand-logo-img"></picture>
       </a>
       <nav>
         <ul class="nav-menu" id="navMenuList">
@@ -192,7 +192,7 @@
           <div class="battery-aura-glow"></div>
           <div class="battery-protagonist-wrapper" id="heroBatteryWrapper">
             <div class="battery-protagonist-tilt" id="heroBatteryTilt">
-              <img decoding="async" fetchpriority="high" src="assets/images/products/battery-fx700-automotive.png" alt="Felix FX-700 Automotive Battery Protagonist" class="battery-protagonist-img" id="heroBatteryImg">
+              <picture><source type="image/webp" srcset="assets/images/products/battery-fx700-automotive.webp"><img decoding="async" fetchpriority="high" src="assets/images/products/battery-fx700-automotive.png" width="960" height="960" alt="Felix FX-700 Automotive Battery Protagonist" class="battery-protagonist-img" id="heroBatteryImg"></picture>
             </div>
           </div>
 
@@ -232,7 +232,7 @@
       </div>
 
       <div class="energy-ecosystem-visual" id="energyVisual">
-        <img loading="lazy" decoding="async" src="assets/images/plant-aerial-main.jpg" alt="Felix Energy Infrastructure" class="energy-bg-image">
+        <img loading="lazy" decoding="async" src="assets/images/plant-aerial-main.jpg" width="1180" height="740" alt="Felix Energy Infrastructure" class="energy-bg-image">
 
         <!-- Animated SVG Energy Connector Lines -->
         <svg class="energy-vector-svg" viewBox="0 0 1000 580" preserveAspectRatio="none">
@@ -253,7 +253,7 @@
 
         <!-- Central Battery Node -->
         <div class="central-battery-node">
-          <img loading="lazy" decoding="async" src="assets/images/products/battery-tubular-tall-handle.png" alt="Felix Solar Deep Cycle Battery" class="central-node-img">
+          <img loading="lazy" decoding="async" src="assets/images/products/battery-tubular-tall-handle.png" width="420" height="370" alt="Felix Solar Deep Cycle Battery" class="central-node-img">
           <div class="central-node-badge"><i class="fa-solid fa-microchip"></i> FELIX BMS DUAL-GRID STORAGE</div>
         </div>
 
@@ -690,7 +690,7 @@
         </div>
 
         <!-- Central Suspended Battery -->
-        <img loading="lazy" decoding="async" src="assets/images/products/battery-fx1000-tractor.png" alt="Felix Protagonist Battery Callouts" class="detail-central-battery" id="detailCentralBattery">
+        <img loading="lazy" decoding="async" src="assets/images/products/battery-fx1000-tractor.png" width="472" height="321" alt="Felix Protagonist Battery Callouts" class="detail-central-battery" id="detailCentralBattery">
 
         <!-- Floating Callout 4 -->
         <div class="floating-callout-card callout-pos-4">
@@ -738,7 +738,7 @@
 
       <div class="exploded-cutaway-stage">
         <div class="cutaway-visual-wrap">
-          <img loading="lazy" decoding="async" src="assets/images/battery-cutaway-diagram.svg" alt="Exploded Battery Technology Architecture" class="cutaway-svg-img" id="cutawaySvgImg">
+          <img loading="lazy" decoding="async" src="assets/images/battery-cutaway-diagram.svg" width="800" height="520" alt="Exploded Battery Technology Architecture" class="cutaway-svg-img" id="cutawaySvgImg">
         </div>
 
         <div class="exploded-layers-list">
@@ -1509,7 +1509,7 @@
     <div class="container">
       <div class="footer-top-grid">
         <div>
-          <img loading="lazy" decoding="async" src="assets/images/felix-logo.png" alt="Felix Automotive Batteries" class="footer-brand-logo">
+          <picture><source type="image/webp" srcset="assets/images/felix-logo-sm.webp"><img loading="lazy" decoding="async" src="assets/images/felix-logo-sm.png" width="240" height="120" alt="Felix Automotive Batteries" class="footer-brand-logo"></picture>
           <p class="footer-brand-desc">
             Felix Automotive Batteries is an ISO 9001:2008 Certified battery manufacturer based in Nashik, Maharashtra. Engineering advanced calcium automotive, inverter, solar, and industrial stationary cells.
           </p>

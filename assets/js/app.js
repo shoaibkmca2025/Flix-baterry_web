@@ -53,7 +53,19 @@ setViewportUnit();
 window.addEventListener('resize', debounce(setViewportUnit, 120), { passive: true });
 window.addEventListener('orientationchange', () => setTimeout(setViewportUnit, 250));
 
+// Decorative infinite CSS animations (glows, pulses, energy flow, ticker) keep the
+// renderer producing frames even when scrolled far away. Pausing them while their
+// section is off-screen lets the page go idle between scrolls.
+function initOffscreenAnimationPause() {
+  if (!('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => e.target.classList.toggle('is-offscreen', !e.isIntersecting));
+  }, { rootMargin: '200px 0px' });
+  document.querySelectorAll('body > section, .top-ticker').forEach(el => io.observe(el));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  initOffscreenAnimationPause();
   initLenis();
   initCustomCursor();
   initHeroEnergyCanvas();
@@ -98,8 +110,11 @@ function initScrollTriggerRefresh() {
     document.fonts.ready.then(refresh).catch(() => {});
   }
 
-  // Lazy images resolve well after load; each one that lands shifts layout.
-  const lazyImgs = document.querySelectorAll('img[loading="lazy"]');
+  // Lazy images resolve well after load; one without reserved dimensions shifts
+  // layout when it lands. Images with width/height attributes cannot, so they no
+  // longer trigger a full refresh (which re-measures every trigger mid-scroll).
+  const lazyImgs = [...document.querySelectorAll('img[loading="lazy"]')]
+    .filter(img => !(img.getAttribute('width') && img.getAttribute('height')));
   const debouncedRefresh = debounce(refresh, 250);
   lazyImgs.forEach(img => {
     if (img.complete) return;
@@ -143,6 +158,7 @@ function revealOnScroll(targets, fromVars, opts = {}) {
 
   const { trigger, start = 'top 80%', stagger, duration = 0.65, ease = 'power2.out', delay } = opts;
 
+  const els = gsap.utils.toArray(list);
   return gsap.fromTo(targets, fromVars, {
     opacity: 1,
     x: 0,
@@ -154,6 +170,12 @@ function revealOnScroll(targets, fromVars, opts = {}) {
     delay,
     immediateRender: false,
     overwrite: 'auto',
+    // Cards carry CSS `transition: all` for their hover effects. Left on, every
+    // GSAP frame would also start a CSS transition on the same properties and the
+    // two systems fight. Transitions are paused for the reveal, then the inline
+    // styles are cleared so the CSS hover transforms work again.
+    onStart: () => els.forEach(el => { el.style.transition = 'none'; }),
+    onComplete: () => gsap.set(els, { clearProps: 'transform,opacity,transition' }),
     scrollTrigger: {
       trigger: trigger || targets,
       start,
@@ -178,13 +200,11 @@ function initLenis() {
   }
 
   lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    lerp: 0.12, // frame-rate independent catch-up: smooth but immediately responsive
     orientation: 'vertical',
     gestureOrientation: 'vertical',
     smoothWheel: true,
-    wheelMultiplier: 0.9,
-    touchMultiplier: 1.8,
+    wheelMultiplier: 1,
   });
 
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
@@ -298,21 +318,30 @@ function initCustomCursor() {
   let followerX = mouseX;
   let followerY = mouseY;
 
-  window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    cursor.style.left = `${mouseX}px`;
-    cursor.style.top = `${mouseY}px`;
-  });
+  let followerRaf = null;
+
+  // Positioned with transforms (compositor-only) rather than left/top, which
+  // forced a layout on every frame for the lifetime of the page.
+  const place = (el, x, y) => { el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`; };
 
   function renderFollower() {
     followerX += (mouseX - followerX) * 0.16;
     followerY += (mouseY - followerY) * 0.16;
-    follower.style.left = `${followerX}px`;
-    follower.style.top = `${followerY}px`;
-    requestAnimationFrame(renderFollower);
+    place(follower, followerX, followerY);
+    // Sleep once caught up; the next mousemove wakes the loop again
+    if (Math.abs(mouseX - followerX) < 0.1 && Math.abs(mouseY - followerY) < 0.1) {
+      followerRaf = null;
+      return;
+    }
+    followerRaf = requestAnimationFrame(renderFollower);
   }
-  requestAnimationFrame(renderFollower);
+
+  window.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    place(cursor, mouseX, mouseY);
+    if (followerRaf === null) followerRaf = requestAnimationFrame(renderFollower);
+  }, { passive: true });
 
   // Hover states on interactive elements
   const hoverTargets = document.querySelectorAll('a, button, .drive-card, .range-card, .benefit-card, .timeline-step-card, .telemetry-card');
@@ -412,8 +441,6 @@ function initHeroEnergyCanvas() {
       }
     }
 
-    ctx.shadowBlur = 8;
-    ctx.shadowColor = '#00B83F';
     particles.forEach(p => {
       p.x += p.vx;
       p.y += p.vy;
@@ -423,12 +450,17 @@ function initHeroEnergyCanvas() {
       if (p.y < 0) p.y = height;
       if (p.y > height) p.y = 0;
 
+      // Glow halo (replaces ctx.shadowBlur, which was the costliest part of each frame)
+      ctx.fillStyle = `rgba(0, 184, 63, ${p.alpha * 0.22})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius + 3.5, 0, Math.PI * 2);
+      ctx.fill();
+
       ctx.fillStyle = `rgba(0, 184, 63, ${p.alpha})`;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
       ctx.fill();
     });
-    ctx.shadowBlur = 0;
 
     rafId = requestAnimationFrame(draw);
   }
@@ -510,6 +542,7 @@ function initHeroAntigravityMotion() {
 
   // Independent multi-speed parallax on floating technical labels
   // Uses a wrapper approach: GSAP scroll acts on the tag's BASE position, idle float adds a separate y animation
+  const idleFloats = [];
   floatingTags.forEach((tag, idx) => {
     const speed = parseFloat(tag.dataset.speed) || 0.4;
 
@@ -526,19 +559,32 @@ function initHeroAntigravityMotion() {
       ease: 'power1.out'
     });
 
-    // Gentle idle floating oscillation — uses yoyoEase so it never resets awkwardly
-    gsap.fromTo(tag,
-      { y: 0 },
-      {
-        y: 8,
-        duration: 2.2 + idx * 0.35,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-        delay: idx * 0.3
-      }
-    );
+    // Gentle idle float on yPercent, so it composes with the scroll tween's `y`
+    // instead of overwriting it every frame
+    if (!prefersReducedMotion()) {
+      idleFloats.push(gsap.fromTo(tag,
+        { yPercent: 0 },
+        {
+          yPercent: 18,
+          duration: 2.2 + idx * 0.35,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+          delay: idx * 0.3
+        }
+      ));
+    }
   });
+
+  // Idle floats are pointless off-screen and keep GSAP's ticker busy: pause them
+  if (idleFloats.length) {
+    ScrollTrigger.create({
+      trigger: '#hero',
+      start: 'top bottom',
+      end: 'bottom top',
+      onToggle: (self) => idleFloats.forEach(t => (self.isActive ? t.resume() : t.pause()))
+    });
+  }
 
   // Hero Content Entrance Animation — runs on page load, separate from scroll triggers
   const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' }, delay: 0.15 });
@@ -976,7 +1022,9 @@ function initPerformanceCounters() {
         duration: 2.2,
         ease: 'power2.out',
         onUpdate: () => {
-          counter.textContent = Math.round(obj.val);
+          // Only touch the DOM when the shown number changes (each write forces layout)
+          const v = Math.round(obj.val);
+          if (counter.textContent !== String(v)) counter.textContent = v;
         }
       });
     });
@@ -1074,10 +1122,22 @@ function initGlobalPresence() {
     rescale();
   }
 
+  let mapOnScreen = false;
   function reveal() {
     revealed = true;
     section.classList.add('gp-revealed');
-    if (svg.unpauseAnimations) svg.unpauseAnimations();
+    if (mapOnScreen && svg.unpauseAnimations) svg.unpauseAnimations();
+  }
+
+  // SMIL pulses and flows run on the main thread: pause them while off-screen
+  if ('IntersectionObserver' in window && svg.pauseAnimations) {
+    new IntersectionObserver((entries) => {
+      mapOnScreen = entries[0].isIntersecting;
+      if (mapOnScreen && revealed && !MQ_REDUCED.matches) svg.unpauseAnimations();
+      else svg.pauseAnimations();
+    }).observe(svg);
+  } else {
+    mapOnScreen = true;
   }
 
   const reduced = MQ_REDUCED.matches;
@@ -1796,13 +1856,14 @@ function initScrollProgressBar() {
   const bar = document.getElementById('scrollProgressBar');
   if (!bar) return;
 
+  let docHeight = 1;
+  const measure = () => { docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight); };
+  measure();
+  if ('ResizeObserver' in window) new ResizeObserver(measure).observe(document.body);
+  window.addEventListener('resize', debounce(measure, 150), { passive: true });
+
   onScrollThrottled(() => {
-    const scrollTop = window.scrollY;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    if (docHeight > 0) {
-      const progress = (scrollTop / docHeight) * 100;
-      bar.style.width = `${progress}%`;
-    }
+    bar.style.transform = `scaleX(${Math.min(window.scrollY / docHeight, 1)})`;
   });
 }
 
