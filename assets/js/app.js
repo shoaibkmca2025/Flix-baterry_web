@@ -420,7 +420,16 @@ function initHeroEnergyCanvas() {
   const LINK_DIST = 130;
   const LINK_DIST_SQ = LINK_DIST * LINK_DIST;
 
-  function draw() {
+  // The field drifts a fraction of a pixel per frame, so 30fps looks identical
+  // while halving the canvas work; motion is time-based so speed is unchanged.
+  const FRAME_MS = 1000 / 30;
+  let lastDraw = 0;
+
+  function draw(now) {
+    rafId = requestAnimationFrame(draw);
+    if (now - lastDraw < FRAME_MS - 1) return;
+    const step = lastDraw ? Math.min((now - lastDraw) / (1000 / 60), 3) : 1;
+    lastDraw = now;
     ctx.clearRect(0, 0, width, height);
 
     ctx.lineWidth = 1;
@@ -442,8 +451,8 @@ function initHeroEnergyCanvas() {
     }
 
     particles.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
+      p.x += p.vx * step;
+      p.y += p.vy * step;
 
       if (p.x < 0) p.x = width;
       if (p.x > width) p.x = 0;
@@ -461,12 +470,10 @@ function initHeroEnergyCanvas() {
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
       ctx.fill();
     });
-
-    rafId = requestAnimationFrame(draw);
   }
 
   function start() {
-    if (rafId === null) rafId = requestAnimationFrame(draw);
+    if (rafId === null) { lastDraw = 0; rafId = requestAnimationFrame(draw); }
   }
   function stop() {
     if (rafId !== null) {
