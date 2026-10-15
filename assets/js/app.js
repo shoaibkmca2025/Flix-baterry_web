@@ -205,19 +205,62 @@ function initLenis() {
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       const targetId = this.getAttribute('href');
+      if (this.closest('#navMenuList') && this.closest('.open')) return; // drawer handles its own links
       if (targetId && targetId !== '#') {
         const targetEl = document.querySelector(targetId);
         if (targetEl) {
           e.preventDefault();
-          if (lenis) {
-            lenis.scrollTo(targetEl, { offset: -60, duration: 1.4 });
-          } else {
-            targetEl.scrollIntoView({ behavior: 'smooth' });
-          }
+          scrollToSection(targetEl);
         }
       }
     });
   });
+}
+
+// Smooth-scrolls to a section so it lands right under the sticky navbar.
+// Lazy images (and the ScrollTrigger refresh each one triggers) can shift the
+// page or cut a smooth scroll short, so the landing spot is re-checked when
+// scrolling settles and corrected a few times. Any manual scroll cancels it.
+function scrollToSection(target) {
+  const nav = document.getElementById('navbarMain');
+  const navH = () => (nav ? nav.offsetHeight : 64);
+  const desired = () => Math.max(0, Math.round(target.getBoundingClientRect().top + window.pageYOffset - navH()));
+
+  if (lenis) {
+    let tries = 0;
+    const go = (duration) => lenis.scrollTo(target, {
+      offset: -navH(),
+      duration,
+      onComplete: () => {
+        if (tries++ < 3 && Math.abs(target.getBoundingClientRect().top - navH()) > 4) go(0.5);
+      }
+    });
+    go(1.3);
+    return;
+  }
+
+  const behavior = prefersReducedMotion() ? 'auto' : 'smooth';
+  let tries = 0;
+  let timer = null;
+  const stop = () => {
+    clearTimeout(timer);
+    window.removeEventListener('scroll', settle);
+    window.removeEventListener('touchstart', stop);
+    window.removeEventListener('wheel', stop);
+  };
+  function settle() {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      const top = desired();
+      if (Math.abs(window.pageYOffset - top) > 4 && tries++ < 4) window.scrollTo({ top, behavior });
+      else stop();
+    }, 160);
+  }
+  window.addEventListener('scroll', settle, { passive: true });
+  window.addEventListener('touchstart', stop, { passive: true, once: true });
+  window.addEventListener('wheel', stop, { passive: true, once: true });
+  window.scrollTo({ top: desired(), behavior });
+  settle();
 }
 
 // Native smooth anchor scrolling (used whenever Lenis is disabled, e.g. mobile)
@@ -226,13 +269,11 @@ function initNativeAnchorScroll() {
     a.addEventListener('click', function (e) {
       const id = this.getAttribute('href');
       if (!id || id === '#') return;
+      if (this.closest('#navMenuList')) return; // the mobile drawer closes itself first, then scrolls
       const target = document.querySelector(id);
       if (!target) return;
       e.preventDefault();
-      const header = document.getElementById('navbarMain');
-      const offset = header ? header.offsetHeight + 8 : 60;
-      const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
-      window.scrollTo({ top, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+      scrollToSection(target);
     });
   });
 }
@@ -1640,12 +1681,14 @@ function initMobileNav() {
 
   function lockBody() {
     scrollLockY = window.scrollY;
+    // Freezing the body would carry a stuck navbar off-screen with it; pin it instead
+    document.body.classList.toggle('nav-stuck-lock', !!navbar && scrollLockY > 0 && navbar.getBoundingClientRect().top <= 1);
     document.body.style.top = `-${scrollLockY}px`;
     document.body.classList.add('nav-scroll-locked');
   }
 
   function unlockBody() {
-    document.body.classList.remove('nav-scroll-locked');
+    document.body.classList.remove('nav-scroll-locked', 'nav-stuck-lock');
     document.body.style.top = '';
     window.scrollTo(0, scrollLockY);
   }
@@ -1696,15 +1739,7 @@ function initMobileNav() {
       closeMenu();
 
       // Let the drawer's collapse and the body unlock settle before measuring.
-      requestAnimationFrame(() => {
-        const offset = (navbar ? navbar.offsetHeight : 64) + 8;
-        if (lenis) {
-          lenis.scrollTo(target, { offset: -offset, duration: 1.2 });
-        } else {
-          const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
-          window.scrollTo({ top, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
-        }
-      });
+      requestAnimationFrame(() => scrollToSection(target));
     });
   });
 

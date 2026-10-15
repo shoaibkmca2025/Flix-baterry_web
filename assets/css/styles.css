@@ -13,6 +13,7 @@
   --felix-green-glow: #00B83F;
   --felix-green-light: #22C55E;
   --felix-green-dark: #087A2A;
+  --felix-green-action: #00852A; /* white text 4.79:1 */
   --felix-green-deep: #054C1A;
   --felix-green-subtle: rgba(0, 168, 45, 0.08);
   --felix-green-glow-shadow: 0 0 35px rgba(0, 184, 63, 0.3);
@@ -151,6 +152,7 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
+  overflow-x: clip; /* hidden makes <body> a scroll container and breaks the sticky navbar */
   position: relative;
   /* Kill the grey flash Android/iOS paint over every tapped element */
   -webkit-tap-highlight-color: transparent;
@@ -179,6 +181,15 @@ body.nav-scroll-locked {
   right: 0;
   width: 100%;
   overflow: hidden;
+}
+
+/* While frozen, a navbar that was stuck to the top stays pinned there */
+body.nav-stuck-lock { padding-top: var(--nav-h, 76px); }
+body.nav-stuck-lock .navbar-main {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 /* Reading Progress Bar */
@@ -359,15 +370,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-  background: var(--felix-green);
+  background: var(--felix-green-action);
   color: #FFFFFF;
-  border-color: var(--felix-green);
+  border-color: var(--felix-green-action);
   box-shadow: 0 4px 18px rgba(0, 168, 45, 0.32);
 }
 
 .btn-primary:hover {
-  background: var(--felix-green-glow);
-  border-color: var(--felix-green-glow);
+  background: var(--felix-green-dark);
+  border-color: var(--felix-green-dark);
   box-shadow: 0 8px 28px rgba(0, 184, 63, 0.45);
   transform: translateY(-2px);
 }
@@ -1301,7 +1312,7 @@ h1, h2, h3, h4, h5, h6 {
   bottom: 14px;
   padding: 4px 12px;
   border-radius: 999px;
-  background: var(--felix-green);
+  background: var(--felix-green-action);
   color: #FFFFFF;
   font-family: var(--font-display);
   font-size: 1.05rem;
@@ -1999,7 +2010,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .gp-label-sub {
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 600;
   fill: var(--text-tertiary);
 }
@@ -2101,7 +2112,7 @@ h1, h2, h3, h4, h5, h6 {
 .gp-card-region {
   display: block;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -2299,7 +2310,7 @@ h1, h2, h3, h4, h5, h6 {
   width: 40px;
   text-align: right;
   font-size: 0.78rem;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
 }
 
@@ -2317,6 +2328,7 @@ h1, h2, h3, h4, h5, h6 {
   background: #FFFFFF;
   border: 1px solid var(--border-medium);
   padding: 8px 14px;
+  min-height: 44px;
   border-radius: var(--radius-md);
   font-size: 0.84rem;
   font-weight: 600;
@@ -2343,7 +2355,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .source-rating-badge {
   background: rgba(245, 158, 11, 0.12);
-  color: #D97706;
+  color: #B45309;
   padding: 2px 8px;
   border-radius: 999px;
   font-size: 0.78rem;
@@ -2385,9 +2397,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .rev-filter-pill.active {
-  background: var(--felix-green);
+  background: var(--felix-green-action);
   color: #FFFFFF;
-  border-color: var(--felix-green);
+  border-color: var(--felix-green-action);
   box-shadow: 0 4px 14px rgba(0, 168, 45, 0.25);
 }
 
@@ -2434,9 +2446,9 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 999px;
 }
 
-.testimonial-platform-tag.google { background: rgba(66, 133, 244, 0.1); color: #1a73e8; }
-.testimonial-platform-tag.indiamart { background: rgba(0, 166, 153, 0.1); color: #00877c; }
-.testimonial-platform-tag.justdial { background: rgba(255, 102, 0, 0.1); color: #e65100; }
+.testimonial-platform-tag.google { background: rgba(66, 133, 244, 0.1); color: #1558b0; }
+.testimonial-platform-tag.indiamart { background: rgba(0, 166, 153, 0.1); color: #00695f; }
+.testimonial-platform-tag.justdial { background: rgba(255, 102, 0, 0.1); color: #b23c00; }
 
 .testimonial-date {
   font-size: 0.75rem;
@@ -2828,6 +2840,8 @@ h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
   color: var(--text-tertiary);
   padding: 4px;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 /* Technical Specifications Modal */
@@ -2964,9 +2978,8 @@ h1, h2, h3, h4, h5, h6 {
 /* Back To Top Button */
 .back-to-top-btn {
   position: fixed;
-  bottom: 32px;
   bottom: 30px;
-  left: 30px;
+  right: 30px;
   width: 46px;
   height: 46px;
   border-radius: 50%;
@@ -3195,7 +3208,7 @@ h1, h2, h3, h4, h5, h6 {
   }
   .hero-grid { gap: 28px; }
   .hero-eyebrow-pill {
-    font-size: 0.68rem;
+    font-size: 0.75rem;
     padding: 7px 14px;
     margin-bottom: 18px;
   }
@@ -3304,10 +3317,10 @@ h1, h2, h3, h4, h5, h6 {
 
   /* --- Floating controls clear the home indicator --- */
   .back-to-top-btn {
-    bottom: calc(18px + env(safe-area-inset-bottom));
-    left: calc(16px + env(safe-area-inset-left));
-    width: 46px;
-    height: 46px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    right: calc(16px + env(safe-area-inset-right));
+    width: 44px;
+    height: 44px;
   }
 
   .toast-msg {
@@ -3337,7 +3350,7 @@ h1, h2, h3, h4, h5, h6 {
    -------------------------------------------------------------------------- */
 @media (max-width: 576px) {
   .drive-category-grid .drive-card { flex-basis: 85%; }
-  .section-badge { font-size: 0.68rem; padding: 5px 12px; margin-bottom: 14px; }
+  .section-badge { font-size: 0.75rem; padding: 6px 12px; margin-bottom: 14px; }
   .stats-grid-row { grid-template-columns: 1fr; }
   .calc-metrics-grid { grid-template-columns: 1fr; }
   .reviews-aggregate-box { padding: 22px 16px; }
@@ -3351,7 +3364,7 @@ h1, h2, h3, h4, h5, h6 {
    -------------------------------------------------------------------------- */
 @media (max-width: 400px) {
   .brand-logo-img { height: 30px; }
-  .nav-actions .btn-primary { padding: 8px 11px; font-size: 0.68rem; }
+  .nav-actions .btn-primary { padding: 8px 12px; font-size: 0.75rem; }
   .btn { padding: 12px 16px; font-size: 0.84rem; }
   .hero-metrics-strip { gap: 14px 18px; }
 }
@@ -3407,7 +3420,7 @@ h1, h2, h3, h4, h5, h6 {
   .footer-credit-line a {
     display: inline-flex;
     align-items: center;
-    min-height: 40px;
+    min-height: 44px;
   }
 
   /* Every interactive control clears the 44px accessibility floor */
@@ -3455,4 +3468,96 @@ h1, h2, h3, h4, h5, h6 {
 
   .ticker-track { animation: none !important; }
   .battery-aura-glow { animation: none !important; }
+}
+
+/* ==========================================================================
+   MOBILE OPTIMISATION PASS — compact layouts for phones (≤ 576px) and
+   swipeable reviews (≤ 768px). Kept together so the phone layout reads in one place.
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Reviews: one swipeable row with the next card peeking, instead of a 4-screen stack */
+  .testimonials-track {
+    display: flex;
+    grid-template-columns: none;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 calc(-1 * clamp(16px, 4vw, 24px));
+    padding: 4px clamp(16px, 4vw, 24px) 14px;
+    scroll-padding-inline: clamp(16px, 4vw, 24px);
+  }
+  .testimonials-track::-webkit-scrollbar { display: none; }
+  .testimonials-track .testimonial-card {
+    flex: 0 0 86%;
+    scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Products: image-left rows so all five lines fit in about a screen and a half */
+  .range-grid { gap: 14px; }
+  .range-card,
+  .range-card:nth-child(n+4),
+  .range-card:last-child {
+    flex-direction: row;
+    grid-column: auto;
+  }
+  /* Square thumbnail, top-aligned like a list cell, so the battery isn't cropped to a sliver */
+  .range-card-media,
+  .range-card:nth-child(n+4) .range-card-media,
+  .range-card:last-child .range-card-media {
+    flex: 0 0 34%;
+    align-self: flex-start;
+    aspect-ratio: 1;
+    min-height: 0;
+    margin: 14px 0 14px 14px;
+    border-radius: var(--radius-md);
+  }
+  .range-card-media--icon { font-size: 2.6rem; }
+  .range-card-body { padding: 16px 16px 18px; }
+  .range-tag { font-size: 0.75rem; margin-bottom: 4px; }
+  .range-title { font-size: 1.12rem; margin-bottom: 6px; }
+  .range-desc { font-size: 0.86rem; line-height: 1.5; }
+  .range-facts { gap: 6px; margin-top: 10px; margin-bottom: 14px; }
+  .range-facts li { font-size: 0.75rem; padding: 4px 9px; }
+  .range-card .range-cta { min-height: 44px; padding: 10px 16px; }
+  .range-card:hover { transform: none; }
+
+  /* Why Felix: icon beside the title, tighter cards */
+  .benefits-grid { gap: 12px; }
+  .benefit-card {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    column-gap: 14px;
+    align-items: start;
+    padding: 18px 16px;
+  }
+  .benefit-icon-box {
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    font-size: 1.1rem;
+    grid-row: span 2;
+  }
+  .benefit-title { margin-bottom: 4px; }
+
+  /* Footer: link lists side by side, brand and address full width */
+  .footer-top-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 16px;
+    margin-bottom: 36px;
+  }
+  .footer-top-grid > div:first-child,
+  .footer-top-grid > div:last-child { grid-column: 1 / -1; }
+  .footer-top-grid .footer-links { gap: 0; }
+  .footer-heading { margin-bottom: 8px; }
+  .footer-social-btn { width: 44px; height: 44px; }
+  .footer-dark { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+
+  /* Quick-quote form: WhatsApp link and submit stack with real targets */
+  .quote-form-actions { flex-direction: column; align-items: stretch !important; gap: 10px; }
+  .quote-form-actions .quote-whatsapp-link { min-height: 44px; justify-content: center; }
 }
