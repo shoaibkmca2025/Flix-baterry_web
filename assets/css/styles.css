@@ -117,14 +117,13 @@ html.lenis, html.lenis body {
    Scroll-Animated Elements: will-change hints for GPU compositing
    ========================================================================== */
 .benefit-card,
-.app-card,
 .timeline-step-card,
 .stat-metric-box,
 .testimonial-card,
 .floating-callout-card,
 .drive-card,
 .exploded-layer-card,
-.showcase-product-card {
+.range-card {
   will-change: opacity, transform;
 }
 
@@ -974,53 +973,168 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
-   3. HORIZONTAL BATTERY PRODUCT SHOWCASE — "ENGINEERED FOR EVERY JOURNEY"
+   3. PRODUCT RANGE — FIVE FELIX PRODUCT LINES
    ========================================================================== */
-.product-showcase-section {
+.product-range-section {
   background: var(--bg-surface);
-  position: relative;
-  /* overflow:hidden removed — it clips GSAP horizontal scroll track */
 }
 
-.product-horizontal-wrap {
-  position: relative;
-  width: 100%;
-  overflow: hidden; /* Contains the horizontal track on mobile & tablet */
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  padding: 20px 0 40px;
+.range-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 24px;
 }
 
-.product-horizontal-track {
-  display: flex;
-  gap: 28px;
-  width: max-content;
-  padding: 0 24px;
-}
-
-.showcase-product-card {
-  width: 360px;
-  max-width: 82vw;
-  flex: 0 0 auto;
-  background: #FFFFFF;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-2xl);
-  padding: 32px 28px;
+.range-card {
+  grid-column: span 2;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
   box-shadow: var(--shadow-card);
-  position: relative;
   transition: all var(--trans-smooth);
-  flex-shrink: 0;
 }
 
-.showcase-product-card:hover {
-  transform: translateY(-8px);
+/* Second row: two wider cards laid out image-left */
+.range-card:nth-child(n+4) {
+  grid-column: span 3;
+  flex-direction: row;
+}
+
+.range-card-media {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  background: #EEF0EF;
+  overflow: hidden;
+}
+
+.range-card:nth-child(n+4) .range-card-media {
+  flex: 0 0 46%;
+  aspect-ratio: auto;
+  min-height: 240px;
+}
+
+.range-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.8s var(--ease-out-expo);
+}
+
+.range-card-media--icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--felix-green-deep) 0%, var(--felix-green) 100%);
+  color: #FFFFFF;
+  font-size: 4.5rem;
+}
+
+.range-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 22px 24px 24px;
+}
+
+.range-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--felix-green-dark);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.range-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.range-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.range-facts {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 0;
+}
+
+.range-facts li {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: var(--radius-full);
+  background: var(--felix-green-subtle);
+  color: var(--felix-green-dark);
+}
+
+.range-facts {
+  margin-bottom: 22px;
+}
+
+.range-cta {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+.range-card:hover {
+  transform: translateY(-6px);
   border-color: var(--border-green);
   box-shadow: var(--shadow-card-hover), 0 0 30px rgba(0, 168, 45, 0.12);
 }
 
+.range-card:hover .range-card-media img {
+  transform: scale(1.05);
+}
+
+@media (max-width: 992px) {
+  .range-grid { grid-template-columns: repeat(2, 1fr); }
+  .range-card,
+  .range-card:nth-child(n+4) {
+    grid-column: span 1;
+    flex-direction: column;
+  }
+  .range-card:nth-child(n+4) .range-card-media {
+    flex: none;
+    aspect-ratio: 3 / 2;
+    min-height: 0;
+  }
+  /* Odd card out spans the row, image-left */
+  .range-card:last-child {
+    grid-column: 1 / -1;
+    flex-direction: row;
+  }
+  .range-card:last-child .range-card-media {
+    flex: 0 0 46%;
+    aspect-ratio: auto;
+    min-height: 220px;
+  }
+}
+
+@media (max-width: 576px) {
+  .range-grid { grid-template-columns: 1fr; }
+  .range-card:last-child { flex-direction: column; }
+  .range-card:last-child .range-card-media {
+    flex: none;
+    aspect-ratio: 3 / 2;
+    min-height: 0;
+  }
+}
+
+/* Carousel controls — shared by the automotive model carousel */
 .showcase-bottom-controls {
   display: flex;
   align-items: center;
@@ -1041,7 +1155,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .showcase-progress-bar {
   height: 100%;
-  width: 16.66%;
+  width: 33%;
   background: linear-gradient(90deg, var(--felix-green), var(--felix-green-glow));
   border-radius: var(--radius-full);
   transition: width 0.15s ease-out;
@@ -1085,73 +1199,6 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center;
 }
 
-.showcase-series-badge {
-  font-size: 0.72rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: var(--felix-green-dark);
-  letter-spacing: 0.08em;
-  margin-bottom: 8px;
-}
-
-.showcase-model-title {
-  font-size: 1.65rem;
-  font-weight: 800;
-  line-height: 1.15;
-  margin-bottom: 6px;
-}
-
-.showcase-suitable {
-  font-size: 0.84rem;
-  color: var(--text-secondary);
-  margin-bottom: 24px;
-}
-
-.showcase-img-stage {
-  height: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 24px;
-  position: relative;
-}
-
-.showcase-product-img {
-  max-height: 190px;
-  max-width: 100%;
-  object-fit: contain;
-  transition: transform var(--trans-smooth);
-  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.14));
-}
-
-.showcase-product-card:hover .showcase-product-img {
-  transform: translateY(-10px) scale(1.05);
-}
-
-.showcase-specs-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  background: var(--bg-surface);
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
-  margin-bottom: 22px;
-}
-
-.spec-item-label {
-  font-size: 0.72rem;
-  color: var(--text-tertiary);
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.spec-item-value {
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
 /* ==========================================================================
    4. "A BATTERY FOR EVERY DRIVE" — DARK IMMERSIVE AUTOMOTIVE SECTION
    ========================================================================== */
@@ -1170,10 +1217,55 @@ h1, h2, h3, h4, h5, h6 {
   color: rgba(255, 255, 255, 0.7);
 }
 
+/* Horizontal carousel: native scroll + snap, autoplayed and dragged from JS */
+.drive-carousel {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 0 6px; /* headroom for the card hover lift */
+  margin-top: -10px;
+  cursor: grab;
+}
+
+.drive-carousel::-webkit-scrollbar { display: none; }
+
+.drive-carousel.is-dragging {
+  scroll-snap-type: none;
+  cursor: grabbing;
+  user-select: none;
+}
+
+.drive-carousel.is-dragging .drive-card { pointer-events: none; }
+
 .drive-category-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
   gap: 24px;
+}
+
+.drive-category-grid .drive-card {
+  flex: 0 0 calc((100% - 72px) / 4);
+  scroll-snap-align: start;
+}
+
+@media (max-width: 1200px) {
+  .drive-category-grid .drive-card { flex-basis: calc((100% - 48px) / 3); }
+}
+
+.automotive-drive-section .showcase-progress-wrap { background: rgba(255, 255, 255, 0.12); }
+.automotive-drive-section .showcase-counter { color: rgba(255, 255, 255, 0.6); }
+.automotive-drive-section .showcase-arrow-btn {
+  background: var(--bg-dark-elevated);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  box-shadow: none;
+}
+.automotive-drive-section .showcase-arrow-btn:hover {
+  background: var(--felix-green);
+  border-color: var(--felix-green);
 }
 
 .drive-card {
@@ -1182,44 +1274,53 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-xl);
   overflow: hidden;
-  height: 380px;
-  padding: 32px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   cursor: pointer;
   transition: all var(--trans-smooth);
 }
 
-.drive-card-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
+.drive-card-media {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  background: #EEF0EF;
+  overflow: hidden;
+}
+
+.drive-card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.42;
-  filter: grayscale(30%) contrast(1.1);
-  transition: all 0.8s var(--ease-out-expo);
-  z-index: 1;
+  display: block;
+  transition: transform 0.8s var(--ease-out-expo);
 }
 
-.drive-card-overlay {
+.drive-ah {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, rgba(17, 17, 17, 0.1) 0%, rgba(17, 17, 17, 0.92) 80%);
-  z-index: 2;
-  transition: background 0.4s ease;
+  left: 14px;
+  bottom: 14px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--felix-green);
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.4;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.drive-ah small {
+  font-size: 0.72em;
+  font-weight: 700;
+  margin-left: 2px;
 }
 
 .drive-card-content {
-  position: relative;
-  z-index: 3;
-  transform: translateY(28px);
-  transition: transform var(--trans-smooth);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 20px 22px 22px;
 }
 
 .drive-tag {
@@ -1228,46 +1329,61 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--felix-green-glow);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .drive-title {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 800;
   color: #FFFFFF;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .drive-desc {
   font-size: 0.86rem;
   color: rgba(255, 255, 255, 0.7);
-  line-height: 1.55;
-  opacity: 0;
-  transition: opacity var(--trans-smooth);
+  line-height: 1.5;
 }
 
-.drive-specs-reveal {
-  display: flex;
-  gap: 16px;
+.drive-specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
   margin-top: 14px;
   padding-top: 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
-  opacity: 0;
-  transition: opacity var(--trans-smooth);
 }
 
 .drive-stat {
-  font-size: 0.76rem;
-  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .drive-stat strong {
   display: block;
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #FFFFFF;
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.drive-cta {
+  margin-top: auto;
+  padding-top: 18px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--felix-green-glow);
+}
+
+.drive-cta i {
+  margin-left: 6px;
+  transition: transform var(--trans-smooth);
 }
 
 .drive-card:hover {
@@ -1276,19 +1392,12 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-6px);
 }
 
-.drive-card:hover .drive-card-bg {
-  transform: scale(1.12);
-  opacity: 0.55;
-  filter: grayscale(0%) contrast(1.15);
+.drive-card:hover .drive-card-img {
+  transform: scale(1.06);
 }
 
-.drive-card:hover .drive-card-content {
-  transform: translateY(0);
-}
-
-.drive-card:hover .drive-desc,
-.drive-card:hover .drive-specs-reveal {
-  opacity: 1;
+.drive-card:hover .drive-cta i {
+  transform: translateX(4px);
 }
 
 /* ==========================================================================
@@ -1543,83 +1652,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
-   8. APPLICATIONS GRID
-   ========================================================================== */
-.applications-section {
-  background: var(--bg-surface);
-}
-
-.apps-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-.app-card {
-  position: relative;
-  background: #FFFFFF;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  height: 320px;
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  transition: all var(--trans-smooth);
-}
-
-.app-card-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.55;
-  transition: all 0.8s var(--ease-out-expo);
-  z-index: 1;
-}
-
-.app-card-grad {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.85) 85%);
-  z-index: 2;
-}
-
-.app-card-info {
-  position: relative;
-  z-index: 3;
-}
-
-.app-card-title {
-  font-size: 1.45rem;
-  font-weight: 800;
-  color: #FFFFFF;
-  margin-bottom: 6px;
-}
-
-.app-card-desc {
-  font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.75);
-}
-
-.app-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--felix-green);
-  box-shadow: var(--shadow-card-hover);
-}
-
-.app-card:hover .app-card-img {
-  transform: scale(1.1);
-  opacity: 0.7;
-}
-
-/* ==========================================================================
    9. WHY FELIX — 6 CORE BENEFITS
    ========================================================================== */
 .why-felix-section {
@@ -1743,55 +1775,6 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.76rem;
   color: rgba(255, 255, 255, 0.65);
   line-height: 1.5;
-}
-
-/* ==========================================================================
-   11. DEALER & DISTRIBUTOR CTA — "POWER YOUR BUSINESS WITH FELIX"
-   ========================================================================== */
-.dealer-cta-section {
-  background: var(--bg-main);
-}
-
-.dealer-cta-box {
-  background: linear-gradient(135deg, #054C1A 0%, #00A82D 50%, #00B83F 100%);
-  border-radius: var(--radius-2xl);
-  padding: 64px 60px;
-  color: #FFFFFF;
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 48px;
-  align-items: center;
-  box-shadow: 0 24px 60px rgba(0, 168, 45, 0.35);
-  position: relative;
-  overflow: hidden;
-}
-
-.dealer-cta-headline {
-  font-size: clamp(2.2rem, 3.4vw, 3rem);
-  font-weight: 800;
-  line-height: 1.15;
-  color: #FFFFFF;
-  margin-bottom: 16px;
-}
-
-.dealer-cta-sub {
-  font-size: 1.05rem;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.6;
-  margin-bottom: 28px;
-}
-
-.dealer-cta-actions {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.dealer-cta-img {
-  width: 100%;
-  max-width: 380px;
-  height: auto;
-  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.35));
 }
 
 /* ==========================================================================
@@ -2721,19 +2704,12 @@ h1, h2, h3, h4, h5, h6 {
    is invisible content on a phone, so it is shown unconditionally here.
    ========================================================================== */
 @media (hover: none), (pointer: coarse) {
-  /* Drive category cards hide their description + specs behind :hover */
-  .drive-card-content { transform: translateY(0); }
-  .drive-desc,
-  .drive-specs-reveal { opacity: 1; }
-  .drive-card-bg { opacity: 0.55; }
-
   /* No lift-on-hover transforms that stick after a tap */
   .btn:hover,
   .benefit-card:hover,
-  .app-card:hover,
   .timeline-step-card:hover,
   .testimonial-card:hover,
-  .showcase-product-card:hover,
+  .range-card:hover,
   .telemetry-card:hover,
   .floating-callout-card:hover,
   .reviews-source-item:hover,
@@ -2839,34 +2815,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 992px) {
-  .drive-category-grid { grid-template-columns: repeat(2, 1fr); }
+  .drive-category-grid .drive-card { flex-basis: calc((100% - 24px) / 2); }
   .benefits-grid { grid-template-columns: repeat(2, 1fr); }
-  .apps-grid { grid-template-columns: repeat(2, 1fr); }
   .exploded-cutaway-stage { grid-template-columns: 1fr; gap: 32px; }
-  .dealer-cta-box { grid-template-columns: 1fr; text-align: center; padding: 44px 32px; }
-  .dealer-cta-actions { justify-content: center; }
-  .dealer-cta-img { margin: 0 auto; }
   .contact-grid-wrap { grid-template-columns: 1fr; }
   .footer-top-grid { grid-template-columns: 1fr 1fr; }
   .calc-container-grid { grid-template-columns: 1fr; }
   .specs-modal-grid { grid-template-columns: 1fr; gap: 20px; }
   .specs-actions-bar { flex-direction: column; align-items: stretch; }
-  /* Restore native horizontal scroll for product showcase on tablet/mobile */
-  .product-horizontal-wrap {
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
-    overscroll-behavior-x: contain;
-    scrollbar-width: none;
-  }
-  .product-horizontal-wrap::-webkit-scrollbar { display: none; }
-  .product-horizontal-track {
-    padding-left: 24px;
-    padding-right: 24px;
-    width: max-content;
-  }
-  .showcase-product-card { scroll-snap-align: center; }
 }
 
 /* --------------------------------------------------------------------------
@@ -2905,7 +2861,6 @@ h1, h2, h3, h4, h5, h6 {
   .btn-sm { min-height: 40px; }
 
   .hero-cta-row,
-  .dealer-cta-actions,
   .specs-actions-bar {
     flex-direction: column;
     align-items: stretch;
@@ -2913,7 +2868,6 @@ h1, h2, h3, h4, h5, h6 {
     gap: 12px;
   }
   .hero-cta-row .btn,
-  .dealer-cta-actions .btn,
   .specs-actions-bar .btn { width: 100%; }
 
   /* --- Hero --- */
@@ -2943,9 +2897,7 @@ h1, h2, h3, h4, h5, h6 {
   .energy-vector-svg { display: none; }
 
   /* --- Grid collapses --- */
-  .drive-category-grid { grid-template-columns: 1fr; }
   .benefits-grid { grid-template-columns: 1fr; }
-  .apps-grid { grid-template-columns: 1fr; }
   .timeline-horizontal-track { grid-template-columns: 1fr; }
   .stats-grid-row { grid-template-columns: repeat(2, 1fr); gap: 20px; }
   .footer-top-grid { grid-template-columns: 1fr; }
@@ -2996,7 +2948,6 @@ h1, h2, h3, h4, h5, h6 {
   .rev-filter-pill { flex: 0 0 auto; min-height: 40px; }
 
   /* --- Cards & sections --- */
-  .app-card { height: 260px; }
   .benefit-card,
   .timeline-step-card,
   .exploded-layer-card,
@@ -3067,12 +3018,11 @@ h1, h2, h3, h4, h5, h6 {
    SMALL PHONE
    -------------------------------------------------------------------------- */
 @media (max-width: 576px) {
+  .drive-category-grid .drive-card { flex-basis: 85%; }
   .section-badge { font-size: 0.68rem; padding: 5px 12px; margin-bottom: 14px; }
   .stats-grid-row { grid-template-columns: 1fr; }
   .calc-metrics-grid { grid-template-columns: 1fr; }
   .reviews-aggregate-box { padding: 22px 16px; }
-  .dealer-cta-box { padding: 32px 20px; }
-  .app-card { height: 230px; }
   .drive-title { font-size: 1.3rem; }
   .footer-bottom-bar { flex-direction: column; gap: 12px; text-align: center; }
   .footer-links { justify-content: center; flex-wrap: wrap; }
@@ -3084,7 +3034,6 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 400px) {
   .brand-logo-img { height: 30px; }
   .nav-actions .btn-primary { padding: 8px 11px; font-size: 0.68rem; }
-  .showcase-product-card { max-width: 88vw; padding: 24px 20px; }
   .btn { padding: 12px 16px; font-size: 0.84rem; }
   .hero-metrics-strip { gap: 14px 18px; }
 }

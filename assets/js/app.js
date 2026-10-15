@@ -59,8 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeroEnergyCanvas();
   initHeroAntigravityMotion();
   initEnergySectionMotion();
-  initShowcaseScroll();
+  initProductRangeMotion();
   initAutomotiveSectionMotion();
+  initDriveCarousel();
   initProductDetailConnectors();
   initExplodedCutawayMotion();
   initPerformanceCounters();
@@ -272,11 +273,11 @@ function initCustomCursor() {
   requestAnimationFrame(renderFollower);
 
   // Hover states on interactive elements
-  const hoverTargets = document.querySelectorAll('a, button, .drive-card, .showcase-product-card, .app-card, .benefit-card, .timeline-step-card, .telemetry-card');
+  const hoverTargets = document.querySelectorAll('a, button, .drive-card, .range-card, .benefit-card, .timeline-step-card, .telemetry-card');
   hoverTargets.forEach(el => {
     el.addEventListener('mouseenter', () => {
       follower.classList.add('cursor-hover');
-      if (el.classList.contains('drive-card') || el.classList.contains('app-card')) {
+      if (el.classList.contains('drive-card')) {
         follower.classList.add('cursor-view');
       }
     });
@@ -560,145 +561,11 @@ function initEnergySectionMotion() {
 }
 
 // ==========================================================================
-// 6. Product Showcase Horizontal Scroll Experience
+// 6. Product Range Cards Motion
 // ==========================================================================
-function initShowcaseScroll() {
-  const wrap = document.getElementById('showcaseHorizontalWrap');
-  const track = document.getElementById('showcaseHorizontalTrack');
-  const progressBar = document.getElementById('showcaseProgressBar');
-  const counterEl = document.getElementById('showcaseCounter');
-  const prevBtn = document.getElementById('showcasePrevBtn');
-  const nextBtn = document.getElementById('showcaseNextBtn');
-  const cards = document.querySelectorAll('.showcase-product-card');
-  if (!wrap || !track || !cards.length) return;
-
-  let showcaseTween = null;
-
-  // Measured card pitch (width + gap) so the counter and arrows stay accurate
-  // across the fluid mobile card widths.
-  function cardStep() {
-    if (cards.length > 1) {
-      const a = cards[0].getBoundingClientRect();
-      const b = cards[1].getBoundingClientRect();
-      const step = b.left - a.left;
-      if (step > 0) return step;
-    }
-    return cards[0] ? cards[0].getBoundingClientRect().width + 16 : 340;
-  }
-
-  function setupDesktopPin() {
-    if (window.innerWidth > 992 && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-      const getScrollAmount = () => -(track.scrollWidth - window.innerWidth + 80);
-
-      showcaseTween = gsap.to(track, {
-        x: getScrollAmount,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '#showcase',
-          start: 'top 60px',
-          end: () => `+=${Math.max(track.scrollWidth - window.innerWidth + 400, 600)}`,
-          pin: true,
-          scrub: 1.1,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            if (progressBar) {
-              const pct = 16.66 + self.progress * (100 - 16.66);
-              progressBar.style.width = `${pct}%`;
-            }
-            if (counterEl) {
-              const cardIdx = Math.min(Math.floor(self.progress * cards.length) + 1, cards.length);
-              counterEl.textContent = `${cardIdx} / ${cards.length}`;
-            }
-          }
-        }
-      });
-    } else {
-      // Mobile & Tablet: Native horizontal touch scrolling with snap
-      wrap.addEventListener('scroll', () => {
-        const scrollLeft = wrap.scrollLeft;
-        const maxScroll = wrap.scrollWidth - wrap.clientWidth;
-        if (maxScroll > 0 && progressBar) {
-          const pct = (scrollLeft / maxScroll) * 100;
-          progressBar.style.width = `${Math.max(pct, 16.66)}%`;
-        }
-        if (counterEl && maxScroll > 0) {
-          // Map scroll progress across the range so the last card always reads
-          // as the last index — the track's max scroll stops short of a full
-          // card pitch, which an offset-based count rounds down.
-          const progress = scrollLeft / maxScroll;
-          const cardIdx = Math.min(Math.round(progress * (cards.length - 1)) + 1, cards.length);
-          counterEl.textContent = `${cardIdx} / ${cards.length}`;
-        }
-      }, { passive: true });
-    }
-  }
-
-  setupDesktopPin();
-
-  // Only rebuild on a real width change: mobile browsers fire resize constantly
-  // as the address bar collapses, which would thrash the pinned timeline.
-  let lastWidth = window.innerWidth;
-  window.addEventListener('resize', debounce(() => {
-    if (window.innerWidth === lastWidth) return;
-    lastWidth = window.innerWidth;
-    if (showcaseTween && showcaseTween.scrollTrigger) {
-      showcaseTween.scrollTrigger.kill();
-      showcaseTween.kill();
-      showcaseTween = null;
-      gsap.set(track, { clearProps: 'all' });
-      setupDesktopPin();
-    }
-  }, 200), { passive: true });
-
-  // Prev / Next button navigation
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
-      if (showcaseTween && showcaseTween.scrollTrigger) {
-        const st = showcaseTween.scrollTrigger;
-        const curProgress = st.progress;
-        const step = 1 / (cards.length - 1);
-        const newProgress = Math.max(0, curProgress - step);
-        const targetScroll = st.start + newProgress * (st.end - st.start);
-        if (lenis) lenis.scrollTo(targetScroll, { duration: 0.8 });
-        else window.scrollTo({ top: targetScroll, behavior: 'smooth' });
-      } else {
-        wrap.scrollBy({ left: -cardStep(), behavior: 'smooth' });
-      }
-    });
-  }
-
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-      if (showcaseTween && showcaseTween.scrollTrigger) {
-        const st = showcaseTween.scrollTrigger;
-        const curProgress = st.progress;
-        const step = 1 / (cards.length - 1);
-        const newProgress = Math.min(1, curProgress + step);
-        const targetScroll = st.start + newProgress * (st.end - st.start);
-        if (lenis) lenis.scrollTo(targetScroll, { duration: 0.8 });
-        else window.scrollTo({ top: targetScroll, behavior: 'smooth' });
-      } else {
-        wrap.scrollBy({ left: cardStep(), behavior: 'smooth' });
-      }
-    });
-  }
-
-  // Floating hover physics for battery cards (pointer devices only)
-  if (!isTouch()) cards.forEach(card => {
-    const img = card.querySelector('.showcase-product-img');
-    if (!img) return;
-
-    card.addEventListener('mouseenter', () => {
-      if (typeof gsap !== 'undefined') {
-        gsap.to(img, { y: -12, scale: 1.05, duration: 0.4, ease: 'power2.out' });
-      }
-    });
-    card.addEventListener('mouseleave', () => {
-      if (typeof gsap !== 'undefined') {
-        gsap.to(img, { y: 0, scale: 1, duration: 0.5, ease: 'power2.out' });
-      }
-    });
-  });
+function initProductRangeMotion() {
+  revealOnScroll('.range-card', { y: 40, opacity: 0 },
+    { trigger: '#showcase', start: 'top 78%', stagger: 0.08, duration: 0.65 });
 }
 
 // ==========================================================================
@@ -711,6 +578,150 @@ function initAutomotiveSectionMotion() {
     revealOnScroll(card, { y: 40, opacity: 0 },
       { trigger: '#automotive', start: 'top 78%', duration: 0.65, delay: idx * 0.08 });
   });
+}
+
+// ==========================================================================
+// 7b. Automotive Model Carousel — autoplays right-to-left; swipe, drag or arrows
+// ==========================================================================
+function initDriveCarousel() {
+  const viewport = document.getElementById('driveCarousel');
+  const track = document.getElementById('driveTrack');
+  const prevBtn = document.getElementById('drivePrevBtn');
+  const nextBtn = document.getElementById('driveNextBtn');
+  const progressBar = document.getElementById('driveProgressBar');
+  const counterEl = document.getElementById('driveCounter');
+  if (!viewport || !track) return;
+  const cards = track.querySelectorAll('.drive-card');
+  if (!cards.length) return;
+
+  const AUTOPLAY_MS = 3500;
+  const RESUME_MS = 6000; // quiet time after a manual slide before autoplay resumes
+  let timer = null;
+  let resumeTimer = null;
+  let hovering = false;
+  let inView = false;
+
+  const maxScroll = () => viewport.scrollWidth - viewport.clientWidth;
+  function step() {
+    if (cards.length > 1) {
+      const s = cards[1].offsetLeft - cards[0].offsetLeft;
+      if (s > 0) return s;
+    }
+    return cards[0].offsetWidth;
+  }
+  const perView = () => Math.max(1, Math.round(viewport.clientWidth / step()));
+
+  function updateUi() {
+    const max = maxScroll();
+    const progress = max > 0 ? viewport.scrollLeft / max : 1;
+    const shown = perView() / cards.length;
+    if (progressBar) progressBar.style.width = `${(shown + progress * (1 - shown)) * 100}%`;
+    if (counterEl) {
+      const first = Math.min(Math.round(viewport.scrollLeft / step()) + 1, cards.length);
+      const last = Math.min(first + perView() - 1, cards.length);
+      counterEl.textContent = last > first ? `${first}–${last} / ${cards.length}` : `${first} / ${cards.length}`;
+    }
+  }
+
+  // Move one card; wraps around at either end so autoplay loops forever
+  function go(dir) {
+    const max = maxScroll();
+    if (max <= 0) return;
+    let target;
+    if (dir > 0) target = viewport.scrollLeft >= max - 4 ? 0 : viewport.scrollLeft + step();
+    else target = viewport.scrollLeft <= 4 ? max : viewport.scrollLeft - step();
+    viewport.scrollTo({ left: target, behavior: MQ_REDUCED.matches ? 'auto' : 'smooth' });
+  }
+
+  function stop() {
+    clearInterval(timer);
+    timer = null;
+  }
+  function start() {
+    stop();
+    if (MQ_REDUCED.matches || hovering || !inView || document.hidden) return;
+    timer = setInterval(() => go(1), AUTOPLAY_MS);
+  }
+  function pauseForUser() {
+    stop();
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(start, RESUME_MS);
+  }
+
+  // Arrow buttons
+  if (prevBtn) prevBtn.addEventListener('click', () => { pauseForUser(); go(-1); });
+  if (nextBtn) nextBtn.addEventListener('click', () => { pauseForUser(); go(1); });
+
+  // Touch swipe and trackpad scroll are native; just pause autoplay for them
+  viewport.addEventListener('touchstart', pauseForUser, { passive: true });
+  viewport.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) pauseForUser();
+  }, { passive: true });
+
+  // Mouse drag to slide
+  let dragging = false;
+  let dragged = false;
+  let dragStartX = 0;
+  let dragStartScroll = 0;
+  viewport.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    dragging = true;
+    dragged = false;
+    dragStartX = e.clientX;
+    dragStartScroll = viewport.scrollLeft;
+    pauseForUser();
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - dragStartX;
+    if (!dragged && Math.abs(dx) > 5) {
+      dragged = true;
+      viewport.classList.add('is-dragging');
+    }
+    if (dragged) viewport.scrollLeft = dragStartScroll - dx;
+  });
+  window.addEventListener('pointerup', () => {
+    if (!dragging) return;
+    dragging = false;
+    if (!dragged) return;
+    viewport.classList.remove('is-dragging');
+    const s = step();
+    viewport.scrollTo({ left: Math.round(viewport.scrollLeft / s) * s, behavior: 'smooth' });
+    // The click that ends a drag must not open the quote form
+    setTimeout(() => { dragged = false; }, 0);
+  });
+  viewport.addEventListener('click', (e) => {
+    if (dragged) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  }, true);
+  viewport.addEventListener('dragstart', (e) => e.preventDefault());
+
+  // Pause while the visitor is reading a card
+  viewport.addEventListener('mouseenter', () => { hovering = true; stop(); });
+  viewport.addEventListener('mouseleave', () => { hovering = false; start(); });
+
+  // Only run while on screen and the tab is visible
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => {
+      inView = entries[0].isIntersecting;
+      if (inView) start(); else stop();
+    }, { threshold: 0.25 }).observe(viewport);
+  } else {
+    inView = true;
+    start();
+  }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
+
+  let ticking = false;
+  viewport.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { updateUi(); ticking = false; });
+  }, { passive: true });
+  window.addEventListener('resize', debounce(updateUi, 150), { passive: true });
+  updateUi();
 }
 
 // ==========================================================================
@@ -959,10 +970,6 @@ function initPerformanceCounters() {
 // ==========================================================================
 function initApplicationsAndManufacturingMotion() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-
-  // Applications cards staggered entrance
-  revealOnScroll('.app-card', { y: 40, opacity: 0, scale: 0.95 },
-    { trigger: '#applications', start: 'top 78%', stagger: 0.1, duration: 0.7 });
 
   // Manufacturing timeline cards
   revealOnScroll('.timeline-step-card', { y: 35, opacity: 0, scale: 0.96 },

@@ -116,9 +116,7 @@
           <li><a href="#showcase" class="nav-link">Products</a></li>
           <li><a href="#automotive" class="nav-link">Automotive</a></li>
           <li><a href="#technology" class="nav-link">Technology</a></li>
-          <li><a href="#applications" class="nav-link">Applications</a></li>
           <li><a href="#testimonials" class="nav-link">Reviews</a></li>
-          <li><a href="#dealers" class="nav-link">Dealers</a></li>
           <li><a href="#contact" class="nav-link">Contact</a></li>
         </ul>
       </nav>
@@ -126,9 +124,9 @@
         <button class="btn btn-secondary btn-sm" onclick="openQuoteModal('Dealer / Login Portal')">
           <i class="fa-regular fa-user"></i> Login
         </button>
-        <a href="#dealers" class="btn btn-primary btn-sm">
+        <button class="btn btn-primary btn-sm" onclick="openQuoteModal('Distributor Partnership Application')">
           <i class="fa-solid fa-handshake"></i> Become a Dealer
-        </a>
+        </button>
         <button class="mobile-toggle-btn" id="mobileMenuToggle" aria-label="Toggle navigation">
           <i class="fa-solid fa-bars"></i>
         </button>
@@ -275,165 +273,90 @@
   </section>
 
   <!-- ==========================================
-       3. BATTERY PRODUCT SHOWCASE — "ENGINEERED FOR EVERY JOURNEY"
+       3. PRODUCT RANGE — FIVE FELIX PRODUCT LINES
        ========================================== -->
-  <section class="section-py product-showcase-section" id="showcase">
+  <section class="section-py product-range-section" id="showcase">
     <div class="container">
       <div class="section-header">
-        <span class="section-badge"><i class="fa-solid fa-car-battery"></i> FLAGSHIP SERIES</span>
-        <h2 class="section-title">ENGINEERED FOR <span class="glow-text">EVERY JOURNEY</span></h2>
+        <span class="section-badge"><i class="fa-solid fa-car-battery"></i> OUR PRODUCTS</span>
+        <h2 class="section-title">POWER FOR <span class="glow-text">EVERY NEED</span></h2>
         <p class="section-subtitle">
-          Precision-engineered lead-calcium and tubular plate batteries built for extreme vibration resistance, zero maintenance, and instant start under every climate.
+          Automotive, inverter, solar and bike batteries, plus inverters, all tested to Bureau of Indian Standards specifications.
         </p>
       </div>
-    </div>
 
-    <!-- Horizontally Scrolling Product Showcase -->
-    <div class="product-horizontal-wrap" id="showcaseHorizontalWrap">
-      <div class="product-horizontal-track" id="showcaseHorizontalTrack">
+      <div class="range-grid">
 
-        <!-- Card 1: FX 800 -->
-        <div class="showcase-product-card" data-model="fx800">
-          <div>
-            <div class="showcase-series-badge">AUTOMOTIVE HEAVY DUTY</div>
-            <h3 class="showcase-model-title">FELIX FX 800</h3>
-            <p class="showcase-suitable">Premium SUVs, Heavy Diesel Vehicles & All-Wheel Drives</p>
-            <div class="showcase-img-stage">
-              <img loading="lazy" decoding="async" src="assets/images/products/battery-fx700-automotive.png" alt="Felix FX 800" class="showcase-product-img">
-            </div>
-            <div class="showcase-specs-list">
-              <div><div class="spec-item-label">Capacity</div><div class="spec-item-value">80 Ah (20Hr)</div></div>
-              <div><div class="spec-item-label">Voltage</div><div class="spec-item-value">12 Volts</div></div>
-              <div><div class="spec-item-label">Cold Cranking</div><div class="spec-item-value">720 CCA</div></div>
-              <div><div class="spec-item-label">Technology</div><div class="spec-item-value">Silver Calcium</div></div>
-            </div>
+        <!-- 1. Automotive Batteries -->
+        <div class="range-card">
+          <div class="range-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/automotive/auto-n70z.jpg" width="960" height="640" alt="Felix FX 700 automotive battery">
           </div>
-          <button class="btn btn-primary" onclick="openSpecsModal('fx800')">
-            <i class="fa-solid fa-circle-info"></i> VIEW DETAILS
-          </button>
+          <div class="range-card-body">
+            <span class="range-tag">Cars · Trucks · Tractors</span>
+            <h3 class="range-title">Automotive Batteries</h3>
+            <p class="range-desc">Maintenance-free calcium starting batteries for everything from city hatchbacks to multi-axle trucks.</p>
+            <ul class="range-facts"><li>32–200 Ah</li><li>Up to 1,160 CCA</li><li>36-month warranty</li></ul>
+            <a href="#automotive" class="btn btn-primary btn-sm range-cta">View range <i class="fa-solid fa-arrow-down"></i></a>
+          </div>
         </div>
 
-        <!-- Card 2: FX 700 -->
-        <div class="showcase-product-card" data-model="fx700">
-          <div>
-            <div class="showcase-series-badge">PASSENGER CAR & SUV</div>
-            <h3 class="showcase-model-title">FELIX FX 700</h3>
-            <p class="showcase-suitable">Executive Sedans, Mid SUVs & Modern Commercial Transits</p>
-            <div class="showcase-img-stage">
-              <img loading="lazy" decoding="async" src="assets/images/products/battery-fx700-automotive.png" alt="Felix FX 700" class="showcase-product-img">
-            </div>
-            <div class="showcase-specs-list">
-              <div><div class="spec-item-label">Capacity</div><div class="spec-item-value">65 Ah (20Hr)</div></div>
-              <div><div class="spec-item-label">Voltage</div><div class="spec-item-value">12 Volts</div></div>
-              <div><div class="spec-item-label">Cold Cranking</div><div class="spec-item-value">610 CCA</div></div>
-              <div><div class="spec-item-label">Technology</div><div class="spec-item-value">Calcium-Calcium</div></div>
-            </div>
+        <!-- 2. Inverter Batteries -->
+        <div class="range-card">
+          <div class="range-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/products/cat-inverter-battery.jpg" width="960" height="640" alt="Felix FT-1800 tubular inverter battery">
           </div>
-          <button class="btn btn-primary" onclick="openSpecsModal('fx700')">
-            <i class="fa-solid fa-circle-info"></i> VIEW DETAILS
-          </button>
+          <div class="range-card-body">
+            <span class="range-tag">Home & office backup</span>
+            <h3 class="range-title">Inverter Batteries</h3>
+            <p class="range-desc">Tall tubular batteries built for long power-cut backup in homes, shops and offices.</p>
+            <ul class="range-facts"><li>100–240 Ah</li><li>Tall tubular plates</li><li>60-month warranty</li></ul>
+            <button class="btn btn-primary btn-sm range-cta" onclick="openQuoteModal('Inverter Batteries')">Get a quote <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
         </div>
 
-        <!-- Card 3: FX 600 -->
-        <div class="showcase-product-card" data-model="fx600">
-          <div>
-            <div class="showcase-series-badge">PASSENGER VEHICLES</div>
-            <h3 class="showcase-model-title">FELIX FX 600</h3>
-            <p class="showcase-suitable">Compact SUVs, Family Sedans & Urban Hatchbacks</p>
-            <div class="showcase-img-stage">
-              <img loading="lazy" decoding="async" src="assets/images/products/battery-fx400-compact.png" alt="Felix FX 600" class="showcase-product-img">
-            </div>
-            <div class="showcase-specs-list">
-              <div><div class="spec-item-label">Capacity</div><div class="spec-item-value">55 Ah (20Hr)</div></div>
-              <div><div class="spec-item-label">Voltage</div><div class="spec-item-value">12 Volts</div></div>
-              <div><div class="spec-item-label">Cold Cranking</div><div class="spec-item-value">520 CCA</div></div>
-              <div><div class="spec-item-label">Technology</div><div class="spec-item-value">Low-Resist PE</div></div>
-            </div>
+        <!-- 3. Solar Batteries -->
+        <div class="range-card">
+          <div class="range-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/products/cat-solar-battery.jpg" width="960" height="640" alt="Felix FT-2500 tubular solar battery">
           </div>
-          <button class="btn btn-primary" onclick="openSpecsModal('fx600')">
-            <i class="fa-solid fa-circle-info"></i> VIEW DETAILS
-          </button>
+          <div class="range-card-body">
+            <span class="range-tag">Solar storage</span>
+            <h3 class="range-title">Solar Batteries</h3>
+            <p class="range-desc">Deep-cycle tubular batteries, C10 rated, for solar panels and off-grid power systems.</p>
+            <ul class="range-facts"><li>20–150 Ah (C10)</li><li>Deep-cycle tubular</li><li>60-month warranty</li></ul>
+            <button class="btn btn-primary btn-sm range-cta" onclick="openQuoteModal('Solar Batteries')">Get a quote <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
         </div>
 
-        <!-- Card 4: FX 500 -->
-        <div class="showcase-product-card" data-model="fx500">
-          <div>
-            <div class="showcase-series-badge">CITY COMPACT CARS</div>
-            <h3 class="showcase-model-title">FELIX FX 500</h3>
-            <p class="showcase-suitable">Hatchbacks, Taxis & High-Efficiency City Commuters</p>
-            <div class="showcase-img-stage">
-              <img loading="lazy" decoding="async" src="assets/images/products/battery-fx400-compact.png" alt="Felix FX 500" class="showcase-product-img">
-            </div>
-            <div class="showcase-specs-list">
-              <div><div class="spec-item-label">Capacity</div><div class="spec-item-value">45 Ah (20Hr)</div></div>
-              <div><div class="spec-item-label">Voltage</div><div class="spec-item-value">12 Volts</div></div>
-              <div><div class="spec-item-label">Cold Cranking</div><div class="spec-item-value">410 CCA</div></div>
-              <div><div class="spec-item-label">Technology</div><div class="spec-item-value">Magic Eye Level</div></div>
-            </div>
+        <!-- 4. Bike Batteries -->
+        <div class="range-card">
+          <div class="range-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/products/cat-bike-battery.jpg" width="960" height="640" alt="Felix motorcycle batteries FX 2.5LB, FX 7LB and FX9LB">
           </div>
-          <button class="btn btn-primary" onclick="openSpecsModal('fx500')">
-            <i class="fa-solid fa-circle-info"></i> VIEW DETAILS
-          </button>
+          <div class="range-card-body">
+            <span class="range-tag">Two-wheelers</span>
+            <h3 class="range-title">Bike Batteries</h3>
+            <p class="range-desc">Sealed, maintenance-free VRLA batteries for motorcycles and scooters.</p>
+            <ul class="range-facts"><li>2.5–9 Ah</li><li>Sealed VRLA</li><li>48-month warranty</li></ul>
+            <button class="btn btn-primary btn-sm range-cta" onclick="openQuoteModal('Bike Batteries')">Get a quote <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
         </div>
 
-        <!-- Card 5: IT-1800 Tall Tubular -->
-        <div class="showcase-product-card" data-model="it1800">
-          <div>
-            <div class="showcase-series-badge">HOME & OFFICE INVERTER</div>
-            <h3 class="showcase-model-title">FELIX IT-1800</h3>
-            <p class="showcase-suitable">High-End Inverters, Clinics & Continuous Commercial Backup</p>
-            <div class="showcase-img-stage">
-              <img loading="lazy" decoding="async" src="assets/images/products/battery-tubular-inverter.png" alt="Felix IT-1800 Tubular" class="showcase-product-img">
-            </div>
-            <div class="showcase-specs-list">
-              <div><div class="spec-item-label">Capacity</div><div class="spec-item-value">180 Ah (C20)</div></div>
-              <div><div class="spec-item-label">Voltage</div><div class="spec-item-value">12 Volts</div></div>
-              <div><div class="spec-item-label">Warranty</div><div class="spec-item-value">60 Months</div></div>
-              <div><div class="spec-item-label">Plates</div><div class="spec-item-value">Tall Tubular Gauntlet</div></div>
-            </div>
+        <!-- 5. Inverters -->
+        <div class="range-card">
+          <div class="range-card-media range-card-media--icon" aria-hidden="true">
+            <i class="fa-solid fa-plug-circle-bolt"></i>
           </div>
-          <button class="btn btn-primary" onclick="openSpecsModal('it1800')">
-            <i class="fa-solid fa-circle-info"></i> VIEW DETAILS
-          </button>
+          <div class="range-card-body">
+            <span class="range-tag">Home power backup</span>
+            <h3 class="range-title">Inverters</h3>
+            <p class="range-desc">Inverters to pair with Felix tubular batteries for complete home and office power backup.</p>
+            <ul class="range-facts"><li>Home & office</li><li>Pairs with Felix tubular batteries</li></ul>
+            <button class="btn btn-primary btn-sm range-cta" onclick="openQuoteModal('Inverters')">Get a quote <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
         </div>
 
-        <!-- Card 6: Solar 220Ah Deep Cycle -->
-        <div class="showcase-product-card" data-model="solar220">
-          <div>
-            <div class="showcase-series-badge">SOLAR RENEWABLE STORAGE</div>
-            <h3 class="showcase-model-title">FELIX SOLAR 220</h3>
-            <p class="showcase-suitable">Off-Grid Solar Farms, Agricultural Pumps & UPS Arrays</p>
-            <div class="showcase-img-stage">
-              <img loading="lazy" decoding="async" src="assets/images/products/battery-tubular-tall-handle.png" alt="Felix Solar 220" class="showcase-product-img">
-            </div>
-            <div class="showcase-specs-list">
-              <div><div class="spec-item-label">Capacity</div><div class="spec-item-value">220 Ah (C10)</div></div>
-              <div><div class="spec-item-label">Voltage</div><div class="spec-item-value">12 Volts</div></div>
-              <div><div class="spec-item-label">Cycles</div><div class="spec-item-value">5,400+ @ 20% DOD</div></div>
-              <div><div class="spec-item-label">Spine Alloy</div><div class="spec-item-value">Low-Antimony Se</div></div>
-            </div>
-          </div>
-          <button class="btn btn-primary" onclick="openSpecsModal('solar220')">
-            <i class="fa-solid fa-circle-info"></i> VIEW DETAILS
-          </button>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Showcase Bottom Controls -->
-    <div class="showcase-bottom-controls container">
-      <div class="showcase-progress-wrap">
-        <div class="showcase-progress-bar" id="showcaseProgressBar"></div>
-      </div>
-      <div class="showcase-nav-btns">
-        <button type="button" class="showcase-arrow-btn" id="showcasePrevBtn" aria-label="Previous Product">
-          <i class="fa-solid fa-arrow-left"></i>
-        </button>
-        <span class="showcase-counter" id="showcaseCounter">1 / 6</span>
-        <button type="button" class="showcase-arrow-btn" id="showcaseNextBtn" aria-label="Next Product">
-          <i class="fa-solid fa-arrow-right"></i>
-        </button>
       </div>
     </div>
   </section>
@@ -444,111 +367,272 @@
   <section class="section-py automotive-drive-section" id="automotive">
     <div class="container">
       <div class="section-header">
-        <span class="section-badge dark-badge"><i class="fa-solid fa-road"></i> AUTOMOTIVE SEGMENTS</span>
         <h2 class="section-title">A BATTERY FOR <span class="glow-text">EVERY DRIVE</span></h2>
         <p class="section-subtitle">
-          Whether navigating stop-and-go city traffic, hauling heavy interstate freight, or powering agricultural harvests, Felix powers every engine with absolute authority.
+          Maintenance-free calcium batteries from 32Ah to 200Ah, in right- and left-hand terminal layouts, for everything from city hatchbacks to multi-axle trucks and tractors.
         </p>
       </div>
 
-      <div class="drive-category-grid">
+      <div class="drive-carousel" id="driveCarousel" aria-label="Felix automotive battery models">
+      <div class="drive-category-grid" id="driveTrack">
 
-        <!-- 1. CAR -->
-        <div class="drive-card" onclick="openQuoteModal('Category: Passenger Car')">
-          <img loading="lazy" decoding="async" src="assets/images/battery-cover-showcase.jpg" alt="Passenger Cars" class="drive-card-bg">
-          <div class="drive-card-overlay"></div>
+        <!-- 01. NS40 -->
+        <div class="drive-card" onclick="openQuoteModal('Felix NS40 (32B20R / 32B20L) 32Ah')">
+          <div class="drive-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/automotive/auto-ns40.jpg" width="960" height="640" alt="Felix FX 400 automotive battery — NS40 32Ah" class="drive-card-img" draggable="false">
+            <span class="drive-ah">32<small>Ah</small></span>
+          </div>
           <div class="drive-card-content">
-            <span class="drive-tag">SEGMENT 01</span>
-            <h3 class="drive-title">PASSENGER CARS</h3>
-            <p class="drive-desc">Instant high-energy starting for premium sedans, compact hatchbacks, and hybrid start-stop vehicles.</p>
-            <div class="drive-specs-reveal">
-              <div class="drive-stat"><span>Models</span><strong>32Ah–65Ah</strong></div>
-              <div class="drive-stat"><span>Max CCA</span><strong>610 A</strong></div>
-              <div class="drive-stat"><span>Warranty</span><strong>36–48 Mo</strong></div>
+            <span class="drive-tag">32B20R · 32B20L</span>
+            <h3 class="drive-title">NS40</h3>
+            <p class="drive-desc">Hatchbacks & small cars</p>
+            <div class="drive-specs">
+              <div class="drive-stat"><span>CCA</span><strong>300 A</strong></div>
+              <div class="drive-stat"><span>Reserve</span><strong>36 min</strong></div>
+              <div class="drive-stat"><span>Size (mm)</span><strong>195×125×224</strong></div>
+              <div class="drive-stat"><span>Weight</span><strong>10.9 kg</strong></div>
             </div>
+            <span class="drive-cta">Get a quote <i class="fa-solid fa-arrow-right"></i></span>
           </div>
         </div>
 
-        <!-- 2. SUV -->
-        <div class="drive-card" onclick="openQuoteModal('Category: Luxury SUV & 4x4')">
-          <img loading="lazy" decoding="async" src="assets/images/battery-range-hero.jpg" alt="SUVs and 4x4" class="drive-card-bg">
-          <div class="drive-card-overlay"></div>
+        <!-- 02. NS40Z -->
+        <div class="drive-card" onclick="openQuoteModal('Felix NS40Z (38B20R / 38B20L) 35Ah')">
+          <div class="drive-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/automotive/auto-ns40z.jpg" width="960" height="640" alt="Felix FX 400 automotive battery — NS40Z 35Ah" class="drive-card-img" draggable="false">
+            <span class="drive-ah">35<small>Ah</small></span>
+          </div>
           <div class="drive-card-content">
-            <span class="drive-tag">SEGMENT 02</span>
-            <h3 class="drive-title">LUXURY SUVS & 4X4</h3>
-            <p class="drive-desc">Massive reserve capacity engineered to handle high electrical loads, heated seats, and sophisticated infotainment systems.</p>
-            <div class="drive-specs-reveal">
-              <div class="drive-stat"><span>Models</span><strong>65Ah–90Ah</strong></div>
-              <div class="drive-stat"><span>Max CCA</span><strong>780 A</strong></div>
-              <div class="drive-stat"><span>Reserve</span><strong>140 Min</strong></div>
+            <span class="drive-tag">38B20R · 38B20L</span>
+            <h3 class="drive-title">NS40Z</h3>
+            <p class="drive-desc">Compact cars & sedans</p>
+            <div class="drive-specs">
+              <div class="drive-stat"><span>CCA</span><strong>350 A</strong></div>
+              <div class="drive-stat"><span>Reserve</span><strong>39 min</strong></div>
+              <div class="drive-stat"><span>Size (mm)</span><strong>195×125×224</strong></div>
+              <div class="drive-stat"><span>Weight</span><strong>10.9 kg</strong></div>
             </div>
+            <span class="drive-cta">Get a quote <i class="fa-solid fa-arrow-right"></i></span>
           </div>
         </div>
 
-        <!-- 3. TRUCK -->
-        <div class="drive-card" onclick="openQuoteModal('Category: Heavy Duty Trucks')">
-          <img loading="lazy" decoding="async" src="assets/images/page_8_Im43.jpg" alt="Heavy Trucks" class="drive-card-bg">
-          <div class="drive-card-overlay"></div>
+        <!-- 03. N50Z -->
+        <div class="drive-card" onclick="openQuoteModal('Felix N50Z (65D26R / 65D26L) 65Ah')">
+          <div class="drive-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/automotive/auto-n50z.jpg" width="960" height="640" alt="Felix FX 700 automotive battery — N50Z 65Ah" class="drive-card-img" draggable="false">
+            <span class="drive-ah">65<small>Ah</small></span>
+          </div>
           <div class="drive-card-content">
-            <span class="drive-tag">SEGMENT 03</span>
-            <h3 class="drive-title">HEAVY TRUCKS</h3>
-            <p class="drive-desc">Thick-grid gravity casting built for multi-axle freight carriers running thousands of continuous highway kilometers.</p>
-            <div class="drive-specs-reveal">
-              <div class="drive-stat"><span>Models</span><strong>100Ah–150Ah</strong></div>
-              <div class="drive-stat"><span>Max CCA</span><strong>950 A</strong></div>
-              <div class="drive-stat"><span>Vibration</span><strong>Class V3</strong></div>
+            <span class="drive-tag">65D26R · 65D26L</span>
+            <h3 class="drive-title">N50Z</h3>
+            <p class="drive-desc">Sedans & MUVs</p>
+            <div class="drive-specs">
+              <div class="drive-stat"><span>CCA</span><strong>500 A</strong></div>
+              <div class="drive-stat"><span>Reserve</span><strong>95 min</strong></div>
+              <div class="drive-stat"><span>Size (mm)</span><strong>250×169×216</strong></div>
+              <div class="drive-stat"><span>Weight</span><strong>19.5 kg</strong></div>
             </div>
+            <span class="drive-cta">Get a quote <i class="fa-solid fa-arrow-right"></i></span>
           </div>
         </div>
 
-        <!-- 4. BUS -->
-        <div class="drive-card" onclick="openQuoteModal('Category: Passenger Bus')">
-          <img loading="lazy" decoding="async" src="assets/images/page_12_Im55.jpg" alt="Passenger Buses" class="drive-card-bg">
-          <div class="drive-card-overlay"></div>
+        <!-- 04. N70Z -->
+        <div class="drive-card" onclick="openQuoteModal('Felix N70Z (75D31R / 75D31L) 75Ah')">
+          <div class="drive-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/automotive/auto-n70z.jpg" width="960" height="640" alt="Felix FX 700 automotive battery — N70Z 75Ah" class="drive-card-img" draggable="false">
+            <span class="drive-ah">75<small>Ah</small></span>
+          </div>
           <div class="drive-card-content">
-            <span class="drive-tag">SEGMENT 04</span>
-            <h3 class="drive-title">PASSENGER BUSES</h3>
-            <p class="drive-desc">Consistent auxiliary power delivery for public transport air-conditioning, onboard telematics, and frequent door cycles.</p>
-            <div class="drive-specs-reveal">
-              <div class="drive-stat"><span>Models</span><strong>135Ah–180Ah</strong></div>
-              <div class="drive-stat"><span>Max CCA</span><strong>1,050 A</strong></div>
-              <div class="drive-stat"><span>Endurance</span><strong>Heavy Cycle</strong></div>
+            <span class="drive-tag">75D31R · 75D31L</span>
+            <h3 class="drive-title">N70Z</h3>
+            <p class="drive-desc">SUVs & light commercial</p>
+            <div class="drive-specs">
+              <div class="drive-stat"><span>CCA</span><strong>610 A</strong></div>
+              <div class="drive-stat"><span>Reserve</span><strong>116 min</strong></div>
+              <div class="drive-stat"><span>Size (mm)</span><strong>304×167×225</strong></div>
+              <div class="drive-stat"><span>Weight</span><strong>21.3 kg</strong></div>
             </div>
+            <span class="drive-cta">Get a quote <i class="fa-solid fa-arrow-right"></i></span>
           </div>
         </div>
 
-        <!-- 5. COMMERCIAL VEHICLES -->
-        <div class="drive-card" onclick="openQuoteModal('Category: Commercial Vehicles & JCB')">
-          <img loading="lazy" decoding="async" src="assets/images/manufacturing-1.jpg" alt="Commercial Vehicles" class="drive-card-bg">
-          <div class="drive-card-overlay"></div>
+        <!-- 05. N90Z -->
+        <div class="drive-card" onclick="openQuoteModal('Felix N90Z (90D31R) 90Ah')">
+          <div class="drive-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/automotive/auto-n90z.jpg" width="960" height="640" alt="Felix FX 800 automotive battery — N90Z 90Ah" class="drive-card-img" draggable="false">
+            <span class="drive-ah">90<small>Ah</small></span>
+          </div>
           <div class="drive-card-content">
-            <span class="drive-tag">SEGMENT 05</span>
-            <h3 class="drive-title">COMMERCIAL FLEETS</h3>
-            <p class="drive-desc">Rapid alternator charge acceptance for delivery vans, earthmovers, and municipal utility fleets.</p>
-            <div class="drive-specs-reveal">
-              <div class="drive-stat"><span>Models</span><strong>80Ah–200Ah</strong></div>
-              <div class="drive-stat"><span>Max CCA</span><strong>1,160 A</strong></div>
-              <div class="drive-stat"><span>Design</span><strong>Heavy Ribs</strong></div>
+            <span class="drive-tag">90D31R</span>
+            <h3 class="drive-title">N90Z</h3>
+            <p class="drive-desc">SUVs, pickups & vans</p>
+            <div class="drive-specs">
+              <div class="drive-stat"><span>CCA</span><strong>730 A</strong></div>
+              <div class="drive-stat"><span>Reserve</span><strong>132 min</strong></div>
+              <div class="drive-stat"><span>Size (mm)</span><strong>410×171×232</strong></div>
+              <div class="drive-stat"><span>Weight</span><strong>26.9 kg</strong></div>
             </div>
+            <span class="drive-cta">Get a quote <i class="fa-solid fa-arrow-right"></i></span>
           </div>
         </div>
 
-        <!-- 6. AGRICULTURAL VEHICLES -->
-        <div class="drive-card" onclick="openQuoteModal('Category: Tractors & Agricultural')">
-          <img loading="lazy" decoding="async" src="assets/images/page_11_Im53.jpg" alt="Agricultural Vehicles" class="drive-card-bg">
-          <div class="drive-card-overlay"></div>
+        <!-- 06. N100Z -->
+        <div class="drive-card" onclick="openQuoteModal('Felix N100Z (105D31R) 100Ah')">
+          <div class="drive-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/automotive/auto-n100z.jpg" width="960" height="640" alt="Felix FX 1000 automotive battery — N100Z 100Ah" class="drive-card-img" draggable="false">
+            <span class="drive-ah">100<small>Ah</small></span>
+          </div>
           <div class="drive-card-content">
-            <span class="drive-tag">SEGMENT 06</span>
-            <h3 class="drive-title">AGRICULTURE & TRACTORS</h3>
-            <p class="drive-desc">Explosive cold cranking designed to fire high-displacement diesel tractor engines even after seasonal dormancy in monsoon dust.</p>
-            <div class="drive-specs-reveal">
-              <div class="drive-stat"><span>Models</span><strong>88Ah–120Ah</strong></div>
-              <div class="drive-stat"><span>Max CCA</span><strong>850 A</strong></div>
-              <div class="drive-stat"><span>Casing</span><strong>Shock-Proof</strong></div>
+            <span class="drive-tag">105D31R</span>
+            <h3 class="drive-title">N100Z</h3>
+            <p class="drive-desc">Light trucks & tractors</p>
+            <div class="drive-specs">
+              <div class="drive-stat"><span>CCA</span><strong>600 A</strong></div>
+              <div class="drive-stat"><span>Reserve</span><strong>150 min</strong></div>
+              <div class="drive-stat"><span>Size (mm)</span><strong>410×171×232</strong></div>
+              <div class="drive-stat"><span>Weight</span><strong>27.6 kg</strong></div>
             </div>
+            <span class="drive-cta">Get a quote <i class="fa-solid fa-arrow-right"></i></span>
           </div>
         </div>
 
+        <!-- 07. N120Z -->
+        <div class="drive-card" onclick="openQuoteModal('Felix N120Z (120F51R) 120Ah')">
+          <div class="drive-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/automotive/auto-n120z.jpg" width="960" height="640" alt="Felix FX 1350 automotive battery — N120Z 120Ah" class="drive-card-img" draggable="false">
+            <span class="drive-ah">120<small>Ah</small></span>
+          </div>
+          <div class="drive-card-content">
+            <span class="drive-tag">120F51R</span>
+            <h3 class="drive-title">N120Z</h3>
+            <p class="drive-desc">Tractors & commercial vehicles</p>
+            <div class="drive-specs">
+              <div class="drive-stat"><span>CCA</span><strong>815 A</strong></div>
+              <div class="drive-stat"><span>Reserve</span><strong>180 min</strong></div>
+              <div class="drive-stat"><span>Size (mm)</span><strong>512×124×225</strong></div>
+              <div class="drive-stat"><span>Weight</span><strong>35.6 kg</strong></div>
+            </div>
+            <span class="drive-cta">Get a quote <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+        </div>
+
+        <!-- 08. N135Z -->
+        <div class="drive-card" onclick="openQuoteModal('Felix N135Z (135F51R) 135Ah')">
+          <div class="drive-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/automotive/auto-n135z.jpg" width="960" height="640" alt="Felix FX 1350 automotive battery — N135Z 135Ah" class="drive-card-img" draggable="false">
+            <span class="drive-ah">135<small>Ah</small></span>
+          </div>
+          <div class="drive-card-content">
+            <span class="drive-tag">135F51R</span>
+            <h3 class="drive-title">N135Z</h3>
+            <p class="drive-desc">Tractors & buses</p>
+            <div class="drive-specs">
+              <div class="drive-stat"><span>CCA</span><strong>700 A</strong></div>
+              <div class="drive-stat"><span>Reserve</span><strong>215 min</strong></div>
+              <div class="drive-stat"><span>Size (mm)</span><strong>512×124×225</strong></div>
+              <div class="drive-stat"><span>Weight</span><strong>37.1 kg</strong></div>
+            </div>
+            <span class="drive-cta">Get a quote <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+        </div>
+
+        <!-- 09. N150Z -->
+        <div class="drive-card" onclick="openQuoteModal('Felix N150Z (150G51R) 150Ah')">
+          <div class="drive-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/automotive/auto-n150z.jpg" width="960" height="640" alt="Felix FX 1500 automotive battery — N150Z 150Ah" class="drive-card-img" draggable="false">
+            <span class="drive-ah">150<small>Ah</small></span>
+          </div>
+          <div class="drive-card-content">
+            <span class="drive-tag">150G51R</span>
+            <h3 class="drive-title">N150Z</h3>
+            <p class="drive-desc">Trucks & buses</p>
+            <div class="drive-specs">
+              <div class="drive-stat"><span>CCA</span><strong>980 A</strong></div>
+              <div class="drive-stat"><span>Reserve</span><strong>240 min</strong></div>
+              <div class="drive-stat"><span>Size (mm)</span><strong>505×216×256</strong></div>
+              <div class="drive-stat"><span>Weight</span><strong>46.3 kg</strong></div>
+            </div>
+            <span class="drive-cta">Get a quote <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+        </div>
+
+        <!-- 10. N165Z -->
+        <div class="drive-card" onclick="openQuoteModal('Felix N165Z (165G51R) 165Ah')">
+          <div class="drive-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/automotive/auto-n165z.jpg" width="960" height="640" alt="Felix FX 1800 automotive battery — N165Z 165Ah" class="drive-card-img" draggable="false">
+            <span class="drive-ah">165<small>Ah</small></span>
+          </div>
+          <div class="drive-card-content">
+            <span class="drive-tag">165G51R</span>
+            <h3 class="drive-title">N165Z</h3>
+            <p class="drive-desc">Heavy trucks & buses</p>
+            <div class="drive-specs">
+              <div class="drive-stat"><span>CCA</span><strong>940 A</strong></div>
+              <div class="drive-stat"><span>Reserve</span><strong>265 min</strong></div>
+              <div class="drive-stat"><span>Size (mm)</span><strong>518×250×241</strong></div>
+              <div class="drive-stat"><span>Weight</span><strong>53.5 kg</strong></div>
+            </div>
+            <span class="drive-cta">Get a quote <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+        </div>
+
+        <!-- 11. N180Z -->
+        <div class="drive-card" onclick="openQuoteModal('Felix N180Z (180G51R) 180Ah')">
+          <div class="drive-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/automotive/auto-n180z.jpg" width="960" height="640" alt="Felix FX 1800 automotive battery — N180Z 180Ah" class="drive-card-img" draggable="false">
+            <span class="drive-ah">180<small>Ah</small></span>
+          </div>
+          <div class="drive-card-content">
+            <span class="drive-tag">180G51R</span>
+            <h3 class="drive-title">N180Z</h3>
+            <p class="drive-desc">Heavy commercial & earthmovers</p>
+            <div class="drive-specs">
+              <div class="drive-stat"><span>CCA</span><strong>970 A</strong></div>
+              <div class="drive-stat"><span>Reserve</span><strong>288 min</strong></div>
+              <div class="drive-stat"><span>Size (mm)</span><strong>518×250×241</strong></div>
+              <div class="drive-stat"><span>Weight</span><strong>56.2 kg</strong></div>
+            </div>
+            <span class="drive-cta">Get a quote <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+        </div>
+
+        <!-- 12. N200Z -->
+        <div class="drive-card" onclick="openQuoteModal('Felix N200Z (190H52R) 200Ah')">
+          <div class="drive-card-media">
+            <img loading="lazy" decoding="async" src="assets/images/automotive/auto-n200z.jpg" width="960" height="640" alt="Felix FX 1800 automotive battery — N200Z 200Ah" class="drive-card-img" draggable="false">
+            <span class="drive-ah">200<small>Ah</small></span>
+          </div>
+          <div class="drive-card-content">
+            <span class="drive-tag">190H52R</span>
+            <h3 class="drive-title">N200Z</h3>
+            <p class="drive-desc">Multi-axle trucks & gensets</p>
+            <div class="drive-specs">
+              <div class="drive-stat"><span>CCA</span><strong>1,160 A</strong></div>
+              <div class="drive-stat"><span>Reserve</span><strong>370 min</strong></div>
+              <div class="drive-stat"><span>Size (mm)</span><strong>518×250×241</strong></div>
+              <div class="drive-stat"><span>Weight</span><strong>60.2 kg</strong></div>
+            </div>
+            <span class="drive-cta">Get a quote <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+        </div>
+
+      </div>
+      </div>
+
+      <!-- Carousel controls -->
+      <div class="showcase-bottom-controls drive-carousel-controls">
+        <div class="showcase-progress-wrap">
+          <div class="showcase-progress-bar" id="driveProgressBar"></div>
+        </div>
+        <div class="showcase-nav-btns">
+          <button type="button" class="showcase-arrow-btn" id="drivePrevBtn" aria-label="Previous battery models">
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
+          <span class="showcase-counter" id="driveCounter" aria-live="polite">1 / 12</span>
+          <button type="button" class="showcase-arrow-btn" id="driveNextBtn" aria-label="Next battery models">
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
       </div>
     </div>
   </section>
@@ -728,77 +812,6 @@
           <div class="stat-number-giant"><span class="counter" data-target="100">0</span><span>%</span></div>
           <div class="stat-title-label">QUALITY FOCUS</div>
           <div class="stat-desc-sub">Automated multi-point test verification</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==========================================
-       8. APPLICATIONS GRID
-       ========================================== -->
-  <section class="section-py applications-section" id="applications">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-badge"><i class="fa-solid fa-shapes"></i> PAN-SECTOR POWER</span>
-        <h2 class="section-title">ENGINEERED FOR <span class="glow-text">DIVERSE APPLICATIONS</span></h2>
-        <p class="section-subtitle">
-          From individual automobiles to critical national infrastructure, discover how Felix batteries provide dependable energy storage across key industries.
-        </p>
-      </div>
-
-      <div class="apps-grid">
-        <div class="app-card">
-          <img loading="lazy" decoding="async" src="assets/images/battery-cover-showcase.jpg" alt="Passenger Vehicles" class="app-card-img">
-          <div class="app-card-grad"></div>
-          <div class="app-card-info">
-            <h3 class="app-card-title">PASSENGER VEHICLES</h3>
-            <p class="app-card-desc">Zero-maintenance starting power for compact cars, executive sedans, and luxury SUVs.</p>
-          </div>
-        </div>
-
-        <div class="app-card">
-          <img loading="lazy" decoding="async" src="assets/images/page_8_Im43.jpg" alt="Commercial Fleets" class="app-card-img">
-          <div class="app-card-grad"></div>
-          <div class="app-card-info">
-            <h3 class="app-card-title">COMMERCIAL FLEETS</h3>
-            <p class="app-card-desc">High cyclic endurance for interstate freight trucks, delivery vans, and fleet operations.</p>
-          </div>
-        </div>
-
-        <div class="app-card">
-          <img loading="lazy" decoding="async" src="assets/images/manufacturing-2.jpg" alt="Heavy Duty & Mining" class="app-card-img">
-          <div class="app-card-grad"></div>
-          <div class="app-card-info">
-            <h3 class="app-card-title">HEAVY DUTY & MINING</h3>
-            <p class="app-card-desc">Vibration-resistant batteries for earthmovers, bulldozers, and rugged industrial machinery.</p>
-          </div>
-        </div>
-
-        <div class="app-card">
-          <img loading="lazy" decoding="async" src="assets/images/page_11_Im53.jpg" alt="Agriculture" class="app-card-img">
-          <div class="app-card-grad"></div>
-          <div class="app-card-info">
-            <h3 class="app-card-title">AGRICULTURE & HARVESTING</h3>
-            <p class="app-card-desc">Dependable ignition for farm tractors, harvesters, and rural agricultural pump sets.</p>
-          </div>
-        </div>
-
-        <div class="app-card">
-          <img loading="lazy" decoding="async" src="assets/images/page_10_Im51.jpg" alt="Industrial & Telecom" class="app-card-img">
-          <div class="app-card-grad"></div>
-          <div class="app-card-info">
-            <h3 class="app-card-title">INDUSTRIAL & TELECOM</h3>
-            <p class="app-card-desc">2V stationary power cells for substations, cellular towers, and central data centers.</p>
-          </div>
-        </div>
-
-        <div class="app-card">
-          <img loading="lazy" decoding="async" src="assets/images/page_9_Im46.jpg" alt="Energy Storage" class="app-card-img">
-          <div class="app-card-grad"></div>
-          <div class="app-card-info">
-            <h3 class="app-card-title">SOLAR & ENERGY STORAGE</h3>
-            <p class="app-card-desc">Deep-cycle tall tubular battery banks for rooftop solar systems and micro-grid storage.</p>
-          </div>
         </div>
       </div>
     </div>
@@ -1243,33 +1256,6 @@
   </section>
 
   <!-- ==========================================
-       13. DEALER & DISTRIBUTOR CTA
-       ========================================== -->
-  <section class="section-py dealer-cta-section" id="dealers">
-    <div class="container">
-      <div class="dealer-cta-box">
-        <div>
-          <h2 class="dealer-cta-headline">POWER YOUR BUSINESS <br>WITH FELIX</h2>
-          <p class="dealer-cta-sub">
-            Join the Felix authorized network and bring dependable, factory-backed battery technology to retailers, workshops, and commercial fleets across your regional market.
-          </p>
-          <div class="dealer-cta-actions">
-            <button class="btn btn-dark btn-lg" onclick="openQuoteModal('Distributor Partnership Application')">
-              <i class="fa-solid fa-handshake"></i> BECOME A DEALER
-            </button>
-            <a href="https://wa.me/917775072950?text=Hello%20Felix%20Batteries,%20I%20am%20interested%20in%20becoming%20an%20authorized%20dealer" target="_blank" rel="noopener" class="btn btn-secondary btn-lg">
-              <i class="fa-brands fa-whatsapp"></i> CONTACT SALES
-            </a>
-          </div>
-        </div>
-        <div>
-          <img loading="lazy" decoding="async" src="assets/images/products/battery-fx1000-tractor.png" alt="Felix Dealer Partnership" class="dealer-cta-img">
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==========================================
        14. CONTACT & INQUIRY FORM — "LET'S POWER THE FUTURE."
        ========================================== -->
   <section class="section-py contact-section" id="contact">
@@ -1404,10 +1390,9 @@
             <li><a href="#hero">Home</a></li>
             <li><a href="#energy">Energy Ecosystem</a></li>
             <li><a href="#technology">Battery Technology</a></li>
-            <li><a href="#applications">Applications</a></li>
             <li><a href="#manufacturing">Manufacturing Plant</a></li>
             <li><a href="#testimonials">Customer Reviews</a></li>
-            <li><a href="#dealers">Dealer Network</a></li>
+            <li><a href="#contact">Dealer Network</a></li>
           </ul>
         </div>
 
