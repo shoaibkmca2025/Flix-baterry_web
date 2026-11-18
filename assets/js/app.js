@@ -1,9 +1,8 @@
 // ==========================================================================
 // FELIX AUTOMOTIVE BATTERIES — HIGH PERFORMANCE MOTION & APP CONTROLLER
-// Powered by Lenis Smooth Momentum Scrolling, GSAP 3 & ScrollTrigger
+// Powered by GSAP 3 & ScrollTrigger. Scrolling stays native: it runs on the
+// compositor thread, so it never waits on JS the way a smooth-scroll library does.
 // ==========================================================================
-
-let lenis = null;
 
 // ==========================================================================
 // 0. Device & Capability Helpers (mobile-first guards)
@@ -66,8 +65,7 @@ function initOffscreenAnimationPause() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initOffscreenAnimationPause();
-  initLenis();
-  initCustomCursor();
+  initNativeAnchorScroll();
   initHeroEnergyCanvas();
   initHeroAntigravityMotion();
   initEnergySectionMotion();
@@ -189,54 +187,8 @@ function revealOnScroll(targets, fromVars, opts = {}) {
 }
 
 // ==========================================================================
-// 1. Lenis Smooth Momentum Scrolling
+// 1. Anchor scrolling
 // ==========================================================================
-function initLenis() {
-  // Touch devices keep native momentum scrolling: Lenis fights the OS scroller,
-  // breaks address-bar collapse and adds constant rAF work on mobile.
-  if (typeof Lenis === 'undefined' || isTouch() || isMobile() || prefersReducedMotion()) {
-    initNativeAnchorScroll();
-    return;
-  }
-
-  lenis = new Lenis({
-    lerp: 0.12, // frame-rate independent catch-up: smooth but immediately responsive
-    orientation: 'vertical',
-    gestureOrientation: 'vertical',
-    smoothWheel: true,
-    wheelMultiplier: 1,
-  });
-
-  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-    gsap.ticker.lagSmoothing(0);
-  } else {
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-  }
-
-  // Smooth anchor links with Lenis
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      const targetId = this.getAttribute('href');
-      if (this.closest('#navMenuList') && this.closest('.open')) return; // drawer handles its own links
-      if (targetId && targetId !== '#') {
-        const targetEl = document.querySelector(targetId);
-        if (targetEl) {
-          e.preventDefault();
-          scrollToSection(targetEl);
-        }
-      }
-    });
-  });
-}
-
 // Smooth-scrolls to a section so it lands right under the sticky navbar.
 // Lazy images (and the ScrollTrigger refresh each one triggers) can shift the
 // page or cut a smooth scroll short, so the landing spot is re-checked when
@@ -245,19 +197,6 @@ function scrollToSection(target) {
   const nav = document.getElementById('navbarMain');
   const navH = () => (nav ? nav.offsetHeight : 64);
   const desired = () => Math.max(0, Math.round(target.getBoundingClientRect().top + window.pageYOffset - navH()));
-
-  if (lenis) {
-    let tries = 0;
-    const go = (duration) => lenis.scrollTo(target, {
-      offset: -navH(),
-      duration,
-      onComplete: () => {
-        if (tries++ < 3 && Math.abs(target.getBoundingClientRect().top - navH()) > 4) go(0.5);
-      }
-    });
-    go(1.3);
-    return;
-  }
 
   const behavior = prefersReducedMotion() ? 'auto' : 'smooth';
   let tries = 0;
@@ -283,7 +222,6 @@ function scrollToSection(target) {
   settle();
 }
 
-// Native smooth anchor scrolling (used whenever Lenis is disabled, e.g. mobile)
 function initNativeAnchorScroll() {
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', function (e) {
@@ -294,67 +232,6 @@ function initNativeAnchorScroll() {
       if (!target) return;
       e.preventDefault();
       scrollToSection(target);
-    });
-  });
-}
-
-// ==========================================================================
-// 2. Custom Magnetic Desktop Cursor
-// ==========================================================================
-function initCustomCursor() {
-  const cursor = document.getElementById('customCursor');
-  const follower = document.getElementById('cursorFollower');
-  if (!cursor || !follower) return;
-
-  // Disable on touch devices
-  if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
-    cursor.style.display = 'none';
-    follower.style.display = 'none';
-    return;
-  }
-
-  let mouseX = window.innerWidth / 2;
-  let mouseY = window.innerHeight / 2;
-  let followerX = mouseX;
-  let followerY = mouseY;
-
-  let followerRaf = null;
-
-  // Positioned with transforms (compositor-only) rather than left/top, which
-  // forced a layout on every frame for the lifetime of the page.
-  const place = (el, x, y) => { el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`; };
-
-  function renderFollower() {
-    followerX += (mouseX - followerX) * 0.16;
-    followerY += (mouseY - followerY) * 0.16;
-    place(follower, followerX, followerY);
-    // Sleep once caught up; the next mousemove wakes the loop again
-    if (Math.abs(mouseX - followerX) < 0.1 && Math.abs(mouseY - followerY) < 0.1) {
-      followerRaf = null;
-      return;
-    }
-    followerRaf = requestAnimationFrame(renderFollower);
-  }
-
-  window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    place(cursor, mouseX, mouseY);
-    if (followerRaf === null) followerRaf = requestAnimationFrame(renderFollower);
-  }, { passive: true });
-
-  // Hover states on interactive elements
-  const hoverTargets = document.querySelectorAll('a, button, .drive-card, .range-card, .benefit-card, .timeline-step-card, .telemetry-card');
-  hoverTargets.forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      follower.classList.add('cursor-hover');
-      if (el.classList.contains('drive-card')) {
-        follower.classList.add('cursor-view');
-      }
-    });
-    el.addEventListener('mouseleave', () => {
-      follower.classList.remove('cursor-hover');
-      follower.classList.remove('cursor-view');
     });
   });
 }
@@ -611,26 +488,8 @@ function initHeroAntigravityMotion() {
 function initEnergySectionMotion() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-  // Animated SVG Energy Stream Paths
-  const paths = document.querySelectorAll('.energy-line-path');
-  paths.forEach((path) => {
-    try {
-      const length = path.getTotalLength ? path.getTotalLength() : 380;
-      gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
-      gsap.to(path, {
-        scrollTrigger: {
-          trigger: '#energy',
-          start: 'top 70%',
-          end: 'top 20%',
-          scrub: 1
-        },
-        strokeDashoffset: 0,
-        ease: 'power2.out'
-      });
-    } catch (e) {
-      // Fallback if SVG length calculation is unsupported
-    }
-  });
+  // Energy paths flow via the CSS energyFlow animation; a GSAP dash tween here
+  // would be overridden by it (animations beat inline styles) and break the dashes.
 
   // Telemetry Cards Parallax Entrance
   gsap.utils.toArray('.telemetry-card').forEach((card, idx) => {
@@ -844,7 +703,7 @@ function initProductDetailConnectors() {
       return;
     }
     canvas.style.display = 'block';
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = stage.offsetWidth * dpr;
     canvas.height = stage.offsetHeight * dpr;
     canvas.style.width = `${stage.offsetWidth}px`;
@@ -893,10 +752,7 @@ function initProductDetailConnectors() {
       ctx.beginPath();
       ctx.arc(calloutAnchor.x, calloutAnchor.y, 4, 0, Math.PI * 2);
       ctx.fillStyle = '#00B83F';
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = '#00B83F';
       ctx.fill();
-      ctx.shadowBlur = 0;
 
       // Animated energy packet traveling along curve
       const t = (pulseProgress + 0.3) % 1;
@@ -910,13 +766,15 @@ function initProductDetailConnectors() {
                  3 * invT * t * t * batteryCenter.y +
                  t * t * t * batteryCenter.y;
 
+      // Halo circle instead of shadowBlur, which re-blurs on every frame
+      ctx.beginPath();
+      ctx.arc(px, py, 7, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0, 184, 63, 0.35)';
+      ctx.fill();
       ctx.beginPath();
       ctx.arc(px, py, 3, 0, Math.PI * 2);
       ctx.fillStyle = '#FFFFFF';
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = '#00B83F';
       ctx.fill();
-      ctx.shadowBlur = 0;
     });
 
     animationFrameId = requestAnimationFrame(draw);
@@ -1491,7 +1349,6 @@ window.openModalEl = function (modal) {
   modal.classList.add('open');
   document.body.style.top = `-${modalScrollY}px`;
   document.body.classList.add('nav-scroll-locked');
-  if (lenis) lenis.stop();
 };
 
 window.closeAllModals = function () {
@@ -1501,7 +1358,6 @@ window.closeAllModals = function () {
   document.body.classList.remove('nav-scroll-locked');
   document.body.style.top = '';
   window.scrollTo(0, modalScrollY);
-  if (lenis) lenis.start();
 };
 
 function initModals() {
@@ -1766,7 +1622,6 @@ function initMobileNav() {
     toggle.setAttribute('aria-expanded', 'true');
     if (toggleIcon) toggleIcon.className = 'fa-solid fa-xmark';
     lockBody();
-    if (lenis) lenis.stop();
   }
 
   function closeMenu() {
@@ -1776,7 +1631,6 @@ function initMobileNav() {
     toggle.setAttribute('aria-expanded', 'false');
     if (toggleIcon) toggleIcon.className = 'fa-solid fa-bars';
     unlockBody();
-    if (lenis) lenis.start();
   }
 
   toggle.setAttribute('aria-expanded', 'false');
@@ -1883,10 +1737,6 @@ function initBackToTop() {
   });
 
   btn.addEventListener('click', () => {
-    if (lenis) {
-      lenis.scrollTo(0, { duration: 1.2 });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
   });
 }
